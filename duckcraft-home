@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duckcraft 🦆 | Epic Videos & Games for Kids 10-14</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', system-ui, sans-serif;
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, #67e8f9, #c084fc, #fb7185);
+        }
+        .duck-float {
+            animation: float 2.5s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
+        .card {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .card:hover {
+            transform: scale(1.08) rotate(3deg);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-200 via-cyan-200 to-purple-200 text-zinc-800">
+
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <span class="text-6xl duck-float">🦆</span>
+                <span class="text-5xl font-black tracking-tighter text-purple-700">Duckcraft</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-xl font-bold">
+                <a href="#watch" class="hover:text-pink-600 transition-colors">Watch Videos</a>
+                <a href="#gaming" class="hover:text-pink-600 transition-colors">Gaming Zone</a>
+                <a href="#3d" class="hover:text-pink-600 transition-colors">3D Prints</a>
+                <a href="#duckmaster" class="hover:text-pink-600 transition-colors">Duck Master</a>
+            </div>
+            <a href="#" onclick="alert('Welcome to the flock! 🦆 (In real version this would link to YouTube subscribe)')" 
+               class="bg-yellow-400 hover:bg-yellow-300 px-8 py-4 rounded-full font-bold text-2xl shadow-lg flex items-center gap-3 transition-all">
+                Join the Flock 🦆
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero-bg min-h-screen flex items-center pt-16">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex bg-white/80 text-3xl font-black px-8 py-4 rounded-3xl shadow-xl items-center gap-4">
+                    🦆 THE ULTIMATE KID HANGOUT!
+                </div>
+                <h1 class="text-7xl md:text-8xl font-black tracking-tighter leading-none text-white drop-shadow-2xl">
+                    Funny Ducks,<br>
+                    Cool Builds,<br>
+                    <span class="text-yellow-300">Epic Games!</span>
+                </h1>
+                <p class="text-3xl text-white/90 font-medium max-w-lg">
+                    The best place for kids 10-14 to watch silly animal videos, 3D printing magic, Fortnite & Roblox streams, and get ready for **Duck Master**!
+                </p>
+                <div class="flex flex-wrap gap-6">
+                    <a href="#watch" class="bg-white text-purple-700 px-12 py-6 rounded-3xl font-black text-3xl shadow-2xl hover:scale-110 transition-transform flex items-center gap-4">
+                        <i class="fas fa-play"></i> Watch Now
+                    </a>
+                    <a href="#duckmaster" class="border-4 border-white text-white px-12 py-6 rounded-3xl font-black text-3xl hover:bg-white/30 transition-all">
+                        See Duck Master →
+                    </a>
+                </div>
+            </div>
+            <div class="text-center relative">
+                <div class="text-[220px] duck-float inline-block drop-shadow-2xl">🦆</div>
+                <div class="absolute top-12 -right-6 bg-white rounded-3xl p-6 shadow-2xl text-center max-w-[200px]">
+                    <p class="font-black text-4xl text-pink-500">LIVE</p>
+                    <p class="text-2xl font-bold">Fortnite & Roblox Streams</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Video -->
+    <section id="watch" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-6xl font-black text-purple-600 mb-4">Featured Video 🦆</h2>
+                <p class="text-3xl text-zinc-600">Super funny ducklings and animals!</p>
+            </div>
+            
+            <div class="aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border-8 border-yellow-300">
+                <iframe width="100%" height="100%" 
+                    src="https://www.youtube.com/embed/USLZJ5FTr-Y" 
+                    title="Funny Ducklings Video" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            
+            <p class="text-center mt-6 text-zinc-500">Funny ducklings, ducks, pig, kitten & dog 🐶🐱🦆 (real example – swap with your own video!)</p>
+        </div>
+    </section>
+
+    <!-- Three Main Sections -->
+    <section class="py-20 bg-gradient-to-b from-white to-pink-100">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
+
+            <!-- Animal Videos -->
+            <div class="card bg-white rounded-3xl p-10 shadow-xl border-8 border-cyan-300 text-center">
+                <div class="text-7xl mb-6">🐶 🐱 🐰 🦆</div>
+                <h3 class="text-5xl font-black text-purple-600 mb-6">Cool Animal Videos</h3>
+                <p class="text-2xl text-zinc-700">Silly cats, waddling ducks, cute puppies and crazy animal moments that make you laugh out loud!</p>
+            </div>
+
+            <!-- 3D Printing -->
+            <div class="card bg-white rounded-3xl p-10 shadow-xl border-8 border-amber-300 text-center" id="3d">
+                <div class="text-7xl mb-6">🖨️✨</div>
+                <h3 class="text-5xl font-black text-purple-600 mb-6">3D Printing Magic</h3>
+                <p class="text-2xl text-zinc-700">Watch toys, duck figures, gadgets and awesome creations get printed step-by-step!</p>
+                <div class="mt-8 bg-amber-100 text-amber-700 font-bold text-xl py-4 rounded-2xl">Soon: Print your own ducks!</div>
+            </div>
+
+            <!-- Gaming -->
+            <div class="card bg-white rounded-3xl p-10 shadow-xl border-8 border-lime-400 text-center" id="gaming">
+                <div class="text-7xl mb-6">🎮🔥</div>
+                <h3 class="text-5xl font-black text-purple-600 mb-6">Fortnite & Roblox</h3>
+                <p class="text-2xl text-zinc-700">Live streams, funny fails, challenges, wins and crazy moments in your favorite games!</p>
+                <div class="flex justify-center gap-6 mt-10">
+                    <span class="bg-blue-500 text-white px-8 py-3 rounded-2xl text-2xl font-bold">Fortnite</span>
+                    <span class="bg-green-500 text-white px-8 py-3 rounded-2xl text-2xl font-bold">Roblox</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Duck Master Teaser -->
+    <section id="duckmaster" class="py-28 bg-gradient-to-br from-purple-700 via-pink-600 to-rose-500 text-white">
+        <div class="max-w-4xl mx-auto text-center px-6">
+            <div class="text-[180px] duck-float mb-6">🦆👑</div>
+            <h2 class="text-7xl font-black tracking-tighter mb-8">COMING SOON: Duck Master!</h2>
+            <p class="text-4xl leading-tight max-w-2xl mx-auto">
+                Become the ultimate Duck Master! Catch ducks, build your flock, complete fun quests, and go on silly adventures.
+            </p>
+            <div class="mt-16 inline-block bg-white text-purple-700 font-black text-4xl px-16 py-8 rounded-3xl shadow-2xl hover:scale-110 transition-transform">
+                Get Ready to Quack & Play!
+            </div>
+            <p class="mt-12 text-2xl opacity-90">Sign up for early access alerts!</p>
+        </div>
+    </section>
+
+    <!-- Final Call to Action -->
+    <section class="py-24 bg-white">
+        <div class="max-w-3xl mx-auto text-center px-6">
+            <h2 class="text-6xl font-black mb-8">Ready to Quack Along? 🦆</h2>
+            <p class="text-3xl text-zinc-600 mb-12">Subscribe for new funny videos, live streams, 3D print ideas, and Duck Master updates!</p>
+            
+            <a href="#" onclick="alert('Link your real YouTube channel here!')" 
+               class="inline-flex items-center gap-5 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-20 py-8 rounded-3xl text-4xl font-black shadow-2xl hover:scale-105 transition-all">
+                Subscribe on YouTube <i class="fab fa-youtube text-5xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-zinc-900 text-white py-16 text-center">
+        <div class="text-5xl mb-4">🦆 Duckcraft</div>
+        <p class="text-2xl text-zinc-400">Made for awesome kids 10–14 • Safe & Super Fun</p>
+        <p class="text-zinc-500 mt-10">© 2026 Duckcraft • All rights quacked</p>
+    </footer>
+
+</body>
+</html>
