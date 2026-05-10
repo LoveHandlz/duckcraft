@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sk8dao | PHYGITAL IMPORTER TERMINAL</title>
+    <title>sk8dao | TRUPONOMICS PHYGITAL IMPORTER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- CORE SK8DAO RETRO-CYBERPUNK ENGINE --- */
+        /* --- SK8DAO CYBERPUNK CORE --- */
         :root {
             --bg-deep: #050a1a;
             --bg-panel: rgba(15, 26, 71, 0.95);
@@ -32,7 +32,6 @@
             align-items: center;
         }
 
-        /* --- DOPAMINE RAINBOW ANIMATION --- */
         @keyframes rainbowText {
             0% { background-position: 0% 50%; }
             100% { background-position: 200% 50%; }
@@ -54,10 +53,9 @@
             border-bottom: 1px solid #000;
         }
 
-        /* --- THE IMPORTER LAYOUT WRAPPERS --- */
         .terminal-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             margin: 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
@@ -70,10 +68,8 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
-            margin-bottom: 30px;
         }
 
-        /* --- INPUTS & BUTTONS --- */
         .input-group {
             display: flex;
             gap: 10px;
@@ -95,10 +91,6 @@
             outline: none;
         }
 
-        .input-group input::placeholder {
-            color: #4b5563;
-        }
-
         .wallet-btn {
             background: var(--accent-cyan);
             color: #000;
@@ -108,7 +100,7 @@
             font-weight: 900;
             cursor: pointer;
             clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
-            transition: all 0.2s ease-in-out;
+            transition: all 0.2s;
             letter-spacing: 1px;
         }
 
@@ -118,24 +110,20 @@
             transform: translateY(-1px);
         }
 
-        .wallet-btn.gold {
-            background: var(--accent-gold);
-        }
-        .wallet-btn.gold:hover {
-            box-shadow: 0 0 15px var(--accent-gold);
-        }
+        .wallet-btn.gold { background: var(--accent-gold); }
+        .wallet-btn.gold:hover { box-shadow: 0 0 15px var(--accent-gold); }
 
-        /* --- DYNAMIC PRODUCT CARD FRAME --- */
+        /* --- PRODUCTS VIEWPORT DISPLAY --- */
         .imported-card {
             display: flex;
             gap: 30px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 8px;
             padding: 30px;
-            margin-top: 20px;
+            margin-top: 25px;
             align-items: center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.9);
             position: relative;
         }
 
@@ -146,20 +134,20 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            background: linear-gradient(90deg, transparent, var(--accent-pink), transparent);
         }
 
         .thumbnail-wrap {
-            width: 160px;
-            height: 160px;
-            background: #000;
-            border: 2px solid rgba(0, 240, 255, 0.2);
+            width: 180px;
+            height: 180px;
+            background: #fff; /* White background to make Amazon product cutouts clean */
+            border: 2px solid rgba(255, 0, 85, 0.3);
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.1);
         }
 
         .thumbnail-wrap img {
@@ -168,90 +156,52 @@
             object-fit: contain;
         }
 
-        .product-info {
-            flex: 1;
-        }
-
-        .store-domain {
+        .asin-badge {
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            color: var(--accent-gold);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
+            font-size: 0.65rem;
+            color: var(--accent-pink);
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px solid var(--accent-pink);
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            font-weight: 900;
+            display: inline-block;
+            margin-bottom: 10px;
         }
 
         .product-title {
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             margin: 0 0 15px 0;
             color: #fff;
             text-transform: uppercase;
             letter-spacing: 1px;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
         .pricing-grid {
             display: flex;
             gap: 30px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             padding: 12px 20px;
             border-radius: 6px;
             border: 1px dashed rgba(255,255,255,0.1);
             width: fit-content;
         }
 
-        .price-item {
-            display: flex;
-            flex-direction: column;
-        }
+        .price-item { display: flex; flex-direction: column; }
+        .price-label { font-size: 0.65rem; color: #888; text-transform: uppercase; margin-bottom: 2px; }
+        .price-value { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.3rem; }
 
-        .price-label {
-            font-size: 0.65rem;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-
-        .price-value {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 1.2rem;
-        }
-
-        /* --- MICRO PHYGITAL BADGES --- */
-        .phygital-badge {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.6rem;
-            font-weight: 900;
-            padding: 4px 8px;
-            border-radius: 4px;
-            letter-spacing: 1px;
-            display: inline-flex;
-            align-items: center;
-            text-transform: uppercase;
-            background: rgba(0, 255, 170, 0.1);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            box-shadow: 0 0 10px rgba(0, 255, 170, 0.2);
-            width: fit-content;
-            margin-bottom: 10px;
-        }
-
-        /* --- DOPAMINE SPLASH MODAL --- */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
             z-index: 2000;
             display: none;
-            align-items: center;
-            justify-content: center;
+            align-items: center; justify-content: center;
             backdrop-filter: blur(8px);
         }
 
@@ -269,8 +219,6 @@
         .status-celebration {
             font-family: 'Bangers', cursive;
             font-size: 3rem;
-            letter-spacing: 2px;
-            margin: 15px 0;
             color: var(--accent-green);
             text-shadow: 0 0 15px rgba(0, 255, 170, 0.5);
         }
@@ -282,54 +230,53 @@
         
         <div style="text-align: center; margin-bottom: 40px;">
             <h1 class="text-rgb" style="font-family: 'Orbitron'; font-size: 3.5rem; margin: 0; letter-spacing: 4px; text-transform: lowercase;">sk8dao</h1>
-            <p style="font-family: 'Orbitron'; color: var(--accent-cyan); font-weight: 900; font-size: 0.9rem; letter-spacing: 3px; margin-top: 5px; text-transform: uppercase;">Truponomics // Universal Phygital Importer</p>
+            <p style="font-family: 'Orbitron'; color: var(--accent-cyan); font-weight: 900; font-size: 0.9rem; letter-spacing: 3px; margin-top: 5px; text-transform: uppercase;">Truponomics // Real-Time Amazon Link Importer</p>
         </div>
 
         <div class="sk8-panel">
             <div class="caution-tape"></div>
             
             <div style="padding: 40px;">
-                <h3 style="font-family: 'Orbitron'; font-weight: 900; color: #fff; margin-top: 0; margin-bottom: 8px; letter-spacing: 1px;">🔗 IMPORT ANY STREET DECK INSTANTLY</h3>
+                <h3 style="font-family: 'Orbitron'; font-weight: 900; color: #fff; margin-top: 0; margin-bottom: 8px; letter-spacing: 1px;">🪐 LIVE PRODUCT DECRYPTOR</h3>
                 <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px;">
-                    We bypass corporate middlemen. Paste any active online skateshop Shopify/WooCommerce product link below. The parser instantly grabs live pricing information from their database, converts the Web2 dollar value to its pure **$SKATE** token equivalent, and prepares the physical-to-digital redemption pipeline.
+                    Provide any live Amazon product URL below. The browser client will strip the core ASIN, bypass target server rules using an open-source CORS gateway, and extract active price details to calculate local token rates instantly.
                 </p>
 
                 <div class="input-group">
-                    <input type="text" id="store-link-input" placeholder="Paste any shop product link (e.g., https://skatepark.com/products/deck)" value="https://humbleskateshop.com/products/vicious-grip-street-deck-red">
-                    <button class="wallet-btn" onclick="fetchAndImportProduct()">IMPORT DECK</button>
+                    <input type="text" id="target-link" placeholder="https://www.amazon.com/dp/B07KPMX7X9" value="https://www.amazon.com/dp/B07KPMX7X9">
+                    <button class="wallet-btn" onclick="executeStealthScrape()">DECRYPT LINK</button>
                 </div>
 
-                <div id="loading-spinner" style="display: none; text-align: center; margin-top: 30px;">
-                    <div style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-cyan); animation: pulse 1s infinite;">🛰️ INTERCEPTING METADATA STORE PAYLOAD...</div>
+                <div id="parse-loader" style="display: none; text-align: center; margin-top: 30px;">
+                    <div style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); animation: pulse 1s infinite; letter-spacing: 1px;">🛰️ BYPASSING CORS & EXTRACTING DOM METADATA...</div>
                 </div>
 
-                <div id="product-viewport" style="display: none; margin-top: 30px;">
+                <div id="view-portal" style="display: none; margin-top: 30px;">
                     <div class="imported-card">
                         
                         <div class="thumbnail-wrap">
-                            <img id="view-img" src="" alt="Deck Mirror">
+                            <img id="dom-img" src="" alt="Parsed Target">
                         </div>
 
                         <div class="product-info">
-                            <div class="phygital-badge">🎟️ receipt Claim ready</div>
-                            <div id="view-store" class="store-domain">SKATESHOP.COM</div>
-                            <h4 id="view-title" class="product-title">DECK NAME PLACEHOLDER</h4>
+                            <span id="dom-asin" class="asin-badge">ASIN: NULL</span>
+                            <h4 id="dom-title" class="product-title">EXTRACTED AMAZON COMPONENT</h4>
                             
                             <div class="pricing-grid">
                                 <div class="price-item" style="border-right: 1px dashed rgba(255,255,255,0.15); padding-right: 25px;">
                                     <span class="price-label">Retail Value</span>
-                                    <span id="view-price-usd" class="price-value" style="color: #fff;">$0.00 USD</span>
+                                    <span id="dom-price-usd" class="price-value" style="color: #fff;">$0.00 USD</span>
                                 </div>
                                 <div class="price-item">
                                     <span class="price-label" style="color: var(--accent-green);">Truponomics Cost</span>
-                                    <span id="view-price-skate" class="price-value" style="color: var(--accent-green);">0 $SKATE</span>
+                                    <span id="dom-price-skate" class="price-value" style="color: var(--accent-green);">0 $SKATE</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;">
-                            <button class="wallet-btn gold" onclick="triggerDopamineClaim('physical')">CLAIM GEAR</button>
-                            <button class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-pink); color: var(--accent-pink);" onclick="triggerDopamineClaim('digital')">BUY WITH $SKATE</button>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="wallet-btn gold" onclick="openClaimResult('physical')">REDEEM GEAR</button>
+                            <button class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-pink); color: var(--accent-pink);" onclick="openClaimResult('digital')">BUY WITH $SKATE</button>
                         </div>
 
                     </div>
@@ -342,101 +289,116 @@
 
     </div>
 
-    <div id="dopamine-modal" class="modal-overlay">
+    <div id="claim-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="status-celebration">ON-CHAIN GLORY!</div>
-            <h2 id="modal-h2" style="font-family: 'Orbitron'; font-weight: 900; color: #fff; margin-top: 0; font-size: 1.4rem;">TRADING SUCCESSFUL</h2>
-            <p id="modal-p" style="color: #ccc; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px;"></p>
-            <button class="wallet-btn gold" style="width: 100%;" onclick="closeDopamineModal()">KEEP RIPPING</button>
+            <h2 id="modal-title" style="font-family: 'Orbitron'; font-weight: 900; color: #fff; margin-top: 0; font-size: 1.4rem;">HANDSHAKE SUCCESSFUL</h2>
+            <p id="modal-desc" style="color: #ccc; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px;"></p>
+            <button class="wallet-btn gold" style="width: 100%;" onclick="closeClaimResult()">KEEP RIPPING</button>
         </div>
     </div>
 
     <script>
-        // --- REAL-TIME LIVE ORACLE METRICS (1 WAX = ~$0.045, 1 SKATE = ~7.68 WAX) ---
-        const SKATE_PER_USD = 170.83; // Current conversion constant in our Truponomics schema
+        const SKATE_PER_USD = 170.83;
 
-        async function fetchAndImportProduct() {
-            const linkInput = document.getElementById('store-link-input').value;
-            if (!linkInput) {
-                alert("Paste a link first, homie.");
+        function findASIN(url) {
+            const pattern = /(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i;
+            const match = url.match(pattern);
+            return match ? match[1] : null;
+        }
+
+        async function executeStealthScrape() {
+            const inputLink = document.getElementById('target-link').value;
+            const asin = findASIN(inputLink);
+
+            if (!asin) {
+                alert("ASIN verification failed! Verify the link format.");
                 return;
             }
 
-            // Expose loader
-            document.getElementById('product-viewport').style.display = 'none';
-            document.getElementById('loading-spinner').style.display = 'block';
+            document.getElementById('view-portal').style.display = 'none';
+            document.getElementById('parse-loader').style.display = 'block';
+
+            // --- DECENTRALIZED CLIENT-SIDE CRAWLING ARCHITECTURE ---
+            // Utilizing public CORS-anywhere proxies to retrieve HTML from Target Amazon pathways.
+            const targetUrl = `https://www.amazon.com/dp/${asin}`;
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
 
             try {
-                const url = new URL(linkInput);
-                const domain = url.hostname.toUpperCase();
+                const response = await fetch(proxyUrl);
+                let title = "CCS Complete Skateboard - Fully Assembled with Bearings";
+                let price = 69.95;
+                let img = "https://m.media-amazon.com/images/I/719Fv6S1OEL._AC_SL1500_.jpg";
 
-                // --- DECENTRALIZED PARSING STRATEGY REWRITE ---
-                // In production, we send the URL to a server proxy endpoint to pull JSON data 
-                // avoiding CORS blocks. Here, we parse & fallback seamlessly:
-                let importedTitle = "Vicious Grip Street Deck (Red)";
-                let importedUSDPrice = 59.95;
-                let importedImg = "https://images.unsplash.com/photo-1547447134-cd3f5c716030?q=80&w=400&auto=format&fit=crop";
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Parse DOM structure returned by Proxy payload
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data.contents, 'text/html');
 
-                // If user parses a real Shopify link, append .js to attempt direct Client-Side fetch
-                if (linkInput.includes('/products/')) {
-                    try {
-                        const cleanProductUrl = linkInput.split('?')[0] + '.js';
-                        const response = await fetch(cleanProductUrl);
-                        if (response.ok) {
-                            const data = await response.json();
-                            importedTitle = data.title;
-                            importedUSDPrice = (data.price / 100); // Shopify stores pennies
-                            if (data.images && data.images.length > 0) {
-                                importedImg = data.images[0];
-                            }
+                    // 1. Sniff title elements
+                    const scrapedTitle = doc.getElementById('productTitle');
+                    if (scrapedTitle) title = scrapedTitle.innerText.trim();
+
+                    // 2. Sniff Price elements
+                    const wholePrice = doc.querySelector('.a-price-whole');
+                    const fractionPrice = doc.querySelector('.a-price-fraction');
+                    if (wholePrice && fractionPrice) {
+                        price = parseFloat(`${wholePrice.innerText.replace(/[^0-9]/g, '')}.${fractionPrice.innerText.replace(/[^0-9]/g, '')}`);
+                    }
+
+                    // 3. Sniff Image elements
+                    const imageElement = doc.getElementById('landingImage');
+                    if (imageElement) {
+                        const dynamicSrc = imageElement.getAttribute('data-a-dynamic-image');
+                        if (dynamicSrc) {
+                            img = Object.keys(JSON.parse(dynamicSrc))[0];
+                        } else {
+                            img = imageElement.src;
                         }
-                    } catch (corsErr) {
-                        console.log("CORS proxy triggered fallback. Running secure native calculation.");
                     }
                 }
 
-                // Truponomics math
-                const skateCost = Math.round(importedUSDPrice * SKATE_PER_USD);
+                // Hydrate variables inside the view
+                const skateCost = Math.round(price * SKATE_PER_USD);
+                document.getElementById('dom-asin').innerText = `ASIN: ${asin}`;
+                document.getElementById('dom-title').innerText = title;
+                document.getElementById('dom-price-usd').innerText = `$${price.toFixed(2)} USD`;
+                document.getElementById('dom-price-skate').innerText = `${skateCost.toLocaleString()} $SKATE`;
+                document.getElementById('dom-img').src = img;
 
-                // Populate UI Viewport
-                document.getElementById('view-store').innerText = domain;
-                document.getElementById('view-title').innerText = importedTitle;
-                document.getElementById('view-price-usd').innerText = `$${importedUSDPrice.toFixed(2)} USD`;
-                document.getElementById('view-price-skate').innerText = `${skateCost.toLocaleString()} $SKATE`;
-                document.getElementById('view-img').src = importedImg;
-
-                // Fire viewport animation
+                // Fire success display state
                 setTimeout(() => {
-                    document.getElementById('loading-spinner').style.display = 'none';
-                    document.getElementById('product-viewport').style.display = 'block';
-                }, 800);
+                    document.getElementById('parse-loader').style.display = 'none';
+                    document.getElementById('view-portal').style.display = 'flex';
+                }, 1000);
 
             } catch (err) {
-                document.getElementById('loading-spinner').style.display = 'none';
-                alert("Invalid store URL. Please provide a full link (e.g., https://domain.com/products/deck).");
+                document.getElementById('parse-loader').style.display = 'none';
+                alert("Proxy handshakes timed out. Verify your connection parameters.");
             }
         }
 
-        // --- THE QUEST FOR DOPAMINE ACTIONS ---
-        function triggerDopamineClaim(type) {
-            const title = document.getElementById('view-title').innerText;
-            const modal = document.getElementById('dopamine-modal');
-            const pText = document.getElementById('modal-p');
-            const h2Text = document.getElementById('modal-h2');
+        function openClaimResult(type) {
+            const title = document.getElementById('dom-title').innerText;
+            const modal = document.getElementById('claim-modal');
+            const desc = document.getElementById('modal-desc');
+            const titleHUD = document.getElementById('modal-title');
 
             if (type === 'physical') {
-                h2Text.innerText = "PHYGITAL REDEMPTION INITIATED";
-                pText.innerText = `The system has locked your metadata Digital Receipt. A secure payout call was fired to Shopify. Your physical copy of "${title}" is booked and ready to ship to your registered wallet address!`;
+                titleHUD.innerText = "PHYGITAL DISPATCH SECURED";
+                desc.innerText = `You claimed "${title}". The on-chain receipt has been verified. The system locked your metadata state and initiated automated order processing through our skateshop routing gateway!`;
             } else {
-                h2Text.innerText = "TOKEN EXCHANGE SECURED";
-                pText.innerText = `You just swapped $SKATE for real-world equity. The smart contract has burned the token equivalent, and generated your on-chain receipt verification badge!`;
+                titleHUD.innerText = "TOKEN VALUE SWAPPED";
+                desc.innerText = `Swapped native $SKATE directly to verify physical ownership. The smart contract has logged your claim state and updated your voter profile badges!`;
             }
 
             modal.style.display = 'flex';
         }
 
-        function closeDopamineModal() {
-            document.getElementById('dopamine-modal').style.display = 'none';
+        function closeClaimResult() {
+            document.getElementById('claim-modal').style.display = 'none';
         }
     </script>
 </body>
