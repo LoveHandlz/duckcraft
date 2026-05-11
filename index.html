@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>sk8dao | THE SENATE CHAMBER</title>
+    <title>sk8dao | THE BACK ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -72,32 +72,38 @@
         .card-glow-rgb .skate-img { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)); }
 
         /* --- EXTREME GOD TIER GLOW CLASSES --- */
-        
-        /* EPIC (Sky Blue / Purple intense glow) */
         .card-glow-epic { box-shadow: inset 0 0 50px rgba(217, 70, 239, 0.3), 0 0 20px rgba(217, 70, 239, 0.5) !important; border-color: var(--rarity-epic) !important; }
         .card-glow-epic .rarity-header { background: var(--rarity-epic) !important; color: #fff !important; box-shadow: 0 0 30px rgba(217, 70, 239, 0.8) !important; }
         .card-glow-epic .skate-img { filter: drop-shadow(0 0 15px rgba(217, 70, 239, 0.9)); }
 
-        /* LEGENDARY (Gold) */
         .card-glow-legendary { box-shadow: inset 0 0 50px rgba(255, 215, 0, 0.2), 0 0 20px rgba(255, 215, 0, 0.4) !important; border-color: var(--rarity-legendary) !important; }
         .card-glow-legendary .rarity-header { background: var(--rarity-legendary) !important; color: #000 !important; box-shadow: 0 0 30px rgba(255, 215, 0, 0.7) !important; }
         .card-glow-legendary .skate-img { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)); }
 
-        /* INSANE (Deep Intense Red) */
         .card-glow-insane { box-shadow: inset 0 0 60px rgba(255, 0, 51, 0.3), 0 0 25px rgba(255, 0, 51, 0.5) !important; border-color: var(--rarity-insane) !important; }
         .card-glow-insane .rarity-header { background: var(--rarity-insane) !important; color: #fff !important; box-shadow: 0 0 40px rgba(255, 0, 51, 0.9) !important; }
         .card-glow-insane .skate-img { filter: drop-shadow(0 0 20px rgba(255, 0, 51, 1)); }
 
-        /* MYTHIC (Rainbow Animation) */
         @keyframes mythicRainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
         .card-glow-mythic { box-shadow: inset 0 0 60px rgba(255, 0, 255, 0.3), 0 0 25px rgba(255, 0, 255, 0.5) !important; border-color: #ff00ff !important; animation: mythicRainbow 4s linear infinite; }
         .card-glow-mythic .rarity-header { background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000) !important; background-size: 200% !important; color: #fff !important; text-shadow: 1px 1px 2px #000; box-shadow: 0 0 40px rgba(255, 0, 255, 0.7) !important; animation: mythicRainbow 3s linear infinite; }
         .card-glow-mythic .skate-img { filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.8)); }      
         
-        /* RIDICULOUS (Dark Pink - CLEANED UP) */
         .card-glow-ridiculous { box-shadow: inset 0 0 60px rgba(255, 0, 127, 0.3), 0 0 25px rgba(255, 0, 127, 0.5) !important; border-color: var(--rarity-ridiculous) !important; }
         .card-glow-ridiculous .rarity-header { background: var(--rarity-ridiculous) !important; color: #fff !important; box-shadow: 0 0 40px rgba(255, 0, 127, 0.9) !important; }
         .card-glow-ridiculous .skate-img { filter: drop-shadow(0 0 20px rgba(255, 0, 127, 1)); }
+
+        /* --- THE BACK ROOM (UI UPGRADES) --- */
+        .interactive-badge { cursor: pointer; transition: 0.2s; }
+        .interactive-badge:hover { transform: scale(1.05) translateY(-2px); border-color: #fff; box-shadow: 0 5px 15px rgba(255,255,255,0.2); }
+        
+        .secure-checkbox-wrap { display: flex; align-items: flex-start; gap: 10px; background: rgba(0,240,255,0.05); padding: 15px; border: 1px dashed var(--accent-cyan); border-radius: 4px; margin-top: 20px; margin-bottom: 20px; }
+        .secure-checkbox-wrap input[type="checkbox"] { margin-top: 2px; transform: scale(1.3); cursor: pointer; accent-color: var(--accent-cyan); }
+        .secure-checkbox-label { color: #fff; font-size: 0.8rem; font-family: 'Inter'; font-weight: 900; cursor: pointer; line-height: 1.4; text-transform: uppercase; text-align: left; }
+        
+        .compact-vote-block { background: rgba(0,0,0,0.8); border: 1px solid #333; padding: 15px; border-radius: 6px; margin-bottom: 15px; text-align: left; transition: 0.3s; }
+        .compact-vote-block:hover { border-color: var(--accent-cyan); }
+        .compact-vote-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #333; padding-bottom: 10px; }
 
         /* --- BASE BODY & LAYOUT --- */
         body { 
@@ -183,7 +189,7 @@
         .m-badge-lawmaker { background: rgba(0, 240, 255, 0.1); border: 1px dashed var(--accent-cyan); color: var(--accent-cyan); }
         .m-badge-veto { background: rgba(255, 51, 102, 0.2); border: 1px solid #ff3366; color: #ff3366; }
 
-        /* --- SENATE UI CLASSES (DAO V2 MATRIX) --- */
+        /* --- THE BACK ROOM MATRIX --- */
         .senate-jumbotron { width: 100%; border: 2px solid var(--accent-cyan); border-radius: 8px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 0 30px rgba(0,240,255,0.2); position: relative; background: #000; }
         .senate-jumbotron video { width: 100%; display: block; max-height: 400px; object-fit: cover; opacity: 0.8; }
         .senate-jumbotron::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.05) 3px, rgba(0,240,255,0.05) 4px); pointer-events: none; }
@@ -211,28 +217,17 @@
         .badge-rack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .hud-chief .badge-rack { grid-template-columns: repeat(6, 1fr); }
         .exotic-badge { background: #050a1a; border: 1px solid #111; height: 35px; display: flex; justify-content: center; align-items: center; font-size: 0.55rem; font-family: 'Orbitron'; color: #222; border-radius: 3px; font-weight: 900; letter-spacing: 1px; text-align: center; line-height: 1.1; transition: 0.3s; }
-        .badge-gavel { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,240,255,0.05); box-shadow: inset 0 0 10px rgba(0,240,255,0.1); }
-        .badge-filibuster { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(255,215,0,0.05); }
-        .badge-amicus { border-color: #a855f7; color: #a855f7; background: rgba(168,85,247,0.05); }
-        .badge-subpoena { border-color: #ffaa00; color: #ffaa00; background: rgba(255,170,0,0.05); }
-        .badge-veto { border-color: #ff3366; color: #ff3366; background: rgba(255,51,102,0.05); box-shadow: inset 0 0 10px rgba(255,51,102,0.2); }
-        .badge-pardon { border-color: #00ffaa; color: #00ffaa; background: rgba(0,255,170,0.05); }
+        
+        /* Interactive Control Panel Badges */
+        .btn-view-motion { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,240,255,0.05); }
+        .btn-view-votes { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(255,215,0,0.05); }
+        .btn-graveyard { border-color: #ffaa00; color: #ffaa00; background: rgba(255,170,0,0.05); }
 
         .dao-hud-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
         .dao-hud-card { background: linear-gradient(180deg, rgba(15,26,71,0.9), rgba(5,10,26,0.9)); border: 2px solid #333; border-radius: 12px; padding: 25px; text-align: center; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); position: relative; overflow: hidden; }
         .dao-hud-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); }
         .dao-hud-card.active-rank { border-color: var(--accent-cyan); box-shadow: inset 0 0 40px rgba(0, 240, 255, 0.1); }
         .dao-hud-card.active-rank::before { background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent); }
-        
-        .motion-card { background: linear-gradient(180deg, #111, #000); border: 2px solid #333; border-radius: 12px; padding: 30px; position: relative; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .motion-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: repeating-linear-gradient(90deg, #333, #333 10px, transparent 10px, transparent 20px); }
-        .motion-card.tipped { border-color: var(--accent-gold); box-shadow: 0 0 25px rgba(255,215,0,0.15); }
-        .motion-timer { font-family: 'Orbitron'; font-weight: 900; font-size: 0.9rem; position: absolute; top: 25px; right: 25px; display: flex; align-items: center; gap: 5px; background: #000; padding: 5px 10px; border-radius: 4px; border: 1px solid #333;}
-        .motion-timer.safe { color: #00ffaa; border-color: rgba(0,255,170,0.3); }
-        .motion-timer.danger { color: var(--accent-pink); animation: pulse 1.5s infinite; border-color: rgba(255,0,85,0.3); }
-        
-        .vote-bar-bg { width: 100%; height: 12px; background: rgba(255, 0, 85, 0.2); border-radius: 6px; margin: 20px 0; display: flex; overflow: hidden; border: 1px solid #333; }
-        .vote-bar-yes { height: 100%; background: linear-gradient(90deg, #00aa77, #00ffaa); transition: width 0.5s; box-shadow: 0 0 10px rgba(0,255,170,0.5); }
         
         .dao-action-btn { background: #000; border: 2px solid #555; color: #fff; font-family: 'Orbitron'; font-size: 0.8rem; font-weight: 900; padding: 10px 20px; cursor: pointer; transition: 0.2s; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; }
         .dao-action-btn:hover { transform: translateY(-2px); }
@@ -241,9 +236,8 @@
         .btn-no { border-color: var(--accent-pink); color: var(--accent-pink); box-shadow: inset 0 0 10px rgba(255,0,85,0.1);} 
         .btn-no:hover { background: var(--accent-pink); color: #000; box-shadow: 0 0 15px rgba(255,0,85,0.4); }
 
-        /* --- LEGISLATIVE DRAFT & SLIDER INTERFACES --- */
-        .proposal-form-container { background: rgba(5,10,26,0.95); border: 1px dashed var(--accent-gold); padding: 30px; border-radius: 8px; margin-bottom: 45px; box-shadow: 0 0 25px rgba(255,215,0,0.05); }
-        .proposal-input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; border-radius: 4px; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        /* --- MODAL INPUTS --- */
+        .proposal-input { width: 100%; padding: 15px; background: rgba(0,0,0,0.8); border: 1px solid #333; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; border-radius: 4px; box-sizing: border-box; margin-bottom: 15px; outline: none; }
         .proposal-input:focus { border-color: var(--accent-gold); }
         .slider-box { background: rgba(0,0,0,0.5); border: 1px solid #222; padding: 15px; border-radius: 6px; margin: 20px 0; display: flex; align-items: center; gap: 15px; justify-content: space-between; }
         .weight-slider { -webkit-appearance: none; appearance: none; flex: 1; height: 8px; border-radius: 4px; background: #111; outline: none; border: 1px solid #333; }
@@ -296,7 +290,7 @@
         .footer-logos img:hover { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--bg-panel); padding: 40px; border-radius: 15px; border: 2px solid var(--accent-cyan); text-align: center; box-shadow: 0 0 30px rgba(0, 240, 255, 0.15); }
+        .modal-content { background: var(--bg-panel); padding: 40px; border-radius: 15px; border: 2px solid var(--accent-cyan); text-align: center; box-shadow: 0 0 30px rgba(0, 240, 255, 0.15); max-height: 90vh; overflow-y: auto; }
         
         .master-dash-btn { background: rgba(0, 0, 0, 0.6); color: #fff; border: 1px solid var(--accent-cyan); padding: 15px 25px; font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; cursor: pointer; transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
         .master-dash-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
@@ -334,7 +328,7 @@
                 <li><a href="#videos" onclick="switchCategory('clips'); return false;" id="nav-clips">VIDEOS</a></li>
                 <li><a href="#defi" onclick="switchCategory('defi'); return false;" id="nav-defi">DEFI</a></li>
                 <li><a href="#treasury" onclick="switchCategory('treasury'); return false;" id="nav-treasury">TREASURY</a></li>
-                <li><a href="#dao" onclick="switchCategory('dao'); return false;" id="nav-dao">DAO</a></li>
+                <li><a href="#dao" onclick="switchCategory('dao'); return false;" id="nav-dao">BACK ROOM</a></li>
                 <li><a href="#sk8shop" onclick="switchCategory('sk8shop'); return false;" id="nav-sk8shop">SK8SHOP</a></li>
             </ul>
         </nav>
@@ -540,7 +534,7 @@
                 <video autoplay loop muted playsinline style="width: 100%; max-height: 400px; object-fit: cover; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.3); margin-bottom: 15px;">
                     <source src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeia5r4na5xd625seekm3srgl4ccghsoctwubh3qpwkrir52pjnqtpm" type="video/mp4">
                 </video>
-                <button class="wallet-btn" onclick="showErrorModal('Blessing logic connecting in Stage 5.')" style="background: var(--accent-gold); color: #000; font-size: 1.1rem; padding: 12px 30px;">🙏 BLESS THIS CLIP</button>
+                <button class="wallet-btn" onclick="showErrorModal('Blessing logic connecting in Stage 6.')" style="background: var(--accent-gold); color: #000; font-size: 1.1rem; padding: 12px 30px;">🙏 BLESS THIS CLIP</button>
             </div>
 
             <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin-top: 40px; padding-top: 30px; border-top: 1px dashed rgba(255,255,255,0.2);">
@@ -764,7 +758,7 @@
 </div>
 
 <div class="dashboard-wrapper" id="dao-wrapper" style="display: none;">
-    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 3.5rem; letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">sk8dao <span style="font-size: 1.5rem; font-family:'Orbitron'; color:var(--accent-gold);">/ supreme court</span></h2>
+    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 3.5rem; letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">sk8dao <span style="font-size: 1.5rem; font-family:'Orbitron'; color:var(--accent-gold);">// the back room</span></h2>
     
     <div class="senate-jumbotron">
         <video autoplay loop muted playsinline>
@@ -774,7 +768,7 @@
 
     <div class="dao-hud-grid">
         <div class="dao-hud-card active-rank" id="dao-rank-card">
-            <div style="font-family:'Orbitron'; font-size:0.75rem; color:var(--accent-cyan); margin-bottom:10px; letter-spacing: 2px;">YOUR SENATE SEAT</div>
+            <div style="font-family:'Orbitron'; font-size:0.75rem; color:var(--accent-cyan); margin-bottom:10px; letter-spacing: 2px;">YOUR BACK ROOM SEAT</div>
             <div id="user-dao-rank" style="font-family:'Orbitron'; font-weight:900; font-size:2.2rem; color:#94a3b8; text-transform: uppercase;">[ NOT CONNECTED ]</div>
             <div class="badge-pill-container" id="user-badges-container" style="justify-content: center; margin-top:15px;"></div>
         </div>
@@ -785,68 +779,7 @@
         </div>
     </div>
 
-    <div class="proposal-form-container">
-        <h4 style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-gold); margin: 0 0 10px 0; font-size: 1.2rem; letter-spacing: 1px;">📝 PROPOSE NEW SENATE MOTION</h4>
-        <p style="color: #888; font-size: 0.8rem; line-height: 1.5; margin-bottom: 15px;">A filing fee of <strong>1,000 $SKATE</strong> will be charged to register your motion on the ledger and initiate a vote.</p>
-        <input type="text" id="bill-proposal-title" class="proposal-input" placeholder="e.g. SCP-13: Fund the Local Skatepark Pool">
-        <textarea id="bill-proposal-desc" class="proposal-input" rows="3" placeholder="Explain the details, the requirements, and how this expands the ecosystem..."></textarea>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-            <button class="wallet-btn" style="background: var(--accent-gold); color:#000;" onclick="executeOnChainProposal()">SUBMIT MOTION TO LEDGER (1,000 $SKATE)</button>
-            <a href="https://wax.bloks.io/account/skatecoinwax" target="_blank" class="treasury-link-btn">
-                🔗 VIEW TREASURY LEDGER
-            </a>
-        </div>
-    </div>
-
-    <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">ACTIVE MOTIONS // THE FLOOR</h3>
-    <div id="active-motions-list">
-        
-        <div class="motion-card tipped">
-            <div class="motion-timer safe">⏳ 4d 12h 00m</div>
-            <div style="font-family:'Orbitron'; font-weight:900; font-size:1.5rem; color:var(--accent-cyan); margin-bottom: 10px;">SCP-11: Upgrade Builder Rewards Pool</div>
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 25px;">
-                <span style="font-size:0.8rem; color:#888; font-family:'Inter';">Proposed by: <span style="color:#fff; font-family:'Orbitron'; font-weight:900;">cryptosk8.wam</span></span>
-                <span class="micro-badge-pill m-badge-elite">ELITE</span>
-            </div>
-            <p style="font-size:0.95rem; color:#ccc; line-height:1.8; margin-bottom: 20px;">Motion to increase the total power reward multiplier in the Builder from 1000x to 1250x.</p>
-            
-            <div class="slider-box">
-                <span style="font-family: 'Orbitron'; font-size: 0.75rem; color: #888;">ALLOCATE WEIGHT:</span>
-                <input type="range" id="vote-slider-scp11" class="weight-slider" min="1" max="100" value="1" oninput="document.getElementById('vote-weight-display-scp11').innerText = this.value">
-                <span style="font-family: 'Orbitron'; font-size: 1.1rem; color: var(--accent-cyan); font-weight: 900; min-width: 50px; text-align: right;"><span id="vote-weight-display-scp11">1</span> $SKATE</span>
-            </div>
-
-            <div style="display:flex; gap:15px; margin-top: 20px;">
-                <button class="dao-action-btn btn-yes" onclick="executeOnChainVote('SCP-11', 'YES', parseInt(document.getElementById('vote-slider-scp11').value))">VOTE YES</button>
-                <button class="dao-action-btn btn-no" onclick="executeOnChainVote('SCP-11', 'NO', parseInt(document.getElementById('vote-slider-scp11').value))">VOTE NO</button>
-            </div>
-        </div>
-
-        <div class="motion-card">
-            <div class="motion-timer danger">⏳ 12h 45m 11s</div>
-            <div style="font-family:'Orbitron'; font-weight:900; font-size:1.5rem; color:#fff; margin-bottom: 10px;">SCP-12: Reduce Skate Lending Fee Limit</div>
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 20px;">
-                <span style="font-size:0.8rem; color:#888; font-family:'Inter';">Proposed by: <span style="color:#fff; font-family:'Orbitron'; font-weight:900;">grommet4.wam</span></span>
-                <span class="micro-badge-pill m-badge-amateur">AMAT</span>
-            </div>
-            <p style="font-size:0.95rem; color:#ccc; line-height:1.8; margin-bottom: 15px;">Motion to cap the peer-to-peer lending fee to 5 $SKATE per day to allow easier access for new riders.</p>
-            
-            <div class="slider-box">
-                <span style="font-family: 'Orbitron'; font-size: 0.75rem; color: #888;">ALLOCATE WEIGHT:</span>
-                <input type="range" id="vote-slider-scp12" class="weight-slider" min="1" max="100" value="1" oninput="document.getElementById('vote-weight-display-scp12').innerText = this.value">
-                <span style="font-family: 'Orbitron'; font-size: 1.1rem; color: var(--accent-cyan); font-weight: 900; min-width: 50px; text-align: right;"><span id="vote-weight-display-scp12">1</span> $SKATE</span>
-            </div>
-
-            <div style="display:flex; gap:15px; margin-top: 20px;">
-                <button class="dao-action-btn btn-yes" onclick="executeOnChainVote('SCP-12', 'YES', parseInt(document.getElementById('vote-slider-scp12').value))">VOTE YES</button>
-                <button class="dao-action-btn btn-no" onclick="executeOnChainVote('SCP-12', 'NO', parseInt(document.getElementById('vote-slider-scp12').value))">VOTE NO</button>
-            </div>
-        </div>
-
-    </div>
-
-    <h3 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; margin-top: 50px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">LIVE COURT ROSTER // TRACKING</h3>
+    <h3 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; margin-top: 50px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">CONTROL PANEL</h3>
     
     <div class="senate-matrix">
         
@@ -854,14 +787,14 @@
             <div class="senator-header">
                 <div>
                     <div class="sen-address">UFUAU.WAM</div>
-                    <div class="sen-stance" style="color:#00ffaa;">VOTING YES ON SCP-11</div>
+                    <div class="sen-stance" style="color:#00ffaa;">SYSTEM ADMINISTRATOR</div>
                 </div>
-                <div class="sen-weight">250,490 SKATE<br><span style="color:#888; font-size:0.6rem;">CHIEF JUSTICE</span></div>
+                <div class="sen-weight">250,490 SKATE<br><span style="color:#888; font-size:0.6rem;">CHIEF PROTOCOL</span></div>
             </div>
             <div class="badge-rack">
-                <div class="exotic-badge badge-gavel" title="10x Voting Weight Active">10X GAVEL</div>
-                <div class="exotic-badge badge-amicus" title="Treasury Funded Vote">AMICUS CURIAE</div>
-                <div class="exotic-badge badge-veto" title="Can block admin veto">VETO OVERRIDE</div>
+                <div class="exotic-badge interactive-badge btn-view-motion" onclick="document.getElementById('draft-modal').style.display='flex'">VIEW MOTIONS</div>
+                <div class="exotic-badge interactive-badge btn-view-votes" onclick="document.getElementById('votes-modal').style.display='flex'">VIEW VOTES</div>
+                <div class="exotic-badge interactive-badge btn-graveyard" onclick="document.getElementById('graveyard-modal').style.display='flex'">GRAVEYARD</div>
                 <div class="exotic-badge">EMPTY</div>
                 <div class="exotic-badge">EMPTY</div>
                 <div class="exotic-badge">EMPTY</div>
@@ -942,6 +875,126 @@
     </div>
 </footer>
 
+<div id="draft-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: var(--accent-cyan); max-width: 500px; box-shadow: 0 0 40px rgba(0, 240, 255, 0.15);">
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyan); margin-bottom: 10px; font-size: 1.6rem; letter-spacing: 1px;">📝 DROP A DRAFT</h2>
+        <p style="color: #888; font-size: 0.8rem; line-height: 1.5; margin-bottom: 20px; text-align: left;">
+            Drafting a new piece of legislation requires a network filing fee of <strong>100 $SKATE</strong>. Once submitted, it hits the floor for review.
+        </p>
+        
+        <input type="text" id="bill-proposal-title" class="proposal-input" placeholder="MOTION TITLE (e.g. SCP-13: Fund the Park)">
+        <textarea id="bill-proposal-desc" class="proposal-input" rows="4" placeholder="Explain the details and how this helps the streets..."></textarea>
+        
+        <div class="secure-checkbox-wrap">
+            <input type="checkbox" id="draft-confirm-check" onchange="document.getElementById('btn-submit-draft').disabled = !this.checked">
+            <label for="draft-confirm-check" class="secure-checkbox-label">I CONFIRM THIS BACK ROOM DEAL.</label>
+        </div>
+
+        <button id="btn-submit-draft" class="wallet-btn" disabled style="width: 100%; background: var(--accent-cyan); color: #000; padding: 15px; font-size: 1rem; margin-bottom: 15px;" onclick="executeOnChainProposal()">SUBMIT DRAFT (100 $SKATE)</button>
+        <button onclick="document.getElementById('draft-modal').style.display='none'" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.8rem; transition: 0.2s;">[ 🚪 BAIL ]</button>
+    </div>
+</div>
+
+<div id="votes-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: var(--accent-gold); max-width: 600px; box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);">
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); margin-bottom: 10px; font-size: 1.6rem; letter-spacing: 1px;">🗳️ THE LIVE FLOOR</h2>
+        <p style="color: #ccc; font-size: 0.85rem; line-height: 1.5; margin-bottom: 25px; text-align: left;">
+            Review active drafts. Seconding a motion pushes it to priority. Voting costs <strong>10 $SKATE</strong> per weight allocated. 
+        </p>
+
+        <div id="compact-motions-container" style="max-height: 50vh; overflow-y: auto; padding-right: 10px;">
+            
+            <div class="compact-vote-block" style="border-color: rgba(255,215,0,0.5);">
+                <div class="compact-vote-header">
+                    <div style="font-family:'Orbitron'; font-weight:900; font-size:1.1rem; color:var(--accent-cyan);">SCP-11: Upgrade Builder Rewards</div>
+                    <div style="font-family:'Orbitron'; font-size:0.7rem; color:#00ffaa; background:rgba(0,255,170,0.1); padding:4px 8px; border-radius:3px;">⏳ 4d 12h</div>
+                </div>
+                <p style="font-size:0.8rem; color:#ccc; line-height:1.5; margin-top:0; margin-bottom: 15px;">Increase the total power reward multiplier in the Builder from 1000x to 1250x.</p>
+                
+                <div class="slider-box" style="padding: 10px; margin-bottom: 15px;">
+                    <span style="font-family: 'Orbitron'; font-size: 0.65rem; color: #888;">WEIGHT:</span>
+                    <input type="range" id="vote-slider-scp11" class="weight-slider" min="1" max="100" value="1" oninput="document.getElementById('vote-weight-display-scp11').innerText = this.value">
+                    <span style="font-family: 'Orbitron'; font-size: 0.9rem; color: var(--accent-cyan); font-weight: 900; min-width: 40px; text-align: right;"><span id="vote-weight-display-scp11">1</span></span>
+                </div>
+
+                <div class="secure-checkbox-wrap" style="padding: 10px; margin-top: 0;">
+                    <input type="checkbox" id="vote-confirm-scp11" onchange="toggleVoteButtons('scp11', this.checked)">
+                    <label for="vote-confirm-scp11" class="secure-checkbox-label">I CONFIRM THIS BACK ROOM DEAL.</label>
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <button id="btn-yes-scp11" class="dao-action-btn btn-yes" disabled style="flex:1; opacity:0.5;" onclick="executeOnChainVote('SCP-11', 'YES', parseInt(document.getElementById('vote-slider-scp11').value))">VOTE YES</button>
+                    <button id="btn-no-scp11" class="dao-action-btn btn-no" disabled style="flex:1; opacity:0.5;" onclick="executeOnChainVote('SCP-11', 'NO', parseInt(document.getElementById('vote-slider-scp11').value))">VOTE NO</button>
+                    <button class="dao-action-btn" style="background:transparent; border-color:var(--accent-gold); color:var(--accent-gold);" onclick="executeSecondMotion('SCP-11')">BACK THE HOMIE</button>
+                    <button class="dao-action-btn" style="background:rgba(255,0,85,0.1); border-color:var(--accent-pink); color:var(--accent-pink);" onclick="executeVeto('SCP-11')">VETO</button>
+                </div>
+            </div>
+
+            <div class="compact-vote-block">
+                <div class="compact-vote-header">
+                    <div style="font-family:'Orbitron'; font-weight:900; font-size:1.1rem; color:#fff;">SCP-12: Reduce Lending Fee Limit</div>
+                    <div style="font-family:'Orbitron'; font-size:0.7rem; color:var(--accent-pink); background:rgba(255,0,85,0.1); padding:4px 8px; border-radius:3px; animation: pulse 1.5s infinite;">⏳ 12h 45m</div>
+                </div>
+                <p style="font-size:0.8rem; color:#ccc; line-height:1.5; margin-top:0; margin-bottom: 15px;">Cap the peer-to-peer lending fee to 5 $SKATE per day to allow easier access.</p>
+                
+                <div class="slider-box" style="padding: 10px; margin-bottom: 15px;">
+                    <span style="font-family: 'Orbitron'; font-size: 0.65rem; color: #888;">WEIGHT:</span>
+                    <input type="range" id="vote-slider-scp12" class="weight-slider" min="1" max="100" value="1" oninput="document.getElementById('vote-weight-display-scp12').innerText = this.value">
+                    <span style="font-family: 'Orbitron'; font-size: 0.9rem; color: var(--accent-cyan); font-weight: 900; min-width: 40px; text-align: right;"><span id="vote-weight-display-scp12">1</span></span>
+                </div>
+
+                <div class="secure-checkbox-wrap" style="padding: 10px; margin-top: 0;">
+                    <input type="checkbox" id="vote-confirm-scp12" onchange="toggleVoteButtons('scp12', this.checked)">
+                    <label for="vote-confirm-scp12" class="secure-checkbox-label">I CONFIRM THIS BACK ROOM DEAL.</label>
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <button id="btn-yes-scp12" class="dao-action-btn btn-yes" disabled style="flex:1; opacity:0.5;" onclick="executeOnChainVote('SCP-12', 'YES', parseInt(document.getElementById('vote-slider-scp12').value))">VOTE YES</button>
+                    <button id="btn-no-scp12" class="dao-action-btn btn-no" disabled style="flex:1; opacity:0.5;" onclick="executeOnChainVote('SCP-12', 'NO', parseInt(document.getElementById('vote-slider-scp12').value))">VOTE NO</button>
+                    <button class="dao-action-btn" style="background:transparent; border-color:var(--accent-gold); color:var(--accent-gold);" onclick="executeSecondMotion('SCP-12')">BACK THE HOMIE</button>
+                    <button class="dao-action-btn" style="background:rgba(255,0,85,0.1); border-color:var(--accent-pink); color:var(--accent-pink);" onclick="executeVeto('SCP-12')">VETO</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="margin-top: 25px;">
+            <button onclick="document.getElementById('votes-modal').style.display='none'" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.8rem; transition: 0.2s;">[ 🚪 BAIL ]</button>
+        </div>
+    </div>
+</div>
+
+<div id="graveyard-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: #555; max-width: 500px; background: #050505; box-shadow: inset 0 0 50px rgba(0,0,0,0.9);">
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:#888; margin-bottom: 10px; font-size: 1.6rem; letter-spacing: 1px;">🪦 THE GRAVEYARD</h2>
+        <p style="color: #666; font-size: 0.85rem; line-height: 1.5; margin-bottom: 25px;">
+            Motions that fail to reach consensus or receive an Admin Veto decay here for 30 days. Let this be a record of what the streets rejected.
+        </p>
+        
+        <div style="text-align: left; max-height: 40vh; overflow-y: auto;">
+            <div style="background: #0a0a0a; border: 1px solid #222; border-left: 3px solid var(--accent-pink); padding: 15px; border-radius: 4px; margin-bottom: 10px; opacity: 0.7;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <div style="font-family:'Orbitron'; font-weight:900; font-size:1rem; color:#888; text-decoration: line-through;">SCP-09: Minting Fee Reduction</div>
+                    <div style="font-family:'Orbitron'; font-size:0.65rem; color:var(--accent-pink);">VETOED</div>
+                </div>
+                <div style="font-size:0.75rem; color:#555;">Decays in: 14 Days</div>
+            </div>
+            
+            <div style="background: #0a0a0a; border: 1px solid #222; border-left: 3px solid #555; padding: 15px; border-radius: 4px; margin-bottom: 10px; opacity: 0.5;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <div style="font-family:'Orbitron'; font-weight:900; font-size:1rem; color:#888; text-decoration: line-through;">SCP-08: Alter Trick Multipliers</div>
+                    <div style="font-family:'Orbitron'; font-size:0.65rem; color:#555;">FAILED (48% YES)</div>
+                </div>
+                <div style="font-size:0.75rem; color:#555;">Decays in: 2 Days</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px;">
+            <button onclick="document.getElementById('graveyard-modal').style.display='none'" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.8rem; transition: 0.2s;">[ 🚪 BAIL ]</button>
+        </div>
+    </div>
+</div>
+
 <script type="module">
     import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
     import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
@@ -988,7 +1041,7 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
 
-    // --- GLOBAL MODAL ROUTERS ---
+    // --- GLOBAL UI / UX ROUTERS ---
     window.showErrorModal = (msg) => {
         closeModals();
         document.getElementById('error-modal-msg').innerText = msg;
@@ -1005,38 +1058,19 @@
     window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
     window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
 
-    // --- ORACLE SYNC ---
-    async function syncPrices() {
-        try {
-            const usdRes = await fetch('https://alcor.exchange/api/v2/tokens/wax-eosio.token');
-            const usdData = await usdRes.json();
-            if(usdData && usdData.usd_price) waxUsdPrice = usdData.usd_price;
-
-            const tickerRes = await fetch('https://alcor.exchange/api/v2/tickers/skate-skatecoinwax_wax-eosio.token');
-            const tickerData = await tickerRes.json();
-            if(tickerData && tickerData.last_price) {
-                sWax = tickerData.last_price;
-                skatePerWax = 1 / sWax;
-            }
-        } catch(e) { console.log('Oracle Sync Error. Operating on offline fallback metrics.'); }
-        
-        if(document.getElementById('oracle-price')) {
-            document.getElementById('oracle-price').innerText = `1 WAX ≈ ${skatePerWax.toFixed(4)} $SKATE  |  WAX: $${waxUsdPrice.toFixed(4)}`;
+    // --- BACK ROOM SECURE CHECKBOX LOGIC ---
+    window.toggleVoteButtons = (motionId, isChecked) => {
+        const btnYes = document.getElementById(`btn-yes-${motionId}`);
+        const btnNo = document.getElementById(`btn-no-${motionId}`);
+        if(btnYes && btnNo) {
+            btnYes.disabled = !isChecked;
+            btnNo.disabled = !isChecked;
+            btnYes.style.opacity = isChecked ? "1" : "0.5";
+            btnNo.style.opacity = isChecked ? "1" : "0.5";
         }
-    }
+    };
 
-    // --- SENATE RANKING LOGIC (Proof of Bleeding) ---
-    function calculateDaoRank(cumulativeUsd) {
-        if (cumulativeUsd >= 50000) return { rank: "LEGENDARY", votes: 2000, color: "#a855f7", badge: "m-badge-legendary" };
-        if (cumulativeUsd >= 10000) return { rank: "ELITE", votes: 1000, color: "#2196f3", badge: "m-badge-elite" };
-        if (cumulativeUsd >= 1000)  return { rank: "PRO", votes: 100, color: "#ffd700", badge: "m-badge-pro" };
-        if (cumulativeUsd >= 250)   return { rank: "AMATEUR", votes: 10, color: "#c0c0c0", badge: "m-badge-amateur" };
-        if (cumulativeUsd >= 50)    return { rank: "FLOW", votes: 5, color: "#cd7f32", badge: "m-badge-flow" };
-        if (cumulativeUsd >= 1)     return { rank: "GROMMET", votes: 1, color: "#00ffaa", badge: "m-badge-grom" };
-        return { rank: "POSER", votes: 0, color: "#94a3b8", badge: "m-badge-poser" };
-    }
-
-   // --- ON-CHAIN SCRAPER (Treasury & Blessings) ---
+// --- ON-CHAIN SCRAPER (Treasury & Blessings) ---
     async function fetchTreasuryData() {
         await syncPrices();
         
@@ -1090,7 +1124,6 @@
             let currentUserUsdTotal = 0;
 
             if (hJson && hJson.actions) {
-                // CLEANED UP: Only ONE loop here now!
                 hJson.actions.forEach(action => {
                     const data = action.act.data;
                     const fromAcc = data.from;
@@ -1112,16 +1145,24 @@
                             let displayMemo = memo || "Direct Support";
 
                             if (memo.startsWith("VOTE:")) {
-                                itemType = "GOVERNANCE";
+                                itemType = "BACK ROOM DEAL";
                                 labelColor = "var(--accent-cyan)";
                                 const parts = memo.split(',');
-                                const choice = memo.includes("CHOICE:YES") ? "YES" : "NO";
+                                const choice = memo.includes("CHOICE:YES") ? "BACKED" : "REJECTED";
                                 const motion = parts[0].split(':')[1];
-                                displayMemo = `Voted ${choice} on ${motion}`;
+                                displayMemo = `${choice} ${motion}`;
                             } else if (memo.startsWith("PROPOSE:")) {
-                                itemType = "LEGISLATION";
+                                itemType = "DRAFT DROPPED";
                                 labelColor = "var(--accent-pink)";
-                                displayMemo = `Drafted Bill: ${memo.split(':')[1]}`;
+                                displayMemo = `${memo.split(':')[1]}`;
+                            } else if (memo.startsWith("SECOND:")) {
+                                itemType = "MOTION SECONDED";
+                                labelColor = "#00ffaa";
+                                displayMemo = `Backed the homie on ${memo.split(':')[1]}`;
+                            } else if (memo.startsWith("VETO:")) {
+                                itemType = "ADMIN VETO";
+                                labelColor = "#ff3366";
+                                displayMemo = `Sent ${memo.split(':')[1]} to the Graveyard`;
                             }
 
                             // Update Leaderboard Power
@@ -1214,7 +1255,6 @@
                 }
             }
 
-        // CLEANED UP: Only ONE catch block here now!
         } catch (e) {
             console.error(e);
             if(whaleList) whaleList.innerHTML = `<div style="padding: 20px; text-align: center; color: #ff3366; font-family: 'Orbitron'; font-size: 0.8rem;">ERROR QUERYING LEDGER</div>`;
@@ -1342,14 +1382,15 @@
         btn.innerText = "EXECUTE DECENTRALIZED SWAP";
     };
 
-    // --- ON-CHAIN GOVERNANCE ENGINE (VOTING & PROPOSALS) ---
+    // --- BACK ROOM DAO ENGINE (NEW FEES & SCRAPERS) ---
     window.executeOnChainProposal = async () => {
         if (!currentSession) return toggleAuthModal();
         const title = document.getElementById('bill-proposal-title').value.trim();
         const desc = document.getElementById('bill-proposal-desc').value.trim();
-        if (!title || !desc) return showErrorModal("Error: Proposal title and description cannot be empty.");
+        if (!title || !desc) return showErrorModal("Error: Draft title and description cannot be empty.");
         
-        const feeAmount = (1000).toFixed(4) + " SKATE";
+        // Fee reduced to 100 SKATE
+        const feeAmount = (100).toFixed(4) + " SKATE";
         const sender = currentSession.actor.toString();
         const cleanTitle = title.replace(/[^a-zA-Z0-9\s-_:]/g, '');
         const proposalMemo = `PROPOSE:${cleanTitle.substring(0, 50)}`;
@@ -1357,8 +1398,9 @@
         try {
             const actions = [{ account: 'skatecoinwax', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: sender, to: 'skatecoinwax', quantity: feeAmount, memo: proposalMemo } }];
             await currentSession.transact({ actions });
-            showSuccessModal("📜 PROPOSAL INITIATED 📜", "Your 1,000 $SKATE draft fee has been processed. Your motion has been submitted.");
+            showSuccessModal("📜 DRAFT DROPPED 📜", "Your 100 $SKATE draft fee has been processed. Your motion is on the floor.");
             document.getElementById('bill-proposal-title').value = ''; document.getElementById('bill-proposal-desc').value = '';
+            document.getElementById('draft-modal').style.display = 'none';
             updateBalances(sender); fetchTreasuryData();
         } catch(e) { console.error(e); showErrorModal("Transaction aborted or rejected."); }
     };
@@ -1366,16 +1408,56 @@
     window.executeOnChainVote = async (motionId, stance, weight) => {
         if (!currentSession) return toggleAuthModal();
         if (weight <= 0 || isNaN(weight)) return showErrorModal("Select a valid voting weight.");
-        const voteCost = parseFloat(weight).toFixed(4) + " SKATE";
+        
+        // Cost reduced to 10 SKATE per vote weight
+        const voteCost = (parseFloat(weight) * 10).toFixed(4) + " SKATE";
         const sender = currentSession.actor.toString();
         const voteMemo = `VOTE:${motionId},CHOICE:${stance},WEIGHT:${weight}`;
         
         try {
             const actions = [{ account: 'skatecoinwax', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: sender, to: 'skatecoinwax', quantity: voteCost, memo: voteMemo } }];
             await currentSession.transact({ actions });
-            showSuccessModal("🗳️ ON-CHAIN VOTE CAST 🗳️", `Successfully logged ${weight} vote(s) of ${stance} for ${motionId} directly to the blockchain.`);
+            showSuccessModal("🗳️ DEAL CONFIRMED 🗳️", `Successfully logged ${weight} vote(s) of ${stance} for ${motionId}.`);
+            document.getElementById('votes-modal').style.display = 'none';
             updateBalances(sender); fetchTreasuryData();
         } catch(e) { console.error(e); showErrorModal("Voting transaction aborted."); }
+    };
+
+    window.executeSecondMotion = async (motionId) => {
+        if (!currentSession) return toggleAuthModal();
+        const sender = currentSession.actor.toString();
+        // Seconding a motion costs a flat 10 SKATE
+        const secondCost = (10).toFixed(4) + " SKATE";
+        const secondMemo = `SECOND:${motionId}`;
+        
+        try {
+            const actions = [{ account: 'skatecoinwax', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: sender, to: 'skatecoinwax', quantity: secondCost, memo: secondMemo } }];
+            await currentSession.transact({ actions });
+            showSuccessModal("🤜🤛 HOMIE BACKED", `You seconded motion ${motionId}.`);
+            document.getElementById('votes-modal').style.display = 'none';
+            updateBalances(sender); fetchTreasuryData();
+        } catch(e) { console.error(e); showErrorModal("Second transaction aborted."); }
+    };
+
+    window.executeVeto = async (motionId) => {
+        if (!currentSession) return toggleAuthModal();
+        const sender = currentSession.actor.toString();
+        
+        if (sender !== ADMIN_WALLET) {
+            return showErrorModal("PERMISSION DENIED: Only the Chief Protocol Admin can drop the Veto hammer.");
+        }
+        
+        // Veto costs 0.0001 WAX just to log the memo on chain
+        const vetoCost = (0.0001).toFixed(8) + " WAX";
+        const vetoMemo = `VETO:${motionId}`;
+        
+        try {
+            const actions = [{ account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: sender, to: 'skatecoinwax', quantity: vetoCost, memo: vetoMemo } }];
+            await currentSession.transact({ actions });
+            showSuccessModal("🔨 VETO HAMMER DROPPED", `Motion ${motionId} has been sent straight to the graveyard.`);
+            document.getElementById('votes-modal').style.display = 'none';
+            fetchTreasuryData();
+        } catch(e) { console.error(e); showErrorModal("Veto transaction aborted."); }
     };
 
     // --- INITIALIZATION & STATE RECOVERY ---
