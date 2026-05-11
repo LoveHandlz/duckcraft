@@ -203,8 +203,8 @@
         .hud-junior { grid-column: span 3; }
 
         .senator-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px dashed #333; padding-bottom: 10px; }
-        .sen-address { font-family: 'Orbitron'; font-weight: 900; color: #ccc; font-size: 0.72rem; letter-spacing: 1px; } /* REDUCED 20% */
-        .hud-chief .sen-address { font-size: 1.04rem; color: var(--accent-cyber-yellow); text-shadow: 0 0 10px rgba(255, 234, 0, 0.5); } /* REDUCED 20% */
+        .sen-address { font-family: 'Orbitron'; font-weight: 900; color: #ccc; font-size: 0.72rem; letter-spacing: 1px; }
+        .hud-chief .sen-address { font-size: 1.04rem; color: var(--accent-cyber-yellow); text-shadow: 0 0 10px rgba(255, 234, 0, 0.5); }
         .sen-weight { color: var(--accent-gold); font-family: 'Orbitron'; font-size: 0.75rem; font-weight: 900; text-align: right; }
         .hud-chief .sen-weight { font-size: 0.9rem; }
         .sen-stance { font-size: 0.6rem; color: #888; font-family: 'Inter'; letter-spacing: 1px; margin-top: 5px; text-transform: uppercase; }
@@ -237,7 +237,9 @@
         .btn-no:hover { background: var(--accent-pink); color: #000; box-shadow: 0 0 15px rgba(255,0,85,0.4); }
 
         /* --- LEGISLATIVE DRAFT & SLIDER INTERFACES --- */
-        .proposal-form-container { display: none; } /* Replaced by Modal System */
+        .proposal-form-container { display: none; } /* Handled via modal */
+        .proposal-input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; border-radius: 4px; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        .proposal-input:focus { border-color: var(--accent-cyber-yellow); }
         .slider-box { background: rgba(0,0,0,0.5); border: 1px solid #222; padding: 15px; border-radius: 6px; margin: 20px 0; display: flex; align-items: center; gap: 15px; justify-content: space-between; }
         .weight-slider { -webkit-appearance: none; appearance: none; flex: 1; height: 8px; border-radius: 4px; background: #111; outline: none; border: 1px solid #333; }
         .weight-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent-cyber-yellow); border: 2px solid #000; cursor: pointer; box-shadow: 0 0 10px var(--accent-cyber-yellow); }
@@ -289,8 +291,6 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: var(--bg-panel); padding: 40px; border-radius: 15px; border: 2px solid var(--accent-cyber-yellow); text-align: center; box-shadow: 0 0 30px rgba(255, 234, 0, 0.15); }
-        .proposal-input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; border-radius: 4px; box-sizing: border-box; margin-bottom: 15px; outline: none; }
-        .proposal-input:focus { border-color: var(--accent-cyber-yellow); }
         
         .master-dash-btn { background: rgba(0, 0, 0, 0.6); color: #fff; border: 1px solid var(--accent-cyber-yellow); padding: 15px 25px; font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; cursor: pointer; transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
         .master-dash-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 15px var(--accent-cyber-yellow); }
@@ -344,22 +344,39 @@
 
     <button id="dapp-back-btn" onclick="goBack()">[ &lt; BACK ]</button>
 
+<div id="trunk-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: var(--accent-cyan); max-width: 450px; width: 90%; box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);">
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyan); margin-bottom: 10px; font-size: 2rem; letter-spacing: 2px;">THE TRUNK</h2>
+        <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px;">Access your raw components, complete setups, or head to the bench to craft a new deck.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('skateboards'); return false;" style="width: 100%; text-align: center;">SKATEBOARDS</button>
+            <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('decks'); return false;" style="width: 100%; text-align: center;">DECKS</button>
+            <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('wheels'); return false;" style="width: 100%; text-align: center;">WHEELS</button>
+            <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('trucks'); return false;" style="width: 100%; text-align: center;">TRUCKS</button>
+            <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('builder'); return false;" style="width: 100%; text-align: center; margin-top: 10px;">⚙️ SKATEBOARD BUILDER</button>
+        </div>
+        
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ CLOSE TRUNK ]</button>
+    </div>
+</div>
+
 <div id="vip-ticket-modal" class="modal-overlay">
-    <div class="modal-content" style="width: 90%; max-width: 350px; padding: 30px; border-color: var(--accent-cyber-yellow); background: #050a1a; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 234, 0, 0.03) 10px, rgba(255, 234, 0, 0.03) 20px); box-shadow: 0 0 40px rgba(255, 234, 0, 0.2);">
-        <h2 style="font-family:'Orbitron'; color:var(--accent-cyber-yellow); margin: 0 0 15px 0; font-size: 1.4rem; text-shadow: 0 0 10px var(--accent-cyber-yellow); letter-spacing: 1px; font-weight: 900;">CLOSED BETA VIP ACCESS</h2>
+    <div class="modal-content" style="width: 90%; max-width: 350px; padding: 30px; border-color: var(--accent-cyan); background: #050a1a; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 240, 255, 0.03) 10px, rgba(0, 240, 255, 0.03) 20px); box-shadow: 0 0 40px rgba(0,240,255,0.2);">
+        <h2 style="font-family:'Orbitron'; color:var(--accent-cyan); margin: 0 0 15px 0; font-size: 1.4rem; text-shadow: 0 0 10px var(--accent-cyan); letter-spacing: 1px; font-weight: 900;">🎟️ CLOSED BETA VIP ACCESS</h2>
         <div style="text-align: left;">
-            <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-top: 0; margin-bottom: 15px;">There are 85 million skaters worldwide driving an $8 billion industry, all chasing one thing: Glory on the streets and resources to keep skating. The street credit, The personal satisfaction. But the corporate suits at the top extract all the financial value. <a href="https://www.sk8coin.com" target="_blank" style="color: var(--accent-cyber-yellow); text-decoration: underline; font-weight: 900;">sk8coin</a> is rewriting the protocol. This is a decentralized peer-to-peer sponsorship network. We merge the raw adrenaline of progression with the high-stakes yield of Web3 GamFi.</p>
+            <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-top: 0; margin-bottom: 15px;">There are 85 million skaters worldwide driving an $8 billion industry, all chasing one thing: Glory on the streets and resources to keep skating. The street credit, The personal satisfaction. But the corporate suits at the top extract all the financial value. <a href="https://www.sk8coin.com" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; font-weight: 900;">sk8coin</a> is rewriting the protocol. This is a decentralized peer-to-peer sponsorship network. We merge the raw adrenaline of progression with the high-stakes yield of Web3 GamFi.</p>
             
             <div style="color: #00ffaa; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px;">DISCLAIMER</div>
             <p style="color: #ccc; font-size: 0.7rem; line-height: 1.5; margin-top: 0; margin-bottom: 15px;">This is a gamified decentralized micro sponsorship economy, $SKATE is a utility token used to power the skate2earn protocol. Not financial advice.</p>
             
             <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-top: 0; margin-bottom: 20px;">If you are here to extract without giving back, the protocol will know you are a poser. If you are here to fund the streets, flex your sponsor profile, and earn your status on the leaderboard, then this game is for you. Crypto clips, sk8dao and $SKATE are designed to power a decentralized web3 micro sponsorship game with real humans getting the blessings, and the sponsor reaping the rewards. This is a game and should be considered as such.</p>
         </div>
-        <div style="margin-bottom: 20px; text-align: left; display: flex; align-items: flex-start; gap: 10px; background: rgba(255, 234, 0, 0.05); padding: 12px; border: 1px solid var(--accent-cyber-yellow); border-radius: 4px;">
-            <input type="checkbox" id="vip-agree-checkbox" onchange="document.getElementById('login-trigger-vip').disabled = !this.checked" style="margin-top: 2px; transform: scale(1.2); cursor: pointer; accent-color: var(--accent-cyber-yellow);">
+        <div style="margin-bottom: 20px; text-align: left; display: flex; align-items: flex-start; gap: 10px; background: rgba(0,240,255,0.05); padding: 12px; border: 1px solid var(--accent-cyan); border-radius: 4px;">
+            <input type="checkbox" id="vip-agree-checkbox" onchange="document.getElementById('login-trigger-vip').disabled = !this.checked" style="margin-top: 2px; transform: scale(1.2); cursor: pointer; accent-color: var(--accent-cyan);">
             <label for="vip-agree-checkbox" style="color: #fff; font-size: 0.75rem; font-family: 'Inter'; font-weight: 900; cursor: pointer; line-height: 1.4; text-transform: uppercase;">I UNDERSTAND THE RISKS.<br>I AM READY TO PLAY.</label>
         </div>
-        <button class="wallet-btn" id="login-trigger-vip" disabled style="width: 100%; background: var(--accent-cyber-yellow); color: #000; font-size: 0.95rem; padding: 15px; margin-bottom: 10px;">ENTER THE PROTOCOL (CONNECT WALLET)</button>
+        <button class="wallet-btn" id="login-trigger-vip" disabled style="width: 100%; background: var(--accent-cyan); color: #000; font-size: 0.95rem; padding: 15px; margin-bottom: 10px;">ENTER THE PROTOCOL (CONNECT WALLET)</button>
         <button onclick="continueAsGuest()" style="background:transparent; color:#888; border:none; margin-top:10px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ LURK IN THE SHADOWS ]</button>
     </div>
 </div>
@@ -396,7 +413,7 @@
         <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 15px; font-size: 1.6rem;">🐔 LOGGING OUT?</h2>
         <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px; text-align: left;">Bailing so soon? Hit the streets and be safe. We'll hold the line against the mega-corps until you return.</p>
         <button class="wallet-btn" id="logout-trigger" style="width: 100%; background: rgba(255,0,85,0.1); border: 1px solid var(--accent-pink); color: var(--accent-pink); margin-bottom: 15px;">DISCONNECT WALLET</button>
-        <button onclick="closeModals()" style="background:transparent; color:var(--accent-cyber-yellow); border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.85rem;">[ KEEP SKATING. ]</button>
+        <button onclick="closeModals()" style="background:transparent; color:var(--accent-cyan); border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.85rem;">[ KEEP SKATING. ]</button>
     </div>
 </div>
 
@@ -411,7 +428,7 @@
         </div>
         <div style="display: flex; gap: 10px; align-items: stretch; margin-bottom: 25px;">
             <input type="number" id="custom-donate-amt" placeholder="CUSTOM AMOUNT" style="flex: 1; padding: 15px; background: rgba(0,0,0,0.8); border: 1px solid #333; color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 1rem; outline: none; border-radius: 4px;">
-            <button class="wallet-btn" onclick="executeCustomDonation()" style="background: var(--accent-cyber-yellow); color: #000; border-radius: 4px;">DEPLOY LIQUIDITY</button>
+            <button class="wallet-btn" onclick="executeCustomDonation()" style="background: var(--accent-cyan); color: #000; border-radius: 4px;">DEPLOY LIQUIDITY</button>
         </div>
         <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ EXIT ]</button>
     </div>
@@ -427,7 +444,7 @@
 
 <div id="error-modal" class="modal-overlay">
     <div class="modal-content" style="border-color: var(--accent-pink); max-width: 450px; box-shadow: 0 0 40px rgba(255, 0, 85, 0.2);">
-        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 15px; font-size: 1.5rem;">SYSTEM ERROR. TRANSACTION FAILED.</h2>
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 15px; font-size: 1.5rem;">💀 SYSTEM ERROR. TRANSACTION FAILED.</h2>
         <p id="error-modal-msg" style="color: #ccc; font-size: 0.95rem; margin-bottom: 10px; line-height: 1.6;"></p>
         <p style="color: #ccc; font-size: 0.95rem; margin-bottom: 30px; line-height: 1.6;">The chain rejected your request. Check your liquidity, adjust your slippage, and try again.</p>
         <button class="wallet-btn" onclick="closeModals()" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; font-size: 1.1rem;">TRY AGAIN</button>
@@ -435,13 +452,14 @@
 </div>
 
     <div class="dashboard-wrapper" id="home-wrapper">
-    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 3.5rem; letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">CONTROL PANEL</h2>
+    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 3.5rem; letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">SKATE PARK</h2>
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+        <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigll5nocglo3aq6vrlreqitwwgd2dns5kmvylsz3r3rx5ufkbp45y" alt="Skate Park" style="max-width: 100%; height: auto; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);">
+    </div>
+
     <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap;">
-        <button class="master-dash-btn" onclick="switchCategory('skateboards'); return false;">SKATEBOARDS</button>
-        <button class="master-dash-btn" onclick="switchCategory('decks'); return false;">DECKS</button>
-        <button class="master-dash-btn" onclick="switchCategory('wheels'); return false;">WHEELS</button>
-        <button class="master-dash-btn" onclick="switchCategory('trucks'); return false;">TRUCKS</button>
-        <button class="master-dash-btn gold" onclick="switchCategory('builder'); return false;">⚙️ SKATEBOARD BUILDER</button>
+        <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='flex';" style="font-size: 1.2rem; padding: 15px 40px; text-transform: uppercase;">🧰 OPEN TRUNK</button>
     </div>
 
     <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--accent-gold); border-radius: 8px; padding: 40px; max-width: 900px; margin: 0 auto; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.5);">
@@ -478,7 +496,7 @@
 </div>
 
 <div class="dashboard-wrapper" id="builder-wrapper" style="display: none;">
-    <div id="crafting-bench" class="crafting-container">
+    <div id="crafting-bench" class="crafting-container cyber-yellow-frame">
         <div class="crafting-selectors">
             <div class="craft-slot">
                 <h4>1. Establish Deck</h4>
@@ -782,7 +800,7 @@
         </div>
     </div>
 
-    <div class="proposal-form-container" style="display: block;">
+    <div class="proposal-form-container">
         <h4 style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-gold); margin: 0 0 10px 0; font-size: 1.2rem; letter-spacing: 1px;">📝 PROPOSE NEW SENATE MOTION</h4>
         <p style="color: #888; font-size: 0.8rem; line-height: 1.5; margin-bottom: 15px;">A filing fee of <strong>1,000 $SKATE</strong> will be charged to register your motion on the ledger and initiate a vote.</p>
         <input type="text" id="bill-proposal-title" class="proposal-input" placeholder="e.g. SCP-13: Fund the Local Skatepark Pool">
@@ -1400,6 +1418,7 @@
             showSuccessModal("📜 PROPOSAL INITIATED 📜", "Your 1,000 $SKATE draft fee has been processed.");
             document.getElementById('bill-proposal-title').value = ''; 
             document.getElementById('bill-proposal-desc').value = '';
+            document.getElementById('draft-motion-modal').style.display = 'none';
             refreshDAODashboard();
             updateBalances(sender);
             fetchTreasuryData();
@@ -1632,14 +1651,14 @@
                         
                         statHtml = `
                             <div class="meta-group">
-                               <div class="rgb-hud-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; margin-bottom: 10px;">
-                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">DECK <span style="color:var(--accent-cyan)">${deckName}</span></div>
-                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">TRUCKS <span style="color:var(--accent-cyan)">${truckName}</span></div>
-                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">WHEELS <span style="color:var(--accent-cyan)">${wheelName}</span></div>
-                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">BEARINGS <span style="color:var(--accent-cyan)" class="${bearingClass}">${bearingName}</span></div>
+                               <div class="rgb-hud-frame cyber-yellow-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; margin-bottom: 10px; border-width: 1px !important;">
+                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">DECK <span style="color:var(--accent-cyber-yellow)">${deckName}</span></div>
+                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">TRUCKS <span style="color:var(--accent-cyber-yellow)">${truckName}</span></div>
+                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">WHEELS <span style="color:var(--accent-cyber-yellow)">${wheelName}</span></div>
+                                    <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">BEARINGS <span style="color:var(--accent-cyber-yellow)" class="${bearingClass}">${bearingName}</span></div>
                                 </div>
                                 <div class="meta-title">PERFORMANCE</div>
-                                <div class="rgb-hud-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px;">
+                                <div class="rgb-hud-frame cyber-yellow-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; border-width: 1px !important;">
                                     ${renderStat('POP', pop, 'stat-pop', 20)}${renderStat('BALANCE', balance, 'stat-balance', 20)}${renderStat('SPEED', speed, 'stat-speed', 20)}${renderStat('TOTAL POWER', totalPower, 'stat-total', 30)}
                                 </div>
                             </div>`;
@@ -1653,12 +1672,12 @@
                         const brandStr = MetaParser.getString(n, 'brand', 'STOCK'), colorStr = MetaParser.getString(n, 'color', 'STOCK');
                         statHtml = `
                             <div class="meta-group">
-                             <div class="rgb-hud-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; margin-bottom: 10px;">
+                             <div class="rgb-hud-frame cyber-yellow-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; margin-bottom: 10px; border-width: 1px !important;">
                                     <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">BRAND <span style="color:#fff">${brandStr}</span></div>
                                     <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">COLOR <span style="color:#fff">${colorStr}</span></div>
                                 </div>
                                 <div class="meta-title">COMPONENT TRAITS</div>
-                               <div class="rgb-hud-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px;">
+                               <div class="rgb-hud-frame cyber-yellow-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; border-width: 1px !important;">
                                     ${renderStat('POP', pop, 'stat-pop', 20)}${renderStat('BALANCE', balance, 'stat-balance', 20)}${renderStat('SPEED', speed, 'stat-speed', 20)}
                                 </div>
                             </div>`;
@@ -1736,8 +1755,6 @@
 </script>
 </body>
 </html>
-
-    
 
     
 
