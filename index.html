@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sk8dao | TRUPONOMICS PHYGITAL IMPORTER</title>
+    <title>sk8dao | SHOPIFY TRUPONOMICS BRIDGER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- SK8DAO CYBERPUNK CORE --- */
+        /* --- SK8DAO RETRO-CYBERPUNK ENGINE --- */
         :root {
             --bg-deep: #050a1a;
             --bg-panel: rgba(15, 26, 71, 0.95);
@@ -140,7 +140,7 @@
         .thumbnail-wrap {
             width: 180px;
             height: 180px;
-            background: #fff; /* White background to make Amazon product cutouts clean */
+            background: #fff;
             border: 2px solid rgba(255, 0, 85, 0.3);
             border-radius: 6px;
             display: flex;
@@ -156,12 +156,12 @@
             object-fit: contain;
         }
 
-        .asin-badge {
+        .receipt-badge {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.65rem;
-            color: var(--accent-pink);
-            background: rgba(255, 0, 85, 0.1);
-            border: 1px solid var(--accent-pink);
+            color: var(--accent-cyan);
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
             padding: 3px 8px;
             border-radius: 4px;
             letter-spacing: 1px;
@@ -230,25 +230,25 @@
         
         <div style="text-align: center; margin-bottom: 40px;">
             <h1 class="text-rgb" style="font-family: 'Orbitron'; font-size: 3.5rem; margin: 0; letter-spacing: 4px; text-transform: lowercase;">sk8dao</h1>
-            <p style="font-family: 'Orbitron'; color: var(--accent-cyan); font-weight: 900; font-size: 0.9rem; letter-spacing: 3px; margin-top: 5px; text-transform: uppercase;">Truponomics // Real-Time Amazon Link Importer</p>
+            <p style="font-family: 'Orbitron'; color: var(--accent-cyan); font-weight: 900; font-size: 0.9rem; letter-spacing: 3px; margin-top: 5px; text-transform: uppercase;">Truponomics // Shopify Auto-.js Importer</p>
         </div>
 
         <div class="sk8-panel">
             <div class="caution-tape"></div>
             
             <div style="padding: 40px;">
-                <h3 style="font-family: 'Orbitron'; font-weight: 900; color: #fff; margin-top: 0; margin-bottom: 8px; letter-spacing: 1px;">🪐 LIVE PRODUCT DECRYPTOR</h3>
+                <h3 style="font-family: 'Orbitron'; font-weight: 900; color: #fff; margin-top: 0; margin-bottom: 8px; letter-spacing: 1px;">🪐 SHOPIFY META-PORTAL</h3>
                 <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px;">
-                    Provide any live Amazon product URL below. The browser client will strip the core ASIN, bypass target server rules using an open-source CORS gateway, and extract active price details to calculate local token rates instantly.
+                    Provide any Shopify-powered product page URL. The engine automatically strips trailing tracking codes, appends `.js` to bypass cross-origin restrictions natively, and converts store price objects to **$SKATE** token values.
                 </p>
 
                 <div class="input-group">
-                    <input type="text" id="target-link" placeholder="https://www.amazon.com/dp/B07KPMX7X9" value="https://www.amazon.com/dp/B07KPMX7X9">
-                    <button class="wallet-btn" onclick="executeStealthScrape()">DECRYPT LINK</button>
+                    <input type="text" id="target-link" placeholder="https://your-favorite-skateshop.com/products/pro-maple-deck" value="https://humbleskateshop.com/products/vicious-grip-street-deck-red">
+                    <button class="wallet-btn" onclick="executeShopifyImport()">IMPORT PAYLOAD</button>
                 </div>
 
                 <div id="parse-loader" style="display: none; text-align: center; margin-top: 30px;">
-                    <div style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); animation: pulse 1s infinite; letter-spacing: 1px;">🛰️ BYPASSING CORS & EXTRACTING DOM METADATA...</div>
+                    <div style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); animation: pulse 1s infinite; letter-spacing: 1px;">🛰️ RESOLVING SHOPIFY ENDPOINT & CONVERTING...</div>
                 </div>
 
                 <div id="view-portal" style="display: none; margin-top: 30px;">
@@ -259,8 +259,8 @@
                         </div>
 
                         <div class="product-info">
-                            <span id="dom-asin" class="asin-badge">ASIN: NULL</span>
-                            <h4 id="dom-title" class="product-title">EXTRACTED AMAZON COMPONENT</h4>
+                            <span id="dom-handle" class="receipt-badge">HANDLE: NULL</span>
+                            <h4 id="dom-title" class="product-title">IMPORTED DECK DATA</h4>
                             
                             <div class="pricing-grid">
                                 <div class="price-item" style="border-right: 1px dashed rgba(255,255,255,0.15); padding-right: 25px;">
@@ -275,7 +275,7 @@
                         </div>
 
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <button class="wallet-btn gold" onclick="openClaimResult('physical')">REDEEM GEAR</button>
+                            <button class="wallet-btn gold" onclick="openClaimResult('physical')">REDEEM RECEIPT</button>
                             <button class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-pink); color: var(--accent-pink);" onclick="openClaimResult('digital')">BUY WITH $SKATE</button>
                         </div>
 
@@ -301,82 +301,65 @@
     <script>
         const SKATE_PER_USD = 170.83;
 
-        function findASIN(url) {
-            const pattern = /(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i;
-            const match = url.match(pattern);
-            return match ? match[1] : null;
-        }
+        async function executeShopifyImport() {
+            const inputLink = document.getElementById('target-link').value.trim();
 
-        async function executeStealthScrape() {
-            const inputLink = document.getElementById('target-link').value;
-            const asin = findASIN(inputLink);
-
-            if (!asin) {
-                alert("ASIN verification failed! Verify the link format.");
+            if (!inputLink) {
+                alert("Please paste a Shopify product link first.");
                 return;
             }
 
             document.getElementById('view-portal').style.display = 'none';
             document.getElementById('parse-loader').style.display = 'block';
 
-            // --- DECENTRALIZED CLIENT-SIDE CRAWLING ARCHITECTURE ---
-            // Utilizing public CORS-anywhere proxies to retrieve HTML from Target Amazon pathways.
-            const targetUrl = `https://www.amazon.com/dp/${asin}`;
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+            // --- AUTO-.JS PARSING UTILITY ---
+            // Strip any query strings (like ?variant=...)
+            let cleanUrl = inputLink.split('?')[0];
+            
+            // Remove trailing slashes if present
+            if (cleanUrl.endsWith('/')) {
+                cleanUrl = cleanUrl.slice(0, -1);
+            }
+
+            // Automate the .js endpoint append
+            if (!cleanUrl.endsWith('.js')) {
+                cleanUrl = cleanUrl + '.js';
+            }
 
             try {
-                const response = await fetch(proxyUrl);
-                let title = "CCS Complete Skateboard - Fully Assembled with Bearings";
-                let price = 69.95;
-                let img = "https://m.media-amazon.com/images/I/719Fv6S1OEL._AC_SL1500_.jpg";
-
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Parse DOM structure returned by Proxy payload
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data.contents, 'text/html');
-
-                    // 1. Sniff title elements
-                    const scrapedTitle = doc.getElementById('productTitle');
-                    if (scrapedTitle) title = scrapedTitle.innerText.trim();
-
-                    // 2. Sniff Price elements
-                    const wholePrice = doc.querySelector('.a-price-whole');
-                    const fractionPrice = doc.querySelector('.a-price-fraction');
-                    if (wholePrice && fractionPrice) {
-                        price = parseFloat(`${wholePrice.innerText.replace(/[^0-9]/g, '')}.${fractionPrice.innerText.replace(/[^0-9]/g, '')}`);
-                    }
-
-                    // 3. Sniff Image elements
-                    const imageElement = doc.getElementById('landingImage');
-                    if (imageElement) {
-                        const dynamicSrc = imageElement.getAttribute('data-a-dynamic-image');
-                        if (dynamicSrc) {
-                            img = Object.keys(JSON.parse(dynamicSrc))[0];
-                        } else {
-                            img = imageElement.src;
-                        }
-                    }
+                // Fetch direct JSON payload natively without CORS blockage
+                const response = await fetch(cleanUrl);
+                
+                if (!response.ok) {
+                    throw new Error("Target endpoint did not resolve to valid Shopify JSON.");
                 }
 
-                // Hydrate variables inside the view
+                const data = await response.json();
+
+                // Extract fields from clean native Shopify JSON model
+                const title = data.title;
+                const handle = data.handle;
+                const price = data.price / 100; // Shopify prices are returned as cents integers
+                const img = data.images && data.images.length > 0 ? data.images[0] : 'https://images.unsplash.com/photo-1547447134-cd3f5c716030?q=80&w=400';
+
+                // Map results to HUD fields
                 const skateCost = Math.round(price * SKATE_PER_USD);
-                document.getElementById('dom-asin').innerText = `ASIN: ${asin}`;
+                document.getElementById('dom-handle').innerText = `HANDLE: ${handle.toUpperCase()}`;
                 document.getElementById('dom-title').innerText = title;
                 document.getElementById('dom-price-usd').innerText = `$${price.toFixed(2)} USD`;
                 document.getElementById('dom-price-skate').innerText = `${skateCost.toLocaleString()} $SKATE`;
                 document.getElementById('dom-img').src = img;
 
-                // Fire success display state
+                // Fire viewport display
                 setTimeout(() => {
                     document.getElementById('parse-loader').style.display = 'none';
                     document.getElementById('view-portal').style.display = 'flex';
-                }, 1000);
+                }, 800);
 
             } catch (err) {
                 document.getElementById('parse-loader').style.display = 'none';
-                alert("Proxy handshakes timed out. Verify your connection parameters.");
+                alert("Import failed. Make sure the target link is a valid public Shopify product path.");
+                console.error(err);
             }
         }
 
@@ -388,7 +371,7 @@
 
             if (type === 'physical') {
                 titleHUD.innerText = "PHYGITAL DISPATCH SECURED";
-                desc.innerText = `You claimed "${title}". The on-chain receipt has been verified. The system locked your metadata state and initiated automated order processing through our skateshop routing gateway!`;
+                desc.innerText = `You claimed "${title}". The on-chain receipt verification has been logged. The system locked your metadata state and initiated automated order processing through our skateshop routing gateway!`;
             } else {
                 titleHUD.innerText = "TOKEN VALUE SWAPPED";
                 desc.innerText = `Swapped native $SKATE directly to verify physical ownership. The smart contract has logged your claim state and updated your voter profile badges!`;
