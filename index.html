@@ -51,7 +51,7 @@
         }
 
         /* --- RGB HUD & STAT BAR INFECTION --- */
-        @keyframes rgbHudPulse {
+        @keyframes rgbHUDPulse {
             0% { border-color: rgba(255,0,0,0.8); box-shadow: inset 0 0 10px rgba(255,0,0,0.2); }
             33% { border-color: rgba(0,255,0,0.8); box-shadow: inset 0 0 10px rgba(0,255,0,0.2); }
             66% { border-color: rgba(0,0,255,0.8); box-shadow: inset 0 0 10px rgba(0,0,255,0.2); }
@@ -59,7 +59,7 @@
         }
         .card-glow-rgb .rgb-hud-frame {
             border: 1px solid #ff0000;
-            animation: rgbHudPulse 2s linear infinite !important;
+            animation: rgbHUDPulse 2s linear infinite !important;
         }
         .card-glow-rgb .stat-bar {
             background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000) !important;
@@ -70,8 +70,8 @@
         /* --- SUPREME RGB BEARING GLOW --- */
         @keyframes rgbCardPulse {
             0% { box-shadow: inset 0 0 50px rgba(255,0,0,0.3), 0 0 25px rgba(255,0,0,0.6); border-color: #ff0000; }
-            33% { box-shadow: inset 0 0 50px rgba(0,255,0,0.3), 0 0 25px rgba(0,255,0,0.6); border-color: #00ff00; }
-            66% { box-shadow: inset 0 0 50px rgba(0,0,255,0.3), 0 0 25px rgba(0,0,255,0.6); border-color: #0000ff; }
+            33% { box-shadow: inset 0 0 50px rgba(0,255,0,0.3), 0 0 25px rgba(0,255,0,0.6); border-color: #00ffaa; }
+            66% { box-shadow: inset 0 0 50px rgba(0,0,255,0.3), 0 0 25px rgba(0,0,255,0.6); border-color: #00bfff; }
             100% { box-shadow: inset 0 0 50px rgba(255,0,0,0.3), 0 0 25px rgba(255,0,0,0.6); border-color: #ff0000; }
         }
         .card-glow-rgb { animation: rgbCardPulse 2s linear infinite !important; }
@@ -113,7 +113,7 @@
             flex-direction: column; 
         }
 
-      /* --- HEADER & NAV --- */
+        /* --- HEADER & NAV --- */
         header { 
             background: rgba(0, 0, 0, 0.9);
             padding: 15px 40px; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 2px solid var(--accent-cyber-yellow);
@@ -181,8 +181,6 @@
         .m-badge-pro { background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; color: #ffd700; }
         .m-badge-elite { background: rgba(33, 150, 243, 0.1); border: 1px solid #2196f3; color: #2196f3; }
         .m-badge-legendary { background: rgba(168, 85, 247, 0.1); border: 1px solid #a855f7; color: #fff; text-shadow: 0 0 5px #fff; box-shadow: 0 0 10px rgba(168, 85, 247, 0.8); }
-        .m-badge-lawmaker { background: rgba(255, 234, 0, 0.1); border: 1px dashed var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); }
-        .m-badge-veto { background: rgba(255, 51, 102, 0.2); border: 1px solid #ff3366; color: #ff3366; }
 
         /* --- SENATE UI CLASSES (DAO V3 MATRIX) --- */
         .senate-jumbotron { width: 100%; border: 2px solid var(--accent-cyber-yellow); border-radius: 8px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 0 30px rgba(255, 234, 0, 0.2); background: #000; }
@@ -197,10 +195,17 @@
         .motion-card { background: linear-gradient(180deg, #111, #000); border: 2px solid #333; border-radius: 12px; padding: 30px; position: relative; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .motion-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: repeating-linear-gradient(90deg, #333, #333 10px, transparent 10px, transparent 20px); }
         .motion-card.tipped { border-color: var(--accent-gold); box-shadow: 0 0 25px rgba(255,215,0,0.15); }
-        .motion-timer { font-family: 'Orbitron'; font-weight: 900; font-size: 0.9rem; position: absolute; top: 25px; right: 25px; display: flex; align-items: center; gap: 5px; background: #000; padding: 5px 10px; border-radius: 4px; border: 1px solid #333;}
-        .motion-timer.safe { color: #00ffaa; border-color: rgba(0,255,170,0.3); }
-        .motion-timer.danger { color: var(--accent-pink); animation: pulse 1.5s infinite; border-color: rgba(255,0,85,0.3); }
         
+        .motion-top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .motion-timer-wrap { display: flex; align-items: center; gap: 12px; background: #000; padding: 6px 12px; border-radius: 4px; border: 1px solid #333; }
+        .motion-timer { font-family: 'Orbitron'; font-weight: 900; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .motion-timer.safe { color: #00ffaa; }
+        .motion-timer.danger { color: var(--accent-pink); animation: pulse 1.5s infinite; }
+        
+        .hourglass-actions { display: flex; gap: 6px; border-left: 1px solid #333; padding-left: 12px; }
+        .micro-action-btn { background: rgba(255,255,255,0.05); border: 1px dashed #555; color: #aaa; font-family: 'Orbitron'; font-size: 0.6rem; font-weight: 900; padding: 4px 8px; border-radius: 3px; cursor: pointer; transition: 0.2s; }
+        .micro-action-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,240,255,0.05); }
+
         .motion-data-hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: rgba(0,0,0,0.5); border: 1px solid #222; border-radius: 6px; padding: 15px; margin: 20px 0; }
         .motion-data-stat { text-align: center; border-right: 1px dashed #333; }
         .motion-data-stat:last-child { border-right: none; }
@@ -250,30 +255,10 @@
         .hud-pill span { color: #fff; margin-left: 10px; }
         .caution-tape { height: 15px; width: 100%; background: repeating-linear-gradient(45deg, #000, #000 15px, var(--accent-gold) 15px, var(--accent-gold) 30px); }
 
-        /* --- SK8SHOP UPGRADES --- */
+        /* --- SK8SHOP TRAITS --- */
         .video-embed-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border: 2px solid #333; border-radius: 8px; background: #000; }
         .video-embed-wrapper iframe, .video-embed-wrapper video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .video-embed-wrapper:hover { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2); }
-
-        /* --- FOOTER & MODALS --- */
-        footer { background: rgba(0, 0, 0, 0.95); padding: 40px 40px; margin-top: auto; border-top: 2px solid var(--accent-cyber-yellow); display: flex; justify-content: center; backdrop-filter: blur(10px); }
-        .footer-inner { width: 100%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-        .footer-brand { font-family: 'Orbitron'; font-size: 0.65rem; color: #888; letter-spacing: 2px; line-height: 1.8; }
-        .footer-brand span { color: var(--accent-gold); font-weight: 900; }
-        .footer-logos { display: flex; gap: 25px; align-items: center; }
-        .footer-logos img { height: 28px; opacity: 0.5; filter: grayscale(100%); transition: all 0.3s ease; }
-        .footer-logos img:hover { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--bg-panel); padding: 40px; border-radius: 15px; border: 2px solid var(--accent-cyber-yellow); text-align: center; box-shadow: 0 0 30px rgba(255, 234, 0, 0.15); }
-        
-        .master-dash-btn { background: rgba(0, 0, 0, 0.6); color: #fff; border: 1px solid var(--accent-cyber-yellow); padding: 15px 25px; font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; cursor: pointer; transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
-        .master-dash-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 15px var(--accent-cyber-yellow); }
-        .master-dash-btn.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
-        .master-dash-btn.gold:hover { background: var(--accent-gold); color: #000; box-shadow: 0 0 15px var(--accent-gold); }
-
-        #dapp-back-btn { display: none; position: fixed; top: 120px; left: 40px; z-index: 999; background: rgba(0,0,0,0.85); color: var(--accent-cyber-yellow); border: 2px solid var(--accent-cyber-yellow); padding: 12px 25px; font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 900; cursor: pointer; backdrop-filter: blur(8px); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: 0.2s; }
-        #dapp-back-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 25px var(--accent-cyber-yellow); }
 
         @media (max-width: 900px) {
             .dao-hud-grid { grid-template-columns: 1fr; }
@@ -371,6 +356,15 @@
         <a href="https://wax.bloks.io/account/skatecoinwax" target="_blank" class="treasury-link-btn" style="display: block; text-align: center; margin-bottom: 15px;">🔗 VIEW TREASURY LEDGER</a>
         
         <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:10px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ BAIL. ]</button>
+    </div>
+</div>
+
+<div id="hourglass-coming-soon-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: var(--accent-cyan); max-width: 400px; width: 90%; background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.1) 0%, var(--bg-panel) 70%);">
+        <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu" alt="SK8COIN" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(0,240,255,0.3));">
+        <h2 id="hourglass-modal-title" style="font-family:'Orbitron'; font-weight:900; color:var(--accent-cyan); margin-bottom: 10px; font-size: 1.8rem; text-transform: uppercase;">MATRIX CONNECTING</h2>
+        <p style="color: #fff; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 25px;">COMING SOON // JOIN THE REVOLUTION</p>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -499,7 +493,7 @@
         <div class="lb-row lb-header">
             <div style="width: 80px;">RANK</div>
             <div style="flex: 1;">SENATOR ADDRESS</div>
-            <div style="width: 150px; text-align: right;">SKATEBOARDS</div>
+            <div style="width: 150px; text-align: right;">CUMULATIVE SUPPORT</div>
         </div>
         <div id="leaderboard-list">
             <div style="padding:40px; text-align:center; color:var(--accent-cyan); font-family:'Orbitron';">SCANNING WAX BLOCKCHAIN LEDGER...</div>
@@ -634,49 +628,6 @@
         </div>
 
         <button id="execute-btn" class="wallet-btn" onclick="executeNativeSwap()" style="width: 100%; padding: 20px; font-size: 1.2rem; margin-top: 10px; background: var(--accent-cyan); color: #000;">EXECUTE DECENTRALIZED SWAP</button>
-
-        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #333; text-align: center;">
-            <div style="color: var(--accent-pink); font-family: 'Orbitron'; font-weight: 900; font-size: 0.7rem; margin-bottom: 10px; letter-spacing: 1px;">SURVIVAL GUIDE</div>
-            <div style="color: #888; font-size: 0.75rem; font-family: 'Inter';">1. CONNECT WALLET. &nbsp; 2. ENTER PAYLOAD. &nbsp; 3. SIGN TO RIP.</div>
-        </div>
-    </div>
-
-    <div class="dashboard-grid">
-        <div style="background: rgba(0,0,0,0.7); border: 1px solid var(--accent-gold); border-radius: 8px; position: relative; overflow: hidden; text-align: center; padding-bottom: 20px;">
-            <div class="caution-tape"></div>
-            <div style="padding: 30px 20px;">
-                <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; margin-top: 0;">STAKE YOUR BOARD</h3>
-                <p style="color: #888; font-size: 0.8rem; line-height: 1.5; margin-bottom: 20px;">Lock up your 1-of-1 fabricated skateboard to secure the network and generate passive protocol yield.</p>
-                <div class="hud-pill">PROJECTED APY: <span>[ STANDBY ]</span></div>
-                <div class="hud-pill">TOTAL LOCKED: <span>0 SK8s</span></div>
-            </div>
-            <button class="wallet-btn" disabled style="background: transparent; color: var(--accent-gold); border: 1px solid var(--accent-gold); width: 80%;">CONSTRUCTION PENDING</button>
-            <div class="caution-tape" style="position: absolute; bottom: 0;"></div>
-        </div>
-
-        <div style="background: rgba(0,0,0,0.7); border: 1px solid var(--accent-cyan); border-radius: 8px; position: relative; overflow: hidden; text-align: center; padding-bottom: 20px;">
-            <div class="caution-tape" style="background: repeating-linear-gradient(45deg, #000, #000 15px, var(--accent-cyan) 15px, var(--accent-cyan) 30px);"></div>
-            <div style="padding: 30px 20px;">
-                <h3 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; margin-top: 0;">LEND OUT DECK</h3>
-                <p style="color: #888; font-size: 0.8rem; line-height: 1.5; margin-bottom: 20px;">Peer-to-peer rentals. Supply a board to an incoming street grommet who needs a ride. You set the daily fee.</p>
-                <div class="hud-pill" style="border-color: var(--accent-cyan);">LENDING RATE: <span>[ STANDBY ]</span></div>
-                <div class="hud-pill" style="border-color: var(--accent-cyan);">ACTIVE RENTALS: <span>0</span></div>
-            </div>
-            <button class="wallet-btn" disabled style="background: transparent; color: var(--accent-cyan); border: 1px solid var(--accent-cyan); width: 80%;">CONSTRUCTION PENDING</button>
-            <div class="caution-tape" style="position: absolute; bottom: 0; background: repeating-linear-gradient(45deg, #000, #000 15px, var(--accent-cyan) 15px, var(--accent-cyan) 30px);"></div>
-        </div>
-
-        <div style="background: rgba(0,0,0,0.7); border: 1px solid var(--accent-pink); border-radius: 8px; position: relative; overflow: hidden; text-align: center; padding-bottom: 20px;">
-            <div class="caution-tape" style="background: repeating-linear-gradient(45deg, #000, #000 15px, var(--accent-pink) 15px, var(--accent-pink) 30px);"></div>
-            <div style="padding: 30px 20px;">
-                <h3 style="color: var(--accent-pink); font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; margin-top: 0;">BURN FOR $SKATE</h3>
-                <p style="color: #888; font-size: 0.8rem; line-height: 1.5; margin-bottom: 20px;">Scrap unneeded wheels, trucks, or raw clips. Destroy the NFT permanently to extract its core $SKATE value.</p>
-                <div class="hud-pill" style="border-color: var(--accent-pink);">BURN VALUE: <span>[ STANDBY ]</span></div>
-                <div class="hud-pill" style="border-color: var(--accent-pink);">SCRAP YIELD: <span>0 $SKATE</span></div>
-            </div>
-            <button class="wallet-btn" disabled style="background: transparent; color: var(--accent-pink); border: 1px solid var(--accent-pink); width: 80%;">CONSTRUCTION PENDING</button>
-            <div class="caution-tape" style="position: absolute; bottom: 0; background: repeating-linear-gradient(45deg, #000, #000 15px, var(--accent-pink) 15px, var(--accent-pink) 30px);"></div>
-        </div>
     </div>
 </div>
 
@@ -777,34 +728,6 @@
             </div>
         </div>
     </div>
-
-    <div style="max-width: 1100px; margin: 40px auto; background: rgba(0, 0, 0, 0.8); border: 2px solid var(--accent-cyan); border-radius: 12px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);">
-        <div style="padding: 20px 25px; background: rgba(0, 240, 255, 0.05); border-bottom: 1px solid rgba(0, 240, 255, 0.2); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-            <div>
-                <h4 style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-cyan); margin: 0 0 5px 0; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase;">📺 SK8 TV</h4>
-                <p style="margin: 0; color: #888; font-size: 0.8rem; line-height: 1.4; max-width: 600px;">
-                    Skateshops are sanctuarys from the heat and local strongholds for skaters around the world, a place where everyone meets up plans the next session and chills to watch the latest videos, check out new products, and get amped before hitting the streets.
-                </p>
-            </div>
-            <div style="background: #000; border: 1px solid var(--accent-gold); padding: 5px 15px; border-radius: 4px; font-family: 'Orbitron'; font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">
-                📡 STREAMING LIVE
-            </div>
-        </div>
-        <div style="background: #000; padding: 10px;">
-            <div class="video-embed-wrapper">
-                <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
-                        src="https://www.youtube.com/embed/GaZUH0Uv9co?si=6AVZk49QZBFMI3zP" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-        <div style="padding: 15px 25px; background: #000; border-top: 1px solid #111; text-align: center;">
-            <span style="font-family: 'Orbitron'; font-size: 0.75rem; color: #444; letter-spacing: 2px; font-weight: 900;">
-                PROTOCOL BROADCAST ID: // sk8 TV live feed v3.0
-            </span>
-        </div>
-    </div>
 </div>
 
     <div class="dashboard-wrapper" id="treasury-wrapper" style="display: none;">
@@ -858,18 +781,18 @@
     <div class="dao-hud-grid">
         <div class="dao-hud-card active-rank" id="dao-rank-card">
             <div style="font-family:'Orbitron'; font-size:0.75rem; color:var(--accent-cyan); margin-bottom:10px; letter-spacing: 2px;">YOUR SENATE SEAT</div>
-            <div id="user-dao-rank" style="font-family:'Orbitron'; font-weight:900; font-size:1.8rem; color:#94a3b8; text-transform: uppercase;">[ STANDBY ]</div>
+            <div id="user-dao-rank" style="font-family:'Orbitron'; font-weight:900; font-size:1.4rem; color:#94a3b8; text-transform: uppercase;">[ NOT CONNECTED ]</div>
             <div class="badge-pill-container" id="user-badges-container" style="justify-content: center; margin-top:15px;"></div>
         </div>
         <div class="dao-hud-card">
-            <div style="font-family:'Orbitron'; font-size:0.75rem; color:#888; margin-bottom:10px; letter-spacing: 1px;">MAX VOTING WEIGHT</div>
+            <div style="font-family:'Orbitron'; font-size:0.75rem; color:#888; margin-bottom:10px; letter-spacing: 1px;">TRUE VOTING WEIGHT</div>
             <div id="user-vote-weight" style="font-family:'Orbitron'; font-weight:900; font-size:1.8rem; color:#fff;">0</div>
-            <div style="font-size:0.7rem; color:var(--accent-pink); margin-top:10px; font-family:'Inter'; font-weight:900;">1 $SKATE = 1 VOTE</div>
+            <div style="font-size:0.7rem; color:var(--accent-pink); margin-top:10px; font-family:'Inter'; font-weight:900;">1 $SKATE CONTRIBUTED = 1 VOTE</div>
         </div>
         <div class="dao-hud-card" style="border-color: var(--accent-cyan); box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.05);">
             <div style="font-family:'Orbitron'; font-size:0.75rem; color:#888; margin-bottom:10px; letter-spacing: 1px;">ACTIVE MOTIONS</div>
             <div id="dao-active-motions-count" style="font-family:'Orbitron'; font-weight:900; font-size:2.5rem; color:var(--accent-cyan);">0</div>
-            <div style="font-size:0.7rem; color:#888; margin-top:10px; font-family:'Inter'; font-weight:900;">AWAITING DECISION</div>
+            <div style="font-size:0.7rem; color:#888; margin-top:10px; font-family:'Inter'; font-weight:900;">AWAITING SETTLEMENT</div>
         </div>
     </div>
 
@@ -953,7 +876,7 @@
     window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
     window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
 
-    // --- NEW BRAND DIRECTORY MODALS ---
+    // --- BRAND DIRECTORY MODALS ---
     window.openBrandModal = (brandName) => {
         closeModals();
         document.getElementById('brand-modal-title').innerText = brandName;
@@ -963,6 +886,19 @@
     window.openStoreComingSoon = () => {
         closeModals();
         document.getElementById('store-coming-soon-modal').style.display = 'flex';
+    };
+
+    // --- HOURGLASS INTERACTIVE STRATEGIC MODALS ROUTING ---
+    window.openHourglassActionModal = (actionType) => {
+        closeModals();
+        const modal = document.getElementById('hourglass-coming-soon-modal');
+        const titleDOM = document.getElementById('hourglass-modal-title');
+        
+        if (actionType === 'skater') titleDOM.innerText = "SKATER MATRIX";
+        else if (actionType === 'footy') titleDOM.innerText = "VERIFICATION PIPELINE";
+        else if (actionType === 'veto') titleDOM.innerText = "VETO TERMINAL";
+        
+        modal.style.display = 'flex';
     };
 
     // --- ORACLE SYNC ---
@@ -985,23 +921,32 @@
         }
     }
 
-    // --- SENATE RANKING LOGIC (Proof of Bleeding) ---
-    function calculateDaoRank(cumulativeUsd) {
-        if (cumulativeUsd >= 50000) return { rank: "LEGENDARY", votes: 2000, color: "#a855f7", badge: "m-badge-legendary" };
-        if (cumulativeUsd >= 10000) return { rank: "ELITE", votes: 1000, color: "#2196f3", badge: "m-badge-elite" };
-        if (cumulativeUsd >= 1000)  return { rank: "PRO", votes: 100, color: "#ffd700", badge: "m-badge-pro" };
-        if (cumulativeUsd >= 250)   return { rank: "AMATEUR", votes: 10, color: "#c0c0c0", badge: "m-badge-amateur" };
-        if (cumulativeUsd >= 50)    return { rank: "FLOW", votes: 5, color: "#cd7f32", badge: "m-badge-flow" };
-        if (cumulativeUsd >= 1)     return { rank: "GROMMET", votes: 1, color: "#00ffaa", badge: "m-badge-grom" };
-        return { rank: "POSER", votes: 0, color: "#94a3b8", badge: "m-badge-poser" };
+    // --- LEADERSHIP & RANK MATRICES ---
+    let globalSponsorsLeaderboard = []; 
+
+    function calculateDaoRankByPosition(username) {
+        if (!username) return { rank: "POSER", votes: 0, color: "#94a3b8", badge: "m-badge-poser" };
+        if (username === ADMIN_WALLET) return { rank: "LEGENDARY", votes: 100000, color: "#a855f7", badge: "m-badge-legendary" };
+        
+        const idx = globalSponsorsLeaderboard.findIndex(item => item.account === username);
+        if (idx === -1) return { rank: "POSER", votes: 0, color: "#94a3b8", badge: "m-badge-poser" };
+        
+        const rankPos = idx + 1;
+        if (rankPos === 1) return { rank: "LEGENDARY", votes: 50000, color: "#a855f7", badge: "m-badge-legendary" };
+        if (rankPos <= 5) return { rank: "ELITE", votes: 20000, color: "#2196f3", badge: "m-badge-elite" };
+        if (rankPos <= 15) return { rank: "PRO", votes: 10000, color: "#ffd700", badge: "m-badge-pro" };
+        if (rankPos <= 30) return { rank: "AMATEUR", votes: 5000, color: "#c0c0c0", badge: "m-badge-amateur" };
+        if (rankPos <= 50) return { rank: "FLOW", votes: 2500, color: "#cd7f32", badge: "m-badge-flow" };
+        return { rank: "GROMMET", votes: 1000, color: "#00ffaa", badge: "m-badge-grom" };
     }
 
-   // --- ON-CHAIN SCRAPER (Treasury & Blessings) ---
+    // --- TRUE MATHEMATICAL HYPERION MULTI-PASS SCRAPER ---
     async function fetchTreasuryData() {
         await syncPrices();
         
         const whaleList = document.getElementById('treasury-whales-list');
         const pulseList = document.getElementById('treasury-pulse-list');
+        const countDOM = document.getElementById("dao-active-motions-count");
         
         const waxResDOM = document.getElementById('treasury-wax-res');
         const waxUsdDOM = document.getElementById('treasury-wax-usd');
@@ -1015,7 +960,6 @@
         if(pulseList) pulseList.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;">INTERCEPTING LEDGER...</div>`;
 
         try {
-            // Live Reserve Extraction
             const waxRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, { method: 'POST', body: JSON.stringify({ code: "eosio.token", account: "skatecoinwax", symbol: "WAX" }) });
             const waxBalArr = await waxRes.json(); 
             const waxBal = waxBalArr[0] ? parseFloat(waxBalArr[0].split(' ')[0]) : 0;
@@ -1025,8 +969,6 @@
             const skateBal = skateBalArr[0] ? parseFloat(skateBalArr[0].split(' ')[0]) : 0;
 
             const skatePriceUSD = sWax * waxUsdPrice;
-            
-            // True Mathematical Aggregations
             const circulating_supply = 1000000;
             const total_supply = 1000000000; 
             const circMcapUsd = circulating_supply * skatePriceUSD;
@@ -1039,71 +981,60 @@
             if(skateResDOM) skateResDOM.innerText = skateBal.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4}) + ' SKATE';
             if(skateUsdDOM) skateUsdDOM.innerText = `≈ $${(skateBal * skatePriceUSD).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD`;
 
-            // Hyperion Historical Scraper Logic (100 LIMIT)
-            const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=eosio.token:transfer,skatecoinwax:transfer&limit=100`;
+            // EXTRACT LOGGED TRANSACTIONS
+            const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=eosio.token:transfer,skatecoinwax:transfer&limit=500`;
             const hRes = await fetch(historyUrl);
             const hJson = await hRes.json();
 
             const blacklist = ['eosio.token', 'skatecoinwax', 'swap.alcor', 'alcorammswap'];
             let sponsors = {};
             let pulseItems = [];
-            let currentUserUsdTotal = 0;
 
             if (hJson && hJson.actions) {
                 hJson.actions.forEach(action => {
                     const data = action.act.data;
                     const fromAcc = data.from;
+                    const toAcc = data.to;
                     const blockTime = new Date(action.timestamp);
 
-                    if (data && data.to === 'skatecoinwax' && data.quantity) {
+                    if (data && data.quantity) {
                         const quantityStr = data.quantity;
                         const [amtVal, symbol] = quantityStr.split(' ');
                         const amount = parseFloat(amtVal) || 0;
                         const memo = data.memo || "";
 
-                        if (!blacklist.includes(fromAcc) && amount > 0) {
+                        const isTreasuryTarget = (toAcc === 'skatecoinwax');
+                        const isCrossSignature = memo.includes('"sk8dao":"v1"');
+
+                        if (!blacklist.includes(fromAcc) && amount > 0 && (isTreasuryTarget || isCrossSignature)) {
                             const valueInWax = symbol === 'WAX' ? amount : amount * sWax;
                             const valueInUsd = valueInWax * waxUsdPrice;
 
-                            // --- MEMO SENSING ENGINE ---
                             let itemType = "BLESSING";
                             let labelColor = "var(--accent-gold)";
                             let displayMemo = memo || "Direct Support";
 
-                            if (memo.includes('"sk8dao":"v1"')) {
+                            if (isCrossSignature) {
                                 try {
                                     const pMemo = JSON.parse(memo);
-                                    if(pMemo.action === "vote") {
-                                        itemType = "GOVERNANCE";
-                                        labelColor = "var(--accent-cyan)";
-                                        displayMemo = `Voted ${pMemo.vote} on Motion`;
-                                    } else if(pMemo.action === "propose") {
-                                        itemType = "LEGISLATION";
-                                        labelColor = "var(--accent-pink)";
-                                        displayMemo = `Drafted Bill: ${pMemo.title}`;
-                                    } else if(pMemo.action === "withdraw") {
-                                        itemType = "REVOCATION";
-                                        labelColor = "var(--accent-pink)";
-                                        displayMemo = `Withdrew Motion: ${pMemo.id}`;
-                                    }
+                                    if(pMemo.action === "vote") { itemType = "GOVERNANCE"; labelColor = "var(--accent-cyan)"; displayMemo = `Voted ${pMemo.vote} on Motion`; }
+                                    else if(pMemo.action === "propose") { itemType = "LEGISLATION"; labelColor = "var(--accent-pink)"; displayMemo = `Drafted Bill: ${pMemo.title}`; }
+                                    else if(pMemo.action === "withdraw") { itemType = "REVOCATION"; labelColor = "var(--accent-pink)"; displayMemo = `Withdrew Motion`; }
                                 } catch(e) {}
                             }
 
-                            // Update Leaderboard Power
                             if (!sponsors[fromAcc]) {
-                                sponsors[fromAcc] = { waxTotal: 0, skateTotal: 0, powerValueUsd: 0 };
+                                sponsors[fromAcc] = { waxTotal: 0, skateTotal: 0, powerValueUsd: 0, rawVotesValue: 0 };
                             }
                             if (symbol === 'WAX') sponsors[fromAcc].waxTotal += amount;
                             else sponsors[fromAcc].skateTotal += amount;
+                            
                             sponsors[fromAcc].powerValueUsd += valueInUsd;
+                            sponsors[fromAcc].rawVotesValue += symbol === 'SKATE' ? amount : amount * skatePerWax;
 
-                            // Add to Live Feed
                             pulseItems.push({
-                                account: fromAcc,
-                                amountStr: `${amount.toLocaleString()} ${symbol}`,
-                                displayMemo: displayMemo,
-                                itemType: itemType,
-                                labelColor: labelColor,
+                                account: fromAcc, amountStr: `${amount.toLocaleString()} ${symbol}`,
+                                displayMemo: displayMemo, itemType: itemType, labelColor: labelColor,
                                 time: blockTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                                 timestamp: blockTime.getTime()
                             });
@@ -1112,58 +1043,60 @@
                 });
             }
 
-            // Extract Logged-In User's Power & Rank Seats Proper
+            globalSponsorsLeaderboard = Object.keys(sponsors).map(acc => ({
+                account: acc, ...sponsors[acc]
+            })).sort((a, b) => b.powerValueUsd - a.powerValueUsd);
+
             if (currentSession) {
                 const myAcc = currentSession.actor.toString();
-                if (sponsors[myAcc]) currentUserUsdTotal = sponsors[myAcc].powerValueUsd;
-                if (myAcc === ADMIN_WALLET) currentUserUsdTotal = 100000; 
+                let trueVotesWeight = 0;
                 
-                const myRankInfo = calculateDaoRank(currentUserUsdTotal);
+                const foundSponsor = globalSponsorsLeaderboard.find(item => item.account === myAcc);
+                if (foundSponsor) trueVotesWeight = Math.floor(foundSponsor.rawVotesValue);
+                if (myAcc === ADMIN_WALLET) trueVotesWeight = 100000; 
+
+                const myRankInfo = calculateDaoRankByPosition(myAcc);
                 const rankDOM = document.getElementById('user-dao-rank');
+                const weightDOM = document.getElementById('user-vote-weight');
                 const badgeDOM = document.getElementById('user-badges-container');
 
                 if(rankDOM) {
                     rankDOM.innerText = myRankInfo.rank;
                     rankDOM.style.color = myRankInfo.color;
-                    badgeDOM.innerHTML = `<span class="micro-badge-pill ${myRankInfo.badge}">${myRankInfo.rank}</span>`;
+                    weightDOM.innerHTML = `${trueVotesWeight.toLocaleString()} <span style="font-size:1rem; color:var(--accent-cyan); font-weight:900;">WEIGHT</span>`;
+                    badgeDOM.innerHTML = `<span class="micro-badge-pill ${myRankInfo.badge}">RANK #${globalSponsorsLeaderboard.findIndex(item => item.account === myAcc) + 1}</span>`;
                 }
             }
 
-            // Render Leaderboard
             if(whaleList) {
-                const sortedSponsors = Object.keys(sponsors).map(acc => ({
-                    account: acc, ...sponsors[acc]
-                })).sort((a, b) => b.powerValueUsd - a.powerValueUsd).slice(0, 100);
-
-                if (sortedSponsors.length === 0) {
+                const displayHolders = globalSponsorsLeaderboard.slice(0, 100);
+                if (displayHolders.length === 0) {
                     whaleList.innerHTML = `<div style="padding: 20px; text-align: center; color: #888; font-family: 'Orbitron'; font-size: 0.8rem;">THE WHALE BOARD IS OPEN</div>`;
                 } else {
-                    whaleList.innerHTML = sortedSponsors.map((sp, idx) => {
-                        const rankData = calculateDaoRank(sp.powerValueUsd);
+                    whaleList.innerHTML = displayHolders.map((sp, idx) => {
+                        const rankData = calculateDaoRankByPosition(sp.account);
                         return `
                             <div style="display:flex; justify-content:space-between; padding: 15px 10px; border-bottom: 1px solid #112; align-items: center;">
                                 <div style="font-family:'Orbitron'; font-weight:900; color: ${rankData.color}; font-size: 0.9rem;">
                                     ${idx + 1}. ${sp.account} <div class="badge-pill-container"><span class="micro-badge-pill ${rankData.badge}">${rankData.rank}</span></div>
                                 </div>
                                 <div style="text-align: right;">
-                                    <div style="color:#fff; font-family:'Orbitron'; font-weight:900; font-size: 0.85rem;">${sp.waxTotal.toLocaleString(undefined, {maximumFractionDigits: 2})} WAX</div>
-                                    <div style="color:var(--accent-cyan); font-size: 0.7rem; font-family:'Orbitron'; font-weight:900;">${sp.skateTotal.toLocaleString(undefined, {maximumFractionDigits: 4})} SKATE</div>
+                                    <div style="color:#fff; font-family:'Orbitron'; font-weight:900; font-size: 0.85rem;">${Math.floor(sp.rawVotesValue).toLocaleString()} VOTES</div>
+                                    <div style="color:var(--accent-cyan); font-size: 0.7rem; font-family:'Orbitron'; font-weight:900;">$${sp.powerValueUsd.toFixed(2)} USD COMBINED</div>
                                 </div>
                             </div>`;
                     }).join('');
                 }
             }
 
-            // Render Blessings Feed
             if(pulseList) {
                 pulseItems.sort((a, b) => b.timestamp - a.timestamp);
                 const activePulse = pulseItems.slice(0, 50);
-
                 if (activePulse.length === 0) {
                     pulseList.innerHTML = `<div style="padding: 20px; text-align: center; color: #888; font-family: 'Orbitron'; font-size: 0.8rem;">INTERCEPT RECORD EMPTY</div>`;
                 } else {
                     pulseList.innerHTML = activePulse.map(item => `
-                        <div style="display:flex; justify-content:space-between; padding: 15px 10px; border-bottom: 1px dashed #112; align-items: center; background: rgba(255,255,255,0.01);">
+                        <div style="display:flex; justify-content:space-between; padding: 15px 10px; border-bottom: 1px dashed #112; align-items: center;">
                             <div style="min-width: 100px;">
                                 <div style="font-size:0.55rem; color:${item.labelColor}; font-weight:900; font-family:'Orbitron'; letter-spacing:1px; margin-bottom:2px;">${item.itemType}</div>
                                 <div style="color:var(--accent-cyan); font-family:'Orbitron'; font-weight: 900; font-size:0.8rem;">${item.account}</div>
@@ -1180,7 +1113,7 @@
         } catch (e) { console.error(e); }
     }
 
-    // --- ADVANCED DAO SCRAPING ENGINE (WITH ACCURATE VOTE TOTALS & REVOCATIONS) ---
+    // --- 51% MAJORITY SETTLEMENT SCRAPING ENGINE (WITH AUTO-DELETE LOGIC) ---
     let activeProposals = [];
     async function refreshDAODashboard() {
         const list = document.getElementById("active-motions-list");
@@ -1196,7 +1129,6 @@
             const json = await res.json();
 
             if (json && json.actions) {
-                // First pass: extract all elements chronologically
                 json.actions.forEach(action => {
                     const data = action.act.data;
                     const memo = data.memo || "";
@@ -1226,14 +1158,14 @@
                     }
                 });
             }
-        } catch(e) { console.error("Scraper Error:", e); }
+        } catch(e) { console.error(e); }
 
         activeProposals = [];
         const now = Date.now();
 
         Object.values(proposals).forEach(p => {
             const expiresAt = p.time + DAO_TTL_MS;
-            // Filter out expired or withdrawn motions completely
+            // AUTO-DELETE ROUTINE: Wipes any components matching withdrawnIds parameters
             if (now <= expiresAt && !withdrawnIds.has(p.id)) {
                 p.expiresAt = expiresAt;
                 activeProposals.push(p);
@@ -1261,20 +1193,21 @@
 
         activeProposals.forEach((p, index) => {
             const totalWeight = p.yesWeight + p.noWeight;
-            const yesPct = totalWeight > 0 ? ((p.yesWeight / totalWeight) * 100).toFixed(0) : 0;
-            const noPct = totalWeight > 0 ? ((p.noWeight / totalWeight) * 100).toFixed(0) : 0;
+            const yesPct = totalWeight > 0 ? (p.yesWeight / totalWeight) * 100 : 0;
+            const noPct = totalWeight > 0 ? (p.noWeight / totalWeight) * 100 : 0;
             
+            // 51% MAJORITY SETTLEMENT VERIFICATION LAYER
+            const executionStatusText = yesPct >= 51 ? "PASSING (>=51%)" : "FAILING (<51%)";
+            const statusTextColor = yesPct >= 51 ? "#00ffaa" : "var(--accent-pink)";
+
             const diffMs = p.expiresAt - Date.now();
             const d = Math.floor(diffMs / 86400000);
             const h = Math.floor((diffMs % 86400000) / 3600000);
             const timeLeft = `${d}d ${h}h`;
 
-            // Dynamic Data HUD metrics placeholders
-            const placeholderImpact = Math.min(Math.floor((totalWeight / 500) + 10), 99);
-            const placeholderDraw = (1000 + (index * 500)).toLocaleString();
-            const quorumMet = totalWeight >= 5000 ? "SECURED" : "PENDING";
+            const placeholderImpact = Math.min(Math.floor((totalWeight / 500) + 12), 99);
+            const placeholderDraw = (2500 + (index * 250)).toLocaleString();
 
-            // Withdraw display access sensing
             let actionHtml = "";
             if (currentActor === p.proposer || currentActor === ADMIN_WALLET) {
                 actionHtml = `
@@ -1285,8 +1218,22 @@
 
             html += `
             <div class="motion-card">
-                <div class="motion-timer ${d < 1 ? 'danger' : 'safe'}">⏳ ${timeLeft}</div>
-                <div style="font-family:'Orbitron'; font-weight:900; font-size:1.5rem; color:var(--accent-cyan); margin-bottom: 10px; padding-right: 80px;">${p.title}</div>
+                <div class="motion-top-bar">
+                    <div class="motion-timer-wrap">
+                        <div class="motion-timer ${d < 1 ? 'danger' : 'safe'}">⏳ ${timeLeft}</div>
+                        
+                        <div class="hourglass-actions">
+                            <button class="micro-action-btn" onclick="openHourglassActionModal('skater')">[ SKATER ]</button>
+                            <button class="micro-action-btn" onclick="openHourglassActionModal('footy')">[ FOOTY ]</button>
+                            <button class="micro-action-btn" onclick="openHourglassActionModal('veto')">[ VETO ]</button>
+                        </div>
+                    </div>
+                    <div style="font-family:'Orbitron'; font-size:0.75rem; font-weight:900; color:${statusTextColor}; background:#000; padding:6px 12px; border-radius:4px; border:1px solid ${statusTextColor};">
+                        STATUS: ${executionStatusText}
+                    </div>
+                </div>
+
+                <div style="font-family:'Orbitron'; font-weight:900; font-size:1.5rem; color:var(--accent-cyan); margin-bottom: 10px;">${p.title}</div>
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom: 15px;">
                     <span style="font-size:0.8rem; color:#888; font-family:'Inter';">Proposed by: <span style="color:#fff; font-family:'Orbitron'; font-weight:900;">${p.proposer}</span></span>
                 </div>
@@ -1294,23 +1241,23 @@
                 
                 <div class="motion-data-hud">
                     <div class="motion-data-stat">
-                        <div class="motion-data-label">IMPACT SCORE</div>
+                        <div class="motion-data-label">IMPACT RATING</div>
                         <div class="motion-data-val">${placeholderImpact}%</div>
                     </div>
                     <div class="motion-data-stat">
-                        <div class="motion-data-label">TREASURY DRAW</div>
+                        <div class="motion-data-label">BUDGET DRAWDOWNS</div>
                         <div class="motion-data-val">${placeholderDraw} $SKATE</div>
                     </div>
                     <div class="motion-data-stat">
-                        <div class="motion-data-label">QUORUM STATUS</div>
-                        <div class="motion-data-val" style="color: ${quorumMet === 'SECURED' ? '#00ffaa' : 'var(--accent-gold)'};">${quorumMet}</div>
+                        <div class="motion-data-label">CONSENSUS POWER</div>
+                        <div class="motion-data-val" style="color:var(--accent-gold);">${totalWeight.toFixed(0)} VOTES</div>
                     </div>
                 </div>
 
                 <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:15px; margin-bottom:15px; border: 1px solid #222;">
                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-family:'Orbitron'; font-weight:bold; margin-bottom:8px;">
-                        <span style="color:#00ffaa;">YES: ${p.yesWeight.toFixed(0)} SKATE (${yesPct}%)</span>
-                        <span style="color:var(--accent-pink);">NO: ${p.noWeight.toFixed(0)} SKATE (${noPct}%)</span>
+                        <span style="color:#00ffaa;">YES: ${p.yesWeight.toFixed(0)} SKATE (${yesPct.toFixed(0)}%)</span>
+                        <span style="color:var(--accent-pink);">NO: ${p.noWeight.toFixed(0)} SKATE (${noPct.toFixed(0)}%)</span>
                     </div>
                     <div class="vote-bar-bg">
                         <div class="vote-bar-yes" style="width:${yesPct}%;"></div>
@@ -1334,7 +1281,7 @@
         list.innerHTML = html;
     }
 
-    // --- THE LIVE BLESSING PIPES ---
+    // --- SUPPORTED PIPELINES ---
     let activeDonationCurrency = 'WAX';
     window.openDonationModal = (currency) => {
         if (!currentSession) return toggleAuthModal();
@@ -1381,7 +1328,6 @@
         } catch(e) { console.error(e); showErrorModal("Transaction Cancelled or Failed."); }
     };
 
-    // --- SK8SWAP LOGIC ---
     window.flipSwapDirection = () => {
         isWaxToSkate = !isWaxToSkate;
         const labelIn = document.getElementById('swap-label-in');
@@ -1454,7 +1400,7 @@
         btn.innerText = "EXECUTE DECENTRALIZED SWAP";
     };
 
-    // --- ON-CHAIN GOVERNANCE ENGINE (JSON V2) ---
+    // --- ON-CHAIN GOVERNANCE ROUTINES ---
     window.executeOnChainProposal = async () => {
         if (!currentSession) return toggleAuthModal();
         const title = document.getElementById('bill-proposal-title').value.trim();
@@ -1465,8 +1411,7 @@
         const sender = currentSession.actor.toString();
         
         const memoData = JSON.stringify({ 
-            sk8dao: "v1", action: "propose", 
-            title: title.substring(0, 30), desc: desc.substring(0, 100) 
+            sk8dao: "v1", action: "propose", title: title.substring(0, 30), desc: desc.substring(0, 100) 
         });
         
         try {
@@ -1509,7 +1454,6 @@
         } catch(e) { console.error(e); showErrorModal("Voting transaction aborted."); }
     };
 
-    // --- NEW REVOLUTIONARY WITHDRAWAL ENGINE ---
     window.executeOnChainWithdrawal = async (motionId) => {
         if (!currentSession) return toggleAuthModal();
         const confirmWithdraw = confirm("⚠️ CRITICAL ACTION: Are you sure you want to permanently withdraw this motion? This cannot be undone.");
@@ -1535,14 +1479,20 @@
         } catch(e) { console.error(e); showErrorModal("Revocation transaction failed."); }
     };
 
-    // --- INITIALIZATION & STATE RECOVERY ---
-    sessionKit.restore().then(s => { 
+    // --- SYSTEM START & RECOVERY LAYERS ---
+    sessionKit.restore().then(async (s) => { 
+        await fetchTreasuryData(); 
         const initialHash = window.location.hash.replace('#', '') || 'home';
-        if (s) { currentSession = s; document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase(); updateBalances(s.actor.toString()); switchCategory(initialHash); 
-        } else { document.getElementById('vip-ticket-modal').style.display = 'flex'; }
+        if (s) { 
+            currentSession = s; 
+            document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase(); 
+            updateBalances(s.actor.toString()); 
+            switchCategory(initialHash); 
+        } else { 
+            document.getElementById('vip-ticket-modal').style.display = 'flex'; 
+        }
     });
 
-    // --- STATE SWITCHING ENGINE ---
     window.switchCategory = (schema, fromBack = false) => {
         if (currentSchema === schema) return;
         if (!fromBack && currentSchema !== null) historyStack.push(currentSchema);
@@ -1618,7 +1568,7 @@
             </div>
             <div style="margin-top:20px; padding:15px; background:rgba(255,215,0,0.1); border:1px solid var(--accent-gold); border-radius:6px; text-align:center;">
                 <div style="color:var(--accent-gold); font-size:0.6rem; font-family:'Orbitron';">AIRDROP PROJECTED</div>
-                <div style="font-family:'Orbitron'; font-weight: 900; font-size:2rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon"> 0 $SKATE</div>
+                <div style="font-family:'Orbitron'; font-weight: 900; font-size:2rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon"> ${rewards.toLocaleString()} $SKATE</div>
             </div>`;
         document.getElementById('initiate-blend-btn').disabled = true;
     }
@@ -1697,24 +1647,20 @@
     async function fetchInventory(user, append = false) {
         const grid = document.getElementById('main-grid');
         const loadMoreBtn = document.getElementById('load-more-container');
-
         if (!append) { grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;">SCANNING...</h3>`; currentInventoryPage = 1; }
 
         try {
             const res = await fetch(`${ATOMIC_API}/assets?collection_name=${COLLECTION}&schema_name=${currentSchema}&owner=${user}&page=${currentInventoryPage}&limit=12`);
             const json = await res.json();
-            
             if (json.success) {
                 const htmlCards = json.data.map(n => {
                     const pop = MetaParser.getInt(n, 'pop'), speed = MetaParser.getInt(n, 'speed'), balance = MetaParser.getInt(n, 'balance');
                     const rarity = MetaParser.getRarity(n), img = MetaParser.getImg(n), tplId = n.template ? n.template.template_id : 'N/A', mN = n.template_mint ? n.template_mint : 'N/A';
-                    
                     let statHtml = ""; let actionHtml = "";
 
                     if (currentSchema === 'skateboards') {
                         let totalPower = speed + pop + balance; if (totalPower > 30) totalPower = 30;
                         const skateReward = totalPower * 1000; const waxValue = (skateReward * sWax).toFixed(2);
-                        
                         const deckName = MetaParser.getString(n, 'deck', 'STOCK');
                         const truckName = MetaParser.getString(n, 'trucks', 'STOCK');
                         const wheelName = MetaParser.getString(n, 'wheels', 'STOCK');
@@ -1730,11 +1676,10 @@
                                     <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.55rem; color:#888; margin-bottom:4px;">BEARINGS <span style="color:var(--accent-cyber-yellow)" class="${bearingClass}">${bearingName}</span></div>
                                 </div>
                                 <div class="meta-title">PERFORMANCE</div>
-                                <div class="rgb-hud-frame cyber-yellow-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; border-width: 1px !important;">
+                               <div class="rgb-hud-frame cyber-yellow-frame" style="padding: 10px; background: rgba(0,0,0,0.4); border-radius: 6px; border-width: 1px !important;">
                                     ${renderStat('POP', pop, 'stat-pop', 20)}${renderStat('BALANCE', balance, 'stat-balance', 20)}${renderStat('SPEED', speed, 'stat-speed', 20)}${renderStat('TOTAL POWER', totalPower, 'stat-total', 30)}
                                 </div>
                             </div>`;
-                        
                         actionHtml = `
                             <div class="claim-zone">
                                 <div><div class="reward-skate" style="display:flex; align-items:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon"> ${skateReward.toLocaleString()}</div><div class="reward-wax">≈ ${waxValue} WAX</div></div>
@@ -1762,66 +1707,34 @@
 
                     const cleanRar = rarity.toLowerCase().trim();
                     const isGodTier = ['epic', 'legendary', 'mythic', 'insane', 'ridiculous'].includes(cleanRar);
-                    
                     let cardClass = isGodTier ? `skate-card card-glow-${cleanRar}` : `skate-card`;
                     let cardStyle = isGodTier ? "" : `border-color: var(--rarity-${cleanRar}); box-shadow: inset 0 0 10px rgba(255,255,255,0.02);`;
                     let headerStyle = isGodTier ? "" : `background: var(--rarity-${cleanRar}); box-shadow: 0 0 15px var(--rarity-${cleanRar});`;
 
-                    const checkBearing = MetaParser.getString(n, 'bearings', 'STOCK');
-                    if (checkBearing === 'RGB') {
-                        cardClass = 'skate-card card-glow-rgb';
-                        cardStyle = ''; headerStyle = '';
-                    }
-                    
-                    let badgeStyle = "color: #ffffff; border-color: rgba(255, 255, 255, 0.4);";
-                    if (mN == 1) badgeStyle = "color: #00ffaa; border-color: #00ffaa; text-shadow: 0 0 10px #00ffaa;";
+                    if (MetaParser.getString(n, 'bearings', 'STOCK') === 'RGB') { cardClass = 'skate-card card-glow-rgb'; cardStyle = ''; headerStyle = ''; }
+                    let badgeStyle = mN == 1 ? "color: #00ffaa; border-color: #00ffaa; text-shadow: 0 0 10px #00ffaa;" : "color: #ffffff; border-color: rgba(255, 255, 255, 0.4);";
 
                     return `<div class="${cardClass}" style="${cardStyle}">
-                                <div class="rarity-header" style="${headerStyle}">
-                                    <div class="mint-badge" style="${badgeStyle}">#${mN}</div>
-                                    <div class="rarity-header-text">${rarity}</div>
-                                </div>
+                                <div class="rarity-header" style="${headerStyle}"><div class="mint-badge" style="${badgeStyle}">#${mN}</div><div class="rarity-header-text">${rarity}</div></div>
                                 <div class="img-wrap"><img src="https://ipfs.io/ipfs/${img}" class="skate-img" onerror="this.style.display='none'"></div>
-                                <div class="card-body">
-                                    <div class="board-name">${n.name}</div>
-                                    ${statHtml}
-                                </div>
+                                <div class="card-body"><div class="board-name">${n.name}</div>${statHtml}</div>
                                 ${actionHtml}
                             </div>`;
                 }).join('');
 
-                if (!append) {
-                    if (json.data.length === 0) grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #888; font-family: 'Orbitron'; font-weight: 900;">TRUNK IS EMPTY</h3>`;
-                    else grid.innerHTML = htmlCards;
-                } else grid.insertAdjacentHTML('beforeend', htmlCards);
-                
-                if (json.data.length === 12) loadMoreBtn.style.display = 'block'; else loadMoreBtn.style.display = 'none';
+                if (!append) { if (json.data.length === 0) grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #888; font-family: 'Orbitron'; font-weight: 900;">TRUNK IS EMPTY</h3>`; else grid.innerHTML = htmlCards; } 
+                else grid.insertAdjacentHTML('beforeend', htmlCards);
+                loadMoreBtn.style.display = json.data.length === 12 ? 'block' : 'none';
             }
-        } catch (e) {
-            if (!append) grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #ff3366; font-family: 'Orbitron'; font-weight: 900;">CONNECTION ERROR</h3>`;
-        }
+        } catch (e) { if (!append) grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #ff3366; font-family: 'Orbitron'; font-weight: 900;">CONNECTION ERROR</h3>`; }
     }
 
     window.loadMoreInventory = () => { if (!currentSession) return; currentInventoryPage++; fetchInventory(currentSession.actor.toString(), true); };
 
     document.getElementById('login-trigger-vip').addEventListener('click', async () => { const { session } = await sessionKit.login(); location.reload(); });
     document.getElementById('logout-trigger').addEventListener('click', async () => { await sessionKit.logout(); location.reload(); });
-
-    window.openCraftConfirmModal = () => { document.getElementById('modal-wax-fee').innerText = `${calculatedWaxFee.toLocaleString()} WAX`; document.getElementById('craft-confirm-modal').style.display = 'flex'; };
-
-    window.executeBlend = async () => {
-        if (!currentSession || selectedAssetIds.length !== 7) return;
-        const formattedWax = Number(calculatedWaxFee).toFixed(8) + " WAX";
-        try {
-            const actions = [
-                { account: 'atomicassets', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: currentSession.actor.toString(), to: 'skatecoinwax', asset_ids: selectedAssetIds, memo: "SKATEBOARD BUILD INGREDIENTS" } },
-                { account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: currentSession.actor.toString(), to: 'ufuau.wam', quantity: formattedWax, memo: "SKATEBOARD BUILD PAYMENT" } }
-            ];
-            await currentSession.transact({ actions });
-            showSuccessModal("FABRICATION INITIATED", "Thank you, your board will be shipped soon!");
-            loadCraftingData(currentSession.actor.toString()); updateBalances(currentSession.actor.toString());
-        } catch (e) { console.error(e); showErrorModal("Transaction Cancelled or Failed."); }
-    };
 </script>
 </body>
 </html>
+
+    
