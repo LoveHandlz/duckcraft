@@ -517,7 +517,7 @@
     </div>
 
     <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap;">
-        <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='flex';" style="font-size: 1.2rem; padding: 20px 50px;">🚘 OPEN TRUNK</button>
+        <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='flex';" style="font-size: 1.2rem; padding: 20px 50px;">🧰 OPEN TRUNK</button>
     </div>
 
     <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--accent-gold); border-radius: 8px; padding: 40px; max-width: 900px; margin: 0 auto; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.5);">
@@ -662,7 +662,7 @@
         <div class="swap-input-group">
             <input type="text" id="swap-out" placeholder="0.00" readonly style="color: var(--accent-cyan);">
             <div class="token-selector" id="swap-label-out" onclick="showErrorModal('Token list import expanding in next update.')" style="color: var(--accent-cyan);">
-               $SKATE <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigxk3zg754f2tciiazwp7tgxb7snjjcgk4vxg73zjk34cuitde2yq" style="height: 20px;"> ▼
+                $SKATE <img src="https://i.postimg.cc/VSvxfXsr/sk8coin-logo-biig.png" style="height: 20px;"> ▼
             </div>
         </div>
 
@@ -740,10 +740,10 @@
             <p style="color: #ccc; font-size: 1rem; line-height: 1.8; margin-bottom: 20px;">
                 Local shops are the beating heart of the culture. The SK8SHOP protocol acts as the stabilizer for the ecosystem. We integrate <strong>USDC Stablecoin</strong> alongside <strong>WAX</strong> and <strong>$SKATE</strong> to bridge the physical and digital worlds without the volatility of the crypto markets.
             </p>
-           <button class="wallet-btn" style="background: #ff0055; color: #fff; border: 1px solid #ff0055; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);">
-    <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeib3be32lezp2dmmnadjwzl2ieodfmwfmwlszo7cqgtzfqbv7jyvpa" alt="USDC" style="height: 18px; width: auto; vertical-align: middle;"> 
-    PAY WITH USDC
-</button>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 30px;">
+                <button class="wallet-btn" style="background: #ff0055; color: #fff; border: 1px solid #ff0055; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);">
+                    <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreibt6xhskvd65qaj6jbttwlj4wgxiigmoaxvxljw4zu2solxnnyvgm" alt="USDC" style="height: 18px; width: auto; vertical-align: middle;"> 
+                    PAY WITH USDC
                 </button>
                 <button class="wallet-btn" style="background: #ffffff; color: #000; border: 1px solid #ffffff; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);">
                     <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreibszclntw7ha7wfdoawdgcjwjnu7zdtmtns3si6jaonxlube3pv2e" alt="WAX" style="height: 18px; width: auto; vertical-align: middle;"> 
@@ -1416,10 +1416,10 @@
         
         if (isWaxToSkate) {
             labelIn.innerHTML = 'WAX <img src="https://cryptologos.cc/logos/wax-waxp-logo.png" style="height: 20px;"> ▼'; labelIn.style.color = "var(--accent-gold)";
-            labelIn.innerHTML = '$SKATE <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigxk3zg754f2tciiazwp7tgxb7snjjcgk4vxg73zjk34cuitde2yq" style="height: 20px;"> ▼'; labelIn.style.color = "var(--accent-cyan)";
+            labelOut.innerHTML = '$SKATE <img src="https://i.postimg.cc/VSvxfXsr/sk8coin-logo-biig.png" style="height: 20px;"> ▼'; labelOut.style.color = "var(--accent-cyan)";
             document.getElementById('swap-out').style.color = "var(--accent-cyan)";
         } else {
-            labelOut.innerHTML = '$SKATE <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigxk3zg754f2tciiazwp7tgxb7snjjcgk4vxg73zjk34cuitde2yq" style="height: 20px;"> ▼'; labelOut.style.color = "var(--accent-cyan)";
+            labelIn.innerHTML = '$SKATE <img src="https://i.postimg.cc/VSvxfXsr/sk8coin-logo-biig.png" style="height: 20px;"> ▼'; labelIn.style.color = "var(--accent-cyan)";
             labelOut.innerHTML = 'WAX <img src="https://cryptologos.cc/logos/wax-waxp-logo.png" style="height: 20px;"> ▼'; labelOut.style.color = "var(--accent-gold)";
             document.getElementById('swap-out').style.color = "var(--accent-gold)";
         }
