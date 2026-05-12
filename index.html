@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>sk8dao 2.0 | THE SENATE CHAMBER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>sk8dao | THE SENATE CHAMBER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- GLOBAL VARIABLES --- */
+        /* --- GLOBAL VARIABLES & FLUID SCALING --- */
         :root {
             --bg-deep: #050a1a;
-            --bg-panel: rgba(15, 26, 71, 0.98);
+            --bg-panel: rgba(15, 26, 71, 0.95);
             --accent-cyan: #00f0ff;
             --accent-pink: #ff0055;
             --accent-gold: #ffd700;
@@ -28,45 +28,16 @@
             --rarity-mythic: #ff00ff; 
             --rarity-insane: #ff0033; 
             --rarity-ridiculous: #ff007f; 
+            
+            /* SPACING SAFE ZONES */
+            --pad-safe: clamp(15px, 4vw, 40px);
+            --modal-pad: clamp(20px, 5vw, 40px);
         }
 
-        /* --- STAGE 2.0 NATIVE MOBILE VIEWPORT LOCK SYSTEM --- */
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        /* Prevent horizontal scroll on mobile */
         html, body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
+            overflow-x: hidden;
             width: 100%;
-            height: 100%;
-            overflow: hidden; /* Lock viewport bounce */
-        }
-
-        body { 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Inter', sans-serif; 
-        }
-
-        /* Standard App Shell wrapper framing iPhone/Android parameters */
-        #sk8dao-app-shell {
-            width: 100vw;
-            height: 100vh;
-            max-width: 430px;  /* iPhone Pro Max bounds */
-            max-height: 932px;
-            background-color: var(--bg-deep);
-            background-image: radial-gradient(circle at 50% 50%, #162a5e 0%, #050a1a 100%);
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border-left: 1px solid rgba(255,234,0,0.1);
-            border-right: 1px solid rgba(255,234,0,0.1);
         }
 
         /* --- CYBER-YELLOW FRAME PROTOCOL --- */
@@ -140,415 +111,290 @@
         .card-glow-ridiculous .rarity-header { background: var(--rarity-ridiculous) !important; color: #fff !important; box-shadow: 0 0 40px rgba(255, 0, 127, 0.9) !important; }
         .card-glow-ridiculous .skate-img { filter: drop-shadow(0 0 20px rgba(255, 0, 127, 1)); }
 
-        /* --- HEADER MANAGEMENT (MOBILE FIRST) --- */
+        /* --- BASE BODY & LAYOUT --- */
+        body { 
+            background-color: var(--bg-deep);
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background-image: radial-gradient(circle at 50% 50%, #162a5e 0%, #050a1a 100%); 
+            background-attachment: fixed; 
+            min-height: 100vh;
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        /* --- HEADER & NAV --- */
         header { 
-            background: rgba(0, 0, 0, 0.95);
-            padding: 12px 16px; 
+            background: rgba(0, 0, 0, 0.9);
+            padding: clamp(10px, 2vw, 15px) var(--pad-safe); 
+            display: flex; 
+            justify-content: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            backdrop-filter: blur(10px); 
+            border-bottom: 2px solid var(--accent-cyber-yellow);
+            box-shadow: 0 5px 20px rgba(255, 234, 0, 0.1);
+        }
+        .header-inner { 
+            width: 100%; 
+            max-width: 1400px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border-bottom: 2px solid var(--accent-cyber-yellow);
-            box-shadow: 0 3px 15px rgba(255, 234, 0, 0.15);
-            position: relative;
-            z-index: 1100;
-            flex-shrink: 0;
         }
+        .senate-logo { 
+            margin: 0; 
+            font-family: 'Orbitron'; 
+            font-weight: 900; 
+            font-size: clamp(1.2rem, 3vw, 1.8rem); 
+            cursor: pointer; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 10px var(--accent-cyber-yellow), 0 0 20px var(--accent-cyber-yellow); 
+            color: var(--accent-cyber-yellow); 
+            text-transform: lowercase; 
+            z-index: 1100; /* Stays above mobile menu */
+        }
+        .senate-logo span { color: var(--accent-pink); text-shadow: 0 0 10px var(--accent-pink), 0 0 20px var(--accent-pink); }
+
+        /* --- DESKTOP NAV --- */
+        nav { display: flex; align-items: center; }
+        nav ul { display: flex; list-style: none; gap: clamp(10px, 1.5vw, 18px); margin: 0; padding: 0; }
+        nav a { color: #888; text-decoration: none; font-family: 'Orbitron'; font-size: clamp(0.65rem, 1vw, 0.75rem); font-weight: 900; letter-spacing: 2px; padding-bottom: 5px; transition: 0.2s; }
+        nav a.active, nav a:hover { color: var(--accent-cyber-yellow); text-shadow: 0 0 8px var(--accent-cyber-yellow); border-bottom: 2px solid var(--accent-cyber-yellow); }
         
-        .header-inner {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .senate-logo { margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: 1.4rem; cursor: pointer; letter-spacing: 1px; text-shadow: 0 0 10px var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); text-transform: lowercase; }
-
-        /* --- MOBILE HAMBURGER MECHANICS --- */
-        .hamburger-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            padding: 5px;
-            z-index: 1200;
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background-color: var(--accent-cyber-yellow);
-            transition: 0.3s;
-            box-shadow: 0 0 5px var(--accent-cyber-yellow);
-        }
+        .header-controls { display: flex; align-items: center; gap: clamp(5px, 1vw, 10px); z-index: 1100; }
         
-        /* Hamburger Morph States */
-        .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        .hamburger-btn.open span:nth-child(2) { opacity: 0; }
-        .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-        /* Full Screen Native Panel Menu */
-        nav {
-            position: absolute;
-            top: 0;
-            right: -100%;
-            width: 75%;
-            height: 100vh;
-            background: var(--bg-panel);
-            backdrop-filter: blur(15px);
-            z-index: 1050;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 2px solid var(--accent-cyber-yellow);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-            padding: 80px 24px 24px 24px;
-        }
-        nav.open { right: 0; }
-        nav ul { display: flex; flex-direction: column; list-style: none; gap: 24px; margin: 0; padding: 0; }
-        nav a { color: #888; text-decoration: none; font-family: 'Orbitron'; font-size: 1.1rem; font-weight: 900; letter-spacing: 2px; transition: 0.2s; display: block; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        nav a.active, nav a:hover { color: var(--accent-cyber-yellow); text-shadow: 0 0 8px var(--accent-cyber-yellow); }
-
-        /* UI Control Clusters */
-        .header-controls { display: flex; gap: 8px; align-items: center; }
-        .balance-pill { background: rgba(255, 234, 0, 0.05); border: 1px solid var(--accent-cyber-yellow); padding: 4px 10px; border-radius: 50px; font-family: 'Orbitron'; font-size: 0.55rem; display: flex; flex-direction: column; gap: 2px; }
+        .balance-pill { background: rgba(255, 234, 0, 0.05); border: 1px solid var(--accent-cyber-yellow); padding: 6px clamp(10px, 1.5vw, 15px); border-radius: 50px; font-family: 'Orbitron'; font-size: clamp(0.55rem, 1vw, 0.65rem); display: flex; gap: clamp(5px, 1vw, 15px); }
         .balance-pill span { color: var(--accent-gold); font-weight: 900; }
-        .wallet-btn { background: var(--accent-cyber-yellow); color: #000; border: none; padding: 6px 12px; font-family: 'Orbitron'; font-size: 0.65rem; font-weight: 900; cursor: pointer; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); }
+        
+        .wallet-btn { background: var(--accent-cyber-yellow); color: #000; border: none; padding: 10px clamp(12px, 2vw, 20px); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(0.65rem, 1vw, 0.85rem); cursor: pointer; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); transition: 0.2s; white-space: nowrap; }
+        .wallet-btn:hover { background: #fff; }
+        .wallet-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
 
-        /* --- CONTENT AREAS BOUNDED CONTROL --- */
-        .content-scroll-container {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; /* Fast mobile inertia scrolling */
-            padding-bottom: 40px;
+        /* --- MOBILE HAMBURGER & OVERLAY MATRIX --- */
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--accent-cyber-yellow);
+            cursor: pointer;
+            z-index: 1100;
+            user-select: none;
+            text-shadow: 0 0 10px var(--accent-cyber-yellow);
         }
 
-        .dashboard-wrapper { padding: 16px; width: 100%; box-sizing: border-box; }
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 16px; } /* Single column native view stack */
+        @media (max-width: 900px) {
+            .hamburger { display: block; }
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(5, 10, 26, 0.98);
+                backdrop-filter: blur(15px);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transform: translateY(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1050;
+                border-bottom: 2px solid var(--accent-cyber-yellow);
+            }
+            nav.nav-active {
+                transform: translateY(0);
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            nav a {
+                font-size: 1.5rem;
+            }
+            .header-controls {
+                flex-direction: column-reverse;
+                align-items: flex-end;
+            }
+            .balance-pill { 
+                display: none !important; /* Hide balance on small mobile header to save space, rely on treasury dash */
+            } 
+        }
+
+        /* --- LAYOUT WRAPPERS --- */
+        .dashboard-wrapper { padding: var(--pad-safe); max-width: 1400px; margin: auto; flex: 1; width: 100%; box-sizing: border-box; position: relative; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(15px, 3vw, 30px); }
         
-        .master-dash-btn { background: rgba(0, 0, 0, 0.6); color: #fff; border: 1px solid var(--accent-cyber-yellow); padding: 12px 20px; font-family: 'Orbitron'; font-weight: 900; font-size: 0.8rem; width: 100%; cursor: pointer; transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); text-align: center; }
-        .master-dash-btn:hover { background: var(--accent-cyber-yellow); color: #000; }
+        /* --- INVENTORY CARDS --- */
+        .skate-card { background: var(--bg-panel); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s; width: 100%; box-sizing: border-box; }
+        .skate-card:hover { transform: translateY(-5px); border-color: var(--accent-gold); box-shadow: 0 5px 20px rgba(255,215,0,0.15); }
+        .rarity-header { padding: clamp(8px, 2vw, 12px) clamp(10px, 2vw, 15px); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 10; border-bottom: 2px solid rgba(255,255,255,0.4); }
+        .rarity-header-text { font-family: 'Orbitron'; font-size: clamp(0.7rem, 2vw, 0.8rem); font-weight: 900; letter-spacing: 2px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 2px; line-height: 1; text-transform: uppercase; }
+        .mint-badge { background: #000; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: clamp(0.55rem, 1.5vw, 0.65rem); font-family: 'Orbitron'; font-weight: 900; border: 1px solid rgba(255,255,255,0.3); box-shadow: inset 0 0 5px rgba(255,255,255,0.2); }
+        .img-wrap { width: 100%; height: clamp(150px, 25vw, 200px); display: flex; justify-content: center; align-items: center; background: #000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .skate-img { max-height: 85%; max-width: 85%; object-fit: contain; }
+        .card-body { padding: clamp(15px, 3vw, 20px); flex: 1; }
+        .board-name { font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.1rem, 3vw, 1.4rem); margin: 0 0 15px 0; text-transform: uppercase; line-height: 1.1; color: var(--accent-cyber-yellow); }
+        .meta-title { font-family: 'Orbitron'; font-weight: 400; font-size: 0.6rem; color: #888; letter-spacing: 2px; margin-bottom: 6px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px; text-transform: uppercase; }
+        .stat-bar-container { width: 100%; height: 6px; background: #111; border: 1px solid #333; border-radius: 3px; margin-top: 3px; overflow: hidden; }
+        .stat-bar { height: 100%; transition: width 0.5s ease-out; }
+        .stat-pop { background: linear-gradient(90deg, #ff0055, #ff55aa); }
+        .stat-balance { background: linear-gradient(90deg, #aa00ff, #e066ff); }
+        .stat-speed { background: linear-gradient(90deg, #00aaff, #00ffff); }
+        .stat-total { background: linear-gradient(90deg, #ffaa00, #ffff00); }
+        .claim-zone { padding: 15px clamp(15px, 3vw, 20px); background: rgba(0,0,0,0.8); border-top: 1px solid var(--accent-gold); display: flex; justify-content: space-between; align-items: center; }
+        .reward-skate { font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.2rem, 3vw, 1.5rem); color: #fff; line-height: 1; margin-bottom: 4px; }
+        .reward-wax { font-family: 'Inter'; font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; }
+        .skate-icon { width: clamp(20px, 4vw, 26px); height: clamp(20px, 4vw, 26px); vertical-align: middle; margin-right: 8px; }
+
+        /* --- CRAFTING --- */
+        .crafting-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: clamp(15px, 3vw, 30px); background: rgba(0,0,0,0.5); padding: clamp(15px, 4vw, 30px); border-radius: 12px; border: 1px solid var(--accent-cyber-yellow); box-sizing: border-box; }
+        .craft-slot { background: rgba(255, 234, 0, 0.05); border: 1px solid var(--card-border); padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        .craft-slot h4 { margin: 0 0 10px 0; color: var(--accent-cyber-yellow); font-family: 'Orbitron'; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; }
+        .craft-slot select { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #333; font-size: 0.8rem; margin-bottom: 5px; outline: none; box-sizing: border-box; }
+        .projected-stats { background: #000; padding: clamp(15px, 4vw, 25px); border-radius: 8px; border: 1px solid var(--accent-gold); display: flex; flex-direction: column; justify-content: space-between; }
+        .nft-visual-thumbnail { width: clamp(35px, 8vw, 45px); height: clamp(35px, 8vw, 45px); object-fit: contain; background: #111; border: 1px solid var(--accent-cyber-yellow); border-radius: 4px; padding: 3px; }
+
+        /* --- MODALS CSS SCALING (Add this to the Modals section later, or replace existing rules) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--bg-panel); padding: var(--modal-pad); border-radius: 15px; border: 2px solid var(--accent-cyber-yellow); text-align: center; box-shadow: 0 0 30px rgba(255, 234, 0, 0.15); max-height: 90vh; overflow-y: auto; box-sizing: border-box; width: 90%; max-width: 450px; }
+        .modal-content h2 { font-size: clamp(1.4rem, 5vw, 2.2rem) !important; }
+        .modal-content p { font-size: clamp(0.75rem, 3vw, 0.85rem) !important; }
+
+        /* --- SENATE UI CLASSES (DAO V3 MATRIX) --- */
+        .senate-jumbotron { width: 100%; border: 2px solid var(--accent-cyber-yellow); border-radius: 8px; overflow: hidden; margin-bottom: clamp(20px, 4vw, 40px); box-shadow: 0 0 30px rgba(255, 234, 0, 0.2); background: #000; }
+        .senate-jumbotron img { width: 100%; display: block; max-height: clamp(150px, 30vw, 400px); object-fit: cover; opacity: 0.9; }
+        
+        .dao-hud-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: clamp(10px, 2vw, 20px); margin-bottom: clamp(20px, 4vw, 40px); }
+        .dao-hud-card { background: linear-gradient(180deg, rgba(15,26,71,0.9), rgba(5,10,26,0.9)); border: 2px solid #333; border-radius: 8px; padding: clamp(15px, 3vw, 20px); text-align: center; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); position: relative; overflow: hidden; }
+        .dao-hud-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); }
+        .dao-hud-card.active-rank { border-color: var(--accent-cyber-yellow); box-shadow: inset 0 0 40px rgba(255, 234, 0, 0.1); }
+        .dao-hud-card.active-rank::before { background: linear-gradient(90deg, transparent, var(--accent-cyber-yellow), transparent); }
+
+        /* --- NEW: 6-BUTTON DAO CONTROL GRID --- */
+        .dao-controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: clamp(10px, 2vw, 15px); margin-bottom: 30px; }
+        
+        .motion-card { background: linear-gradient(180deg, #111, #000); border: 2px solid #333; border-radius: 12px; padding: clamp(15px, 4vw, 30px); position: relative; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box; width: 100%; }
+        .motion-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: repeating-linear-gradient(90deg, #333, #333 10px, transparent 10px, transparent 20px); }
+        .motion-card.tipped { border-color: var(--accent-gold); box-shadow: 0 0 25px rgba(255,215,0,0.15); }
+        .motion-timer { font-family: 'Orbitron'; font-weight: 900; font-size: clamp(0.7rem, 2vw, 0.9rem); position: absolute; top: clamp(10px, 3vw, 25px); right: clamp(10px, 3vw, 25px); display: flex; align-items: center; gap: 5px; background: #000; padding: 5px 10px; border-radius: 4px; border: 1px solid #333;}
+        .motion-timer.safe { color: #00ffaa; border-color: rgba(0,255,170,0.3); }
+        .motion-timer.danger { color: var(--accent-pink); animation: pulse 1.5s infinite; border-color: rgba(255,0,85,0.3); }
+        
+        .motion-data-hud { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; background: rgba(0,0,0,0.5); border: 1px solid #222; border-radius: 6px; padding: clamp(10px, 3vw, 15px); margin: 20px 0; }
+        .motion-data-stat { text-align: center; border-right: 1px dashed #333; padding: 5px; }
+        .motion-data-stat:last-child { border-right: none; }
+        .motion-data-label { font-family: 'Orbitron'; font-size: clamp(0.55rem, 1.5vw, 0.6rem); color: #888; margin-bottom: 5px; letter-spacing: 1px; }
+        .motion-data-val { font-family: 'Orbitron'; font-size: clamp(0.9rem, 2vw, 1.1rem); color: #fff; font-weight: 900; }
+
+        .vote-bar-bg { width: 100%; height: clamp(8px, 2vw, 12px); background: rgba(255, 0, 85, 0.2); border-radius: 6px; margin: 15px 0; display: flex; overflow: hidden; border: 1px solid #333; }
+        .vote-bar-yes { height: 100%; background: linear-gradient(90deg, #00aa77, #00ffaa); transition: width 0.5s; box-shadow: 0 0 10px rgba(0,255,170,0.5); }
+        
+        .dao-action-btn { background: #000; border: 2px solid #555; color: #fff; font-family: 'Orbitron'; font-size: clamp(0.7rem, 2vw, 0.8rem); font-weight: 900; padding: clamp(10px, 2vw, 15px); cursor: pointer; transition: 0.2s; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; flex: 1; text-align: center; white-space: normal; line-height: 1.3;}
+        .dao-action-btn:hover { transform: translateY(-2px); }
+        .btn-yes { border-color: #00ffaa; color: #00ffaa; box-shadow: inset 0 0 10px rgba(0,255,170,0.1); } 
+        .btn-yes:hover { background: #00ffaa; color: #000; box-shadow: 0 0 15px rgba(0,255,170,0.4); }
+        .btn-no { border-color: var(--accent-pink); color: var(--accent-pink); box-shadow: inset 0 0 10px rgba(255,0,85,0.1);} 
+        .btn-no:hover { background: var(--accent-pink); color: #000; box-shadow: 0 0 15px rgba(255,0,85,0.4); }
+
+        /* --- LEGISLATIVE DRAFT & SLIDER INTERFACES --- */
+        .proposal-input { width: 100%; padding: clamp(10px, 3vw, 15px); background: #000; border: 1px solid #333; color: #fff; font-family: 'Inter', sans-serif; font-size: clamp(0.85rem, 2vw, 0.95rem); border-radius: 4px; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        .proposal-input:focus { border-color: var(--accent-cyber-yellow); }
+        .slider-box { background: rgba(0,0,0,0.5); border: 1px solid #222; padding: clamp(10px, 3vw, 15px); border-radius: 6px; margin: 15px 0; display: flex; align-items: center; gap: clamp(8px, 2vw, 15px); justify-content: space-between; flex-wrap: wrap;}
+        .weight-slider { -webkit-appearance: none; appearance: none; flex: 1; min-width: 150px; height: 8px; border-radius: 4px; background: #111; outline: none; border: 1px solid #333; }
+        .weight-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: clamp(16px, 4vw, 20px); height: clamp(16px, 4vw, 20px); border-radius: 50%; background: var(--accent-cyber-yellow); border: 2px solid #000; cursor: pointer; box-shadow: 0 0 10px var(--accent-cyber-yellow); }
+        .treasury-link-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: transparent; border: 1px solid var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); font-family: 'Orbitron'; font-size: clamp(0.65rem, 2vw, 0.75rem); font-weight: 900; padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 18px); border-radius: 4px; cursor: pointer; text-decoration: none; transition: 0.2s; margin-top: 10px; width: 100%; box-sizing: border-box;}
+        .treasury-link-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 15px var(--accent-cyber-yellow); }
+
+        /* --- BRAND DASHBOARD HUD --- */
+        .brand-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: clamp(10px, 3vw, 20px); margin-bottom: 40px; }
+        .brand-card { background: rgba(0,0,0,0.8); border: 1px solid #333; border-radius: 8px; padding: clamp(15px, 3vw, 20px); text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .brand-card:hover { border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0,240,255,0.2); transform: translateY(-3px); }
+        .brand-name { font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1rem, 3vw, 1.2rem); color: #fff; margin-bottom: 5px; text-transform: uppercase; }
+        .brand-status { font-size: clamp(0.55rem, 1.5vw, 0.65rem); color: var(--accent-gold); font-family: 'Inter'; font-weight: 900; letter-spacing: 1px; }
+
+        @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 5px rgba(255,0,85,0); } 50% { opacity: 0.7; box-shadow: 0 0 15px rgba(255,0,85,0.5); } 100% { opacity: 1; box-shadow: 0 0 5px rgba(255,0,85,0); } }
+
+        /* --- SK8SWAP & COMPONENTS --- */
+        .sk8swap-terminal { background: rgba(0, 0, 0, 0.8); border: 2px solid var(--accent-cyber-yellow); border-radius: 12px; padding: clamp(20px, 5vw, 40px); max-width: 600px; margin: 0 auto 50px auto; box-shadow: 0 0 30px rgba(255, 234, 0, 0.15); position: relative; box-sizing: border-box; width: 100%;}
+        .swap-input-group { background: #050a1a; border: 1px solid #333; border-radius: 8px; padding: clamp(10px, 3vw, 15px) clamp(10px, 3vw, 20px); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        .swap-input-group input { background: transparent; border: none; color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 5vw, 1.8rem); width: 100%; max-width: 50%; outline: none; }
+        .token-selector { display: flex; align-items: center; gap: clamp(4px, 1vw, 8px); background: rgba(0,0,0,0.5); border: 1px solid #333; padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 15px); border-radius: 50px; cursor: pointer; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(0.75rem, 2vw, 1rem); transition: 0.2s; white-space: nowrap;}
+        .token-selector:hover { border-color: var(--accent-cyber-yellow); }
+        .swap-toggle-wrap { text-align: center; margin: clamp(5px, 2vw, 10px) 0; position: relative; z-index: 10; }
+        .swap-toggle-btn { background: #050a1a; border: 1px solid var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); border-radius: 50%; width: clamp(35px, 8vw, 40px); height: clamp(35px, 8vw, 40px); display: inline-flex; justify-content: center; align-items: center; font-size: clamp(1rem, 3vw, 1.2rem); cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(255, 234, 0, 0.2); }
+        .swap-toggle-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 20px var(--accent-cyber-yellow); transform: rotate(180deg); }
+        .slip-btn { background: transparent; border: 1px solid #333; color: #888; padding: clamp(4px, 1vw, 5px) clamp(8px, 2vw, 12px); font-family: 'Orbitron'; font-size: clamp(0.6rem, 1.5vw, 0.75rem); cursor: pointer; border-radius: 4px; transition: 0.2s; }
+        .slip-btn.active-slip { border-color: var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); background: rgba(255, 234, 0, 0.1); font-weight: 900; }
+        .hud-pill { background: rgba(255, 234, 0, 0.05); border: 1px solid var(--accent-cyber-yellow); border-radius: 50px; padding: clamp(5px, 1.5vw, 8px) clamp(12px, 3vw, 20px); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(0.65rem, 1.5vw, 0.8rem); color: #888; display: inline-block; margin: 5px; }
+        .hud-pill span { color: #fff; margin-left: clamp(5px, 1.5vw, 10px); }
+        .caution-tape { height: 15px; width: 100%; background: repeating-linear-gradient(45deg, #000, #000 15px, var(--accent-gold) 15px, var(--accent-gold) 30px); }
+        
+        .swap-details-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 5px; flex-wrap: wrap; gap: 10px; }
+
+        /* --- SK8SHOP UPGRADES --- */
+        .video-embed-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border: 2px solid #333; border-radius: 8px; background: #000; }
+        .video-embed-wrapper iframe, .video-embed-wrapper video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .video-embed-wrapper:hover { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2); }
+
+        /* --- FOOTER & MISC BUTTONS --- */
+        footer { background: rgba(0, 0, 0, 0.95); padding: clamp(20px, 4vw, 40px) var(--pad-safe); margin-top: auto; border-top: 2px solid var(--accent-cyber-yellow); display: flex; justify-content: center; backdrop-filter: blur(10px); }
+        .footer-inner { width: 100%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-brand { font-family: 'Orbitron'; font-size: clamp(0.55rem, 1.5vw, 0.65rem); color: #888; letter-spacing: 2px; line-height: 1.8; text-align: center; flex: 1 1 100%; }
+        .footer-brand span { color: var(--accent-gold); font-weight: 900; }
+        .footer-logos { display: flex; gap: 25px; align-items: center; justify-content: center; flex: 1 1 100%; }
+        .footer-logos img { height: clamp(20px, 4vw, 28px); opacity: 0.5; filter: grayscale(100%); transition: all 0.3s ease; }
+        .footer-logos img:hover { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
+
+        @media (min-width: 768px) {
+            .footer-brand { flex: 1; text-align: left; }
+            .footer-logos { flex: 0; justify-content: flex-end; }
+        }
+
+        .master-dash-btn { background: rgba(0, 0, 0, 0.6); color: #fff; border: 1px solid var(--accent-cyber-yellow); padding: clamp(12px, 3vw, 15px) clamp(15px, 4vw, 25px); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(0.75rem, 2vw, 0.85rem); cursor: pointer; transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); box-sizing: border-box; width: 100%; }
+        @media (min-width: 768px) { .master-dash-btn { width: auto; } }
+        .master-dash-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 15px var(--accent-cyber-yellow); }
         .master-dash-btn.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+        .master-dash-btn.gold:hover { background: var(--accent-gold); color: #000; box-shadow: 0 0 15px var(--accent-gold); }
 
-        #dapp-back-btn { display: none; position: absolute; bottom: 20px; left: 16px; z-index: 1000; background: rgba(0,0,0,0.9); color: var(--accent-cyber-yellow); border: 2px solid var(--accent-cyber-yellow); padding: 10px 18px; font-family: 'Orbitron'; font-size: 0.8rem; font-weight: 900; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+        #dapp-back-btn { display: none; position: fixed; top: 120px; left: clamp(15px, 4vw, 40px); z-index: 999; background: rgba(0,0,0,0.85); color: var(--accent-cyber-yellow); border: 2px solid var(--accent-cyber-yellow); padding: 12px 25px; font-family: 'Orbitron'; font-size: clamp(0.75rem, 2vw, 0.9rem); font-weight: 900; cursor: pointer; backdrop-filter: blur(8px); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: 0.2s; }
+        #dapp-back-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 25px var(--accent-cyber-yellow); }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        /* Mobile specific overrides */
+        @media (max-width: 768px) {
+            #dapp-back-btn { top: auto; bottom: 20px; left: 20px; z-index: 2000; }
+        }
     </style>
-</head>
-<body>
 
-<div id="sk8dao-app-shell">
     <header>
-        <div class="header-inner">
-            <h1 class="senate-logo" onclick="switchCategory('home'); toggleMenu(true);">sk8dao</h1>
-            <div class="header-controls">
-                <div id="wallet-balances" class="balance-pill" style="display: none;">
-                    <div>WAX: <span id="wax-bal">0.00</span></div>
-                    <div>SKATE: <span id="skate-bal">0.00</span></div>
-                </div>
-                <button id="connect-btn" class="wallet-btn" onclick="toggleAuthModal()">CONNECT</button>
-                
-                <button class="hamburger-btn" id="menu-toggle-btn" onclick="toggleMenu()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
+    <div class="header-inner">
+        <h1 class="senate-logo" onclick="switchCategory('home'); window.scrollTo(0,0);">sk8dao<span>.</span></h1>
         
-        <nav id="mobile-navigation">
+        <div class="hamburger" id="mobile-menu-btn">☰</div>
+        
+        <nav id="main-nav">
             <ul>
-                <li><a href="#home" onclick="switchCategory('home'); toggleMenu(true); return false;" id="nav-home" class="active">HOME</a></li>
-                <li><a href="#videos" onclick="switchCategory('clips'); toggleMenu(true); return false;" id="nav-clips">VIDEOS</a></li>
-                <li><a href="#defi" onclick="switchCategory('defi'); toggleMenu(true); return false;" id="nav-defi">DEFI</a></li>
-                <li><a href="#treasury" onclick="switchCategory('treasury'); toggleMenu(true); return false;" id="nav-treasury">TREASURY</a></li>
-                <li><a href="#dao" onclick="switchCategory('dao'); toggleMenu(true); return false;" id="nav-dao">DAO</a></li>
-                <li><a href="#sk8shop" onclick="switchCategory('sk8shop'); toggleMenu(true); return false;" id="nav-sk8shop">SK8SHOP</a></li>
+                <li><a href="#home" onclick="switchCategory('home'); return false;" id="nav-home" class="active">HOME</a></li>
+                <li><a href="#videos" onclick="switchCategory('clips'); return false;" id="nav-clips">VIDEOS</a></li>
+                <li><a href="#defi" onclick="switchCategory('defi'); return false;" id="nav-defi">DEFI</a></li>
+                <li><a href="#treasury" onclick="switchCategory('treasury'); return false;" id="nav-treasury">TREASURY</a></li>
+                <li><a href="#dao" onclick="switchCategory('dao'); return false;" id="nav-dao">DAO</a></li>
+                <li><a href="#sk8shop" onclick="switchCategory('sk8shop'); return false;" id="nav-sk8shop">SK8SHOP</a></li>
             </ul>
         </nav>
-    </header>
-
-    <div class="content-scroll-container" id="app-content-scroll">
-
-        <button id="dapp-back-btn" onclick="goBack()">[ &lt; BACK ]</button>
-
-        <div id="trunk-modal" class="modal-overlay">
-            <div class="modal-content cyber-yellow-frame" style="max-width: 360px; width: 92%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); margin: 0 0 10px 0; font-size: 1.6rem; letter-spacing: 1px;">THE TRUNK</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-bottom: 20px;">Access your raw components, complete setups, or head to the bench to craft a new deck.</p>
-                
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('skateboards'); return false;">SKATEBOARDS</button>
-                    <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('decks'); return false;">DECKS</button>
-                    <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('wheels'); return false;">WHEELS</button>
-                    <button class="master-dash-btn" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('trucks'); return false;">TRUCKS</button>
-                    <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('builder'); return false;" style="margin-top: 5px;">⚙️ FABRICATOR BENCH</button>
-                </div>
-                
-                <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ CLOSE ]</button>
+        
+        <div class="header-controls">
+            <div id="wallet-balances" class="balance-pill" style="display: none;">
+                <div>WAX: <span id="wax-bal">0.00</span></div>
+                <div>SKATE: <span id="skate-bal">0.00</span></div>
             </div>
+            <button id="connect-btn" class="wallet-btn" onclick="toggleAuthModal()">CONNECT</button>
         </div>
-
-        <div id="brand-detail-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-cyan); max-width: 360px; width: 92%;">
-                <h2 id="brand-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyan); margin: 0 0 5px 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">BRAND</h2>
-                <div style="font-family:'Orbitron'; font-size: 0.65rem; color: var(--accent-gold); margin-bottom: 15px; letter-spacing: 1px; font-weight: 900;">OFFICIAL PROTOCOL SPONSOR</div>
-                <p id="brand-modal-desc" style="color: #ccc; font-size: 0.8rem; line-height: 1.5; margin-bottom: 20px; text-align: left;">Brand transmission locked. Decrypting protocol data...</p>
-                <button class="wallet-btn" onclick="openStoreComingSoon()" style="width: 100%; background: var(--accent-cyan); color: #000; padding: 12px; font-size: 0.95rem; margin-bottom: 12px; font-family: 'Orbitron'; font-weight: 900;">ENTER STORE</button>
-                <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ BAIL ]</button>
-            </div>
-        </div>
-
-        <div id="store-coming-soon-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-gold); max-width: 360px; width: 92%; background-image: radial-gradient(circle at 50% 0%, #3a3200 0%, var(--bg-panel) 60%); box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);">
-                <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu" alt="SK8COIN LOGO" style="height: 70px; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); margin: 0 0 5px 0; font-size: 1.8rem; text-shadow: 0 0 10px rgba(255,215,0,0.4);">COMING SOON</h2>
-                <p style="color: #fff; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 20px;">JOIN THE REVOLUTION</p>
-                <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ BAIL ]</button>
-            </div>
-        </div>
-
-        <div id="draft-motion-modal" class="modal-overlay">
-            <div class="modal-content cyber-yellow-frame" style="max-width: 360px; width: 92%; background: #050a1a;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); margin: 0 0 10px 0; font-size: 1.4rem; letter-spacing: 1px;">📝 DRAFT MOTION</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.4; margin-bottom: 15px; text-align: left;">Filing Fee: <strong>1,000 $SKATE</strong>. Your motion will register imminently to the consensus ledger.</p>
-                
-                <div style="text-align: left;">
-                    <input type="text" id="bill-proposal-title" class="proposal-input" style="padding: 10px; font-size: 0.85rem; margin-bottom: 10px;" placeholder="MOTION TITLE (e.g. SCP-13)">
-                    <textarea id="bill-proposal-desc" class="proposal-input" rows="3" style="padding: 10px; font-size: 0.85rem; margin-bottom: 15px;" placeholder="Explain the parameters, the funding route, and ecosystem impact..."></textarea>
-                </div>
-                
-                <button class="wallet-btn" onclick="executeOnChainProposal()" style="width: 100%; background: var(--accent-cyber-yellow); color:#000; padding: 12px; font-size: 0.9rem; font-family: 'Orbitron'; margin-bottom: 12px;">SUBMIT MOTION (1,000 $SKATE)</button>
-                <a href="https://wax.bloks.io/account/skatecoinwax" target="_blank" class="treasury-link-btn" style="display: block; text-align: center; margin: 0 auto 15px auto; font-size: 0.7rem; padding: 8px 12px; width: max-content;">🔗 VIEW LEDGER Vault</a>
-                
-                <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ BAIL ]</button>
-            </div>
-        </div>
-
-        <div id="active-motions-modal" class="modal-overlay">
-            <div class="modal-content" style="max-width: 380px; width: 94%; height: 80vh; border-color: var(--accent-cyan); background: #050a1a; display: flex; flex-direction: column; overflow: hidden; padding: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); padding-bottom: 12px; margin-bottom: 15px; flex-shrink: 0;">
-                    <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyan); margin: 0; font-size: 1.1rem; letter-spacing: 1px;">DAO SUPREME COURT FLOOR</h2>
-                    <button onclick="closeModals()" style="background:transparent; color:var(--accent-pink); border: 1px solid var(--accent-pink); padding: 4px 10px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.7rem; border-radius: 4px;">EXIT</button>
-                </div>
-                
-                <div id="active-motions-list" style="flex: 1; overflow-y: auto; padding-right: 4px; text-align: left; -webkit-overflow-scrolling: touch;">
-                    <div style="text-align:center; color:var(--accent-cyan); padding: 30px; font-family:'Orbitron'; font-size: 0.8rem;">INTERCEPTING SUPREME COURT LEDGER...</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="dao-skater-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--rarity-epic); max-width: 340px; width: 90%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--rarity-epic); margin: 0 0 10px 0; font-size: 1.3rem;">SKATER MATRIX</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-bottom: 20px;">Sponsor direct allocations and skater tier upgrades are managed here. Await protocol sync.</p>
-                <button onclick="closeModals()" class="wallet-btn" style="background: var(--rarity-epic); color: #fff; font-size: 0.75rem; padding: 8px 16px;">CLOSE</button>
-            </div>
-        </div>
-
-        <div id="dao-footy-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-cyan); max-width: 340px; width: 90%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyan); margin: 0 0 10px 0; font-size: 1.3rem;">FOOTY PIPELINE</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-bottom: 20px;">Review and authenticate raw video submissions for decentralized rewards. Await protocol sync.</p>
-                <button onclick="closeModals()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.75rem; padding: 8px 16px;">CLOSE</button>
-            </div>
-        </div>
-
-        <div id="dao-treasury-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-gold); max-width: 340px; width: 90%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); margin: 0 0 10px 0; font-size: 1.3rem;">TREASURY ROUTING</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-bottom: 20px;">Propose direct liquidity transfers from the central vault to verified street projects.</p>
-                <button onclick="closeModals()" class="wallet-btn" style="background: var(--accent-gold); color: #000; font-size: 0.75rem; padding: 8px 16px;">CLOSE</button>
-            </div>
-        </div>
-
-        <div id="dao-veto-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-pink); max-width: 340px; width: 90%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin: 0 0 10px 0; font-size: 1.3rem;">VETO TERMINAL</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-bottom: 20px;">Emergency powers terminal for ELITE and LEGENDARY rank holders to stall malicious motions.</p>
-                <button onclick="closeModals()" class="wallet-btn" style="background: var(--accent-pink); color: #fff; font-size: 0.75rem; padding: 8px 16px;">CLOSE</button>
-            </div>
-        </div>
-
-        <div id="vip-ticket-modal" class="modal-overlay">
-            <div class="modal-content cyber-yellow-frame" style="width: 92%; max-width: 360px; padding: 20px; background: #050a1a;">
-                <h2 style="font-family:'Orbitron'; color:var(--accent-cyber-yellow); margin: 0 0 12px 0; font-size: 1.2rem; text-shadow: 0 0 10px var(--accent-cyber-yellow); font-weight: 900; text-transform: uppercase;">🎟️ CLOSED BETA VIP ACCESS</h2>
-                
-                <div style="max-height: 280px; overflow-y: auto; padding-right: 4px; font-size: 0.75rem; line-height: 1.4; color: #ccc; text-align: left; margin-bottom: 15px; -webkit-overflow-scrolling: touch;">
-                    <p style="margin-top: 0;">There are 85 million skaters worldwide driving an $8 billion industry, all chasing one thing: Glory on the streets and resources to keep skating. But the corporate suits extract all the value. <a href="https://www.sk8coin.com" target="_blank" style="color: var(--accent-cyber-yellow); font-weight: 900;">sk8coin</a> rewrites the configuration matrix.</p>
-                    <div style="color: #00ffaa; font-family: 'Orbitron'; font-size: 0.65rem; font-weight: 900; margin-bottom: 4px;">DISCLAIMER</div>
-                    <p style="margin-top: 0; color: #aaa;">This is a gamified decentralized micro sponsorship economy. Utility mechanics driver only. Not financial asset validation advice.</p>
-                    <p style="margin-bottom: 0;">Poser tracking detection modules are active on the chain architecture. Build, support, and execute to secure higher rank tiers.</p>
-                </div>
-                
-                <div style="margin-bottom: 15px; text-align: left; display: flex; align-items: flex-start; gap: 8px; background: rgba(255, 234, 0, 0.05); padding: 10px; border: 1px solid var(--accent-cyber-yellow); border-radius: 4px;">
-                    <input type="checkbox" id="vip-agree-checkbox" onchange="document.getElementById('login-trigger-vip').disabled = !this.checked" style="margin-top: 2px; transform: scale(1.1); cursor: pointer; accent-color: var(--accent-cyber-yellow);">
-                    <label for="vip-agree-checkbox" style="color: #fff; font-size: 0.65rem; font-family: 'Inter'; font-weight: 900; cursor: pointer; line-height: 1.3; text-transform: uppercase;">I UNDERSTAND THE RISKS.<br>I AM READY TO PLAY.</label>
-                </div>
-                <button class="wallet-btn" id="login-trigger-vip" disabled style="width: 100%; font-size: 0.85rem; padding: 12px; margin-bottom: 8px; font-family:'Orbitron';">ENTER THE PROTOCOL</button>
-                <button onclick="continueAsGuest()" style="background:transparent; color:#888; border:none; margin-top:5px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.7rem;">[ LURK IN GUEST MODE ]</button>
-            </div>
-        </div>
-
-        <div id="defi-warning-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: #ffaa00; max-width: 350px; width: 92%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:#ffaa00; margin: 0 0 10px 0; font-size: 1.2rem;">💵 ENTERING THE DEGEN ZONE</h2>
-                <div style="color: #ccc; font-size: 0.75rem; line-height: 1.5; margin-bottom: 20px; text-align: left; max-height: 240px; overflow-y: auto; padding-right: 4px;">
-                    <p style="margin-top: 0;">You are crossing into the decentralized ecosystem frame. Secure your private keys carefully. No backup recovery center protocol exists.</p>
-                    <p style="margin-bottom: 0;"><strong>SYMBIOTIC ECONOMY:</strong> Supplying vault liquidity and blessing upcoming clips updates profiles with unlockable NFT status tracking badges. Ride, support, and build or Poser designations lock to your signature matrix.</p>
-                </div>
-                <button class="wallet-btn" onclick="document.getElementById('defi-warning-modal').style.display='none';" style="width: 100%; background: #ffaa00; color: #000; font-family:'Orbitron'; font-weight:900; padding: 10px; font-size: 0.8rem;">CONFIRM TOKENOMICS ENTRANCE</button>
-            </div>
-        </div>
-
-        <div id="craft-confirm-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-gold); max-width: 350px; width: 92%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); margin: 0 0 10px 0; font-size: 1.3rem;">🛠️ IMMUTABLE CRAFT SEQUENCE</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.4; margin-bottom: 15px; text-align: left;">Fusing 7 components into an operational complete setup. Rarity matrix and performance properties configure instantly.</p>
-                <div style="background: rgba(0,0,0,0.6); padding: 10px; border: 1px solid var(--accent-gold); border-radius: 4px; margin-bottom: 15px;">
-                    <div style="font-family:'Orbitron'; font-size: 0.55rem; color: #888; margin-bottom: 2px;">NETWORK POWER GAS REQUIRED</div>
-                    <div id="modal-wax-fee" style="font-family:'Orbitron'; font-weight: 900; font-size: 1.5rem; color: #fff;">0 WAX</div>
-                </div>
-                <button class="wallet-btn" onclick="executeBlend()" style="width: 100%; background: var(--accent-gold); color: #000; font-family:'Orbitron'; font-weight:900; padding: 12px; font-size: 0.85rem;">EXECUTE ON-CHAIN FUSION</button>
-                <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:15px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ BAIL ]</button>
-            </div>
-        </div>
-
-        <div id="disconnect-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-pink); max-width: 340px; width: 90%;">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin: 0 0 10px 0; font-size: 1.3rem;">LOGOUT TERMINATION</h2>
-                <p style="color: #ccc; font-size: 0.75rem; line-height: 1.4; margin-bottom: 20px; text-align: left;">Bailing out? Guard your layout from corporate interception until you re-authenticate.</p>
-                <button class="wallet-btn" id="logout-trigger" style="width: 100%; background: rgba(255,0,85,0.1); border: 1px solid var(--accent-pink); color: var(--accent-pink); padding: 12px; font-family:'Orbitron'; font-weight:900; font-size: 0.85rem; margin-bottom: 12px;">DISCONNECT SESSION</button>
-                <button onclick="closeModals()" style="background:transparent; color:var(--accent-cyber-yellow); border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.8rem;">[ RETURN ]</button>
-            </div>
-        </div>
-
-        <div id="donation-tier-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-gold); max-width: 350px; width: 92%; background-image: radial-gradient(circle at 50% 0%, #3a3200 0%, var(--bg-panel) 60%);">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); margin: 0 0 10px 0; font-size: 1.3rem;">🙏 DISPATCH BLESSING</h2>
-                <div style="max-height: 160px; overflow-y: auto; font-size: 0.75rem; color: #ccc; line-height: 1.4; text-align: left; margin-bottom: 15px; padding-right: 4px; -webkit-overflow-scrolling: touch;">
-                    <p style="margin: 0;">Sponsorship routing targets real-time progression vectors. Select tracking tier parameters for: <span id="donation-currency-label" style="color:var(--accent-gold); font-weight:900;">WAX</span>.</p>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                    <button id="tier-btn-flow" class="wallet-btn" style="background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.5); color: var(--accent-gold); padding: 10px; font-size: 0.8rem; font-family:'Orbitron';">[ FLOW TIER ]</button>
-                    <button id="tier-btn-amateur" class="wallet-btn" style="background: rgba(255,215,0,0.2); border: 1px solid var(--accent-gold); color: #fff; padding: 10px; font-size: 0.8rem; font-family:'Orbitron';">[ AMATEUR TIER ]</button>
-                    <button id="tier-btn-pro" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 10px; font-size: 0.8rem; font-family:'Orbitron';">[ PRO TIER ]</button>
-                </div>
-                <div style="display: flex; gap: 8px; align-items: stretch; margin-bottom: 15px;">
-                    <input type="number" id="custom-donate-amt" placeholder="CUSTOM VALUE" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.8); border: 1px solid #333; color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; outline: none; border-radius: 4px;">
-                    <button class="wallet-btn" onclick="executeCustomDonation()" style="background: var(--accent-cyber-yellow); color: #000; font-size: 0.75rem; padding: 10px; font-family:'Orbitron'; font-weight:900;">DEPLOY</button>
-                </div>
-                <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ EXIT ]</button>
-            </div>
-        </div>
-
-        <div id="success-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: #00ffaa; max-width: 340px; width: 90%; box-shadow: 0 0 40px rgba(0, 255, 170, 0.2);">
-                <h2 id="success-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:#00ffaa; margin: 0 0 10px 0; font-size: 1.3rem;">🤜🤛 RESPONSE ACTIVE</h2>
-                <p id="success-modal-msg" style="color: #fff; font-size: 0.8rem; margin-bottom: 20px; line-height: 1.4;">Transaction reconciled successfully onto the immutable network infrastructure layer.</p>
-                <button class="wallet-btn" onclick="closeModals()" style="width: 100%; background: #00ffaa; color: #000; font-family:'Orbitron'; font-weight:900; padding: 12px; font-size: 0.85rem;">CONTINUE CONGO</button>
-            </div>
-        </div>
-
-        <div id="error-modal" class="modal-overlay">
-            <div class="modal-content" style="border-color: var(--accent-pink); max-width: 340px; width: 90%; box-shadow: 0 0 40px rgba(255, 0, 85, 0.2);">
-                <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin: 0 0 10px 0; font-size: 1.2rem;">💀 REJECTED BY CONSENSUS</h2>
-                <p id="error-modal-msg" style="color: #ccc; font-size: 0.8rem; margin-bottom: 15px; line-height: 1.4;"></p>
-                <button class="wallet-btn" onclick="closeModals()" style="width: 100%; background: var(--accent-pink); color: #000; font-family:'Orbitron'; font-weight:900; padding: 12px; font-size: 0.85rem;">RETRY TRANSITION</button>
-            </div>
-        </div>
-
-        <div class="dashboard-wrapper" id="home-wrapper">
-            <h2 style="text-align: center; color: var(--accent-cyber-yellow); font-family: 'Orbitron'; font-weight: 900; font-size: 2.2rem; letter-spacing: 2px; margin-top: 0; text-shadow: 0 0 15px rgba(255,234,0,0.3);">SKATE PARK</h2>
-            
-            <div style="text-align: center; margin-bottom: 25px;">
-                <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigll5nocglo3aq6vrlreqitwwgd2dns5kmvylsz3r3rx5ufkbp45y" 
-                     alt="Skate Park Hero" 
-                     style="width: 100%; max-width: 400px; height: auto; border: 2px solid var(--accent-cyber-yellow); border-radius: 8px; box-shadow: 0 0 20px rgba(255, 234, 0, 0.2);">
-            </div>
-
-            <div style="display: flex; justify-content: center; margin-bottom: 30px;">
-                <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='flex';" style="font-size: 1.1rem; padding: 16px;">🚗 OPEN TRUNK</button>
-            </div>
-
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--accent-gold); border-radius: 8px; padding: 25px 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.5);">
-                <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; margin-top: 0; font-size: 1.1rem;">WELCOME TO THE PARK</h3>
-                <p style="color: #ccc; line-height: 1.6; font-size: 0.85rem; margin-bottom: 0;">
-                    The central hub for the decentralized skate movement. Access your equipment in the Trunk or head to the drafting rooms for the next motion.
-                    <br><br>
-                    <span style="color: #fff; font-weight: bold; display: block; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px;">STATUS: You must hold a completed skateboard to access advanced protocol yield. Build yours at the bench.</span>
-                </p>
-            </div>
-        </div>
-
-        <div class="dashboard-wrapper" id="inventory-wrapper" style="display: none;">
-            <div class="dashboard-grid" id="main-grid">
-                <h3 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 1rem;">CONNECT WALLET TO SCAN THE TRUNK</h3>
-            </div>
-            <div id="load-more-container" style="display: none; text-align: center; margin-top: 30px;">
-                <button class="wallet-btn" onclick="loadMoreInventory()" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); width: 100%; padding: 12px; font-size: 0.8rem;">▼ LOAD MORE COMPONENTS ▼</button>
-            </div>
-        </div>
-
-        <div id="leaderboard-container" class="dashboard-wrapper" style="display: none;">
-            <h3 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 1.6rem; letter-spacing: 1px; margin-top: 0;">TOP 100 RIPPERS</h3>
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--accent-cyan); border-radius: 8px; overflow: hidden;">
-                <div class="lb-row lb-header" style="padding: 12px 15px;">
-                    <div style="width: 50px;">RANK</div>
-                    <div style="flex: 1;">ADDRESS</div>
-                    <div style="width: 80px; text-align: right;">BOARD COUNT</div>
-                </div>
-                <div id="leaderboard-list">
-                    <div style="padding:40px 20px; text-align:center; color:var(--accent-cyan); font-family:'Orbitron'; font-size: 0.8rem;">SCANNING WAX BLOCKCHAIN LEDGER...</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="dashboard-wrapper" id="builder-wrapper" style="display: none;">
-            <div id="crafting-bench" class="crafting-container cyber-yellow-frame" style="grid-template-columns: 1fr; padding: 20px;">
-                <h3 style="text-align: center; color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; letter-spacing: 1px; margin-top: 0; margin-bottom: 20px;">THE FABRICATOR BENCH</h3>
-                
-                <div class="crafting-selectors">
-                    <div class="craft-slot">
-                        <h4>1. Establish Deck</h4>
-                        <select id="craft-deck-select" onchange="updateCraftingStats()"><option value="">-- SELECT DECK --</option></select>
-                    </div>
-                    <div class="craft-slot">
-                        <h4>2. Establish Truck Set</h4>
-                        <select id="craft-truck1-select" onchange="updateCraftingStats()"><option value="">-- FRONT TRUCK --</option></select>
-                        <select id="craft-truck2-select" onchange="updateCraftingStats()"><option value="">-- BACK TRUCK --</option></select>
-                    </div>
-                    <div class="craft-slot">
-                        <h4>3. Establish Wheel Set</h4>
-                        <select id="craft-wheel1-select" onchange="updateCraftingStats()"><option value="">-- WHEEL 1 --</option></select>
-                        <select id="craft-wheel2-select" onchange="updateCraftingStats()"><option value="">-- WHEEL 2 --</option></select>
-                        <select id="craft-wheel3-select" onchange="updateCraftingStats()"><option value="">-- WHEEL 3 --</option></select>
-                        <select id="craft-wheel4-select" onchange="updateCraftingStats()" style="margin-bottom:0;"><option value="">-- WHEEL 4 --</option></select>
-                    </div>
-                </div>
-                
-                <div class="projected-stats" style="padding: 20px; margin-top: 10px;">
-                    <div>
-                        <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; font-size: 1.3rem; margin: 0 0 15px 0; letter-spacing: 1px; text-align: center;">INTEGRATED BUILD</h3>
-                        <div id="craft-stats-hud">
-                            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TOTAL POP <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-pop" style="width: 0%"></div></div></div>
-                            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TOTAL BALANCE <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-balance" style="width: 0%"></div></div></div>
-                            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TOTAL SPEED <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-speed" style="width: 0%"></div></div></div>
-                            <div style="margin-top:15px; border-top:1px dashed #333; padding-top:15px;">
-                                <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TRUE TOTAL POWER <span style="color: #fff;">0/30</span></div><div class="stat-bar-container"><div class="stat-bar stat-total" style="width: 0%"></div></div></div>
-                            </div>
-                            <div style="margin-top:20px; padding:15px; background:rgba(255,215,0,0.1); border:1px solid var(--accent-gold); border-radius:6px; text-align:center;">
-                                <div style="color:var(--accent-gold); font-size:0.65rem; font-family:'Orbitron'; margin-bottom: 5px;">AIRDROP PROJECTED</div>
-                                <div style="font-family:'Orbitron'; font-weight: 900; font-size:1.6rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon" style="width: 22px; height: 22px;"> 0 $SKATE</div>
-                            </div>
-                        </div>
-                    </div>
-                    <button id="initiate-blend-btn" class="wallet-btn" style="width: 100%; padding: 15px; margin-top: 20px; font-size: 0.9rem; background: var(--accent-gold);" disabled onclick="openCraftConfirmModal()">CRAFT SHIPPABLE ASSET</button>
-                </div>
-            </div>
-        </div>
-
-        <script type="module">
+    </div>
+</header>
+<script type="module">
     import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
     import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
     import { WalletPluginCloudWallet } from 'https://esm.sh/@wharfkit/wallet-plugin-cloudwallet?bundle';
@@ -594,21 +440,8 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
     
-    // NEW: Global Max Votes assigned directly by Rank
+    // Global Max Votes assigned directly by Rank
     window.currentUserMaxVotes = 0; 
-
-    // --- MOBILE HAMBURGER MENU ENGINE ---
-    window.toggleMenu = (forceClose = false) => {
-        const nav = document.getElementById('mobile-navigation');
-        const btn = document.getElementById('menu-toggle-btn');
-        if (forceClose || nav.classList.contains('open')) {
-            nav.classList.remove('open');
-            btn.classList.remove('open');
-        } else {
-            nav.classList.add('open');
-            btn.classList.add('open');
-        }
-    };
 
     // --- GLOBAL MODAL ROUTERS ---
     window.showErrorModal = (msg) => {
@@ -669,7 +502,7 @@
         return { rank: "POSER", votes: 0, color: "#94a3b8", badge: "m-badge-poser" };
     }
 
-   // --- ON-CHAIN SCRAPER (Treasury & Rank Sync) ---
+    // --- ON-CHAIN SCRAPER (Treasury & Rank Sync) ---
     async function fetchTreasuryData() {
         await syncPrices();
         
@@ -857,7 +690,6 @@
                         try {
                             const parsedMemo = JSON.parse(memo);
                             const sender = data.from;
-                            // Uses parsed rank weight mapped via token memo formatting
                             const weight = parseFloat(data.quantity.split(' ')[0]);
 
                             if (parsedMemo.action === "propose") {
@@ -923,7 +755,6 @@
             const h = Math.floor((diffMs % 86400000) / 3600000);
             const timeLeft = `${d}d ${h}h`;
 
-            // Max Voting slider bound to specific User Rank Profile
             const sliderMax = window.currentUserMaxVotes > 0 ? window.currentUserMaxVotes : 0;
             const disabledState = sliderMax === 0 ? "disabled" : "";
 
@@ -942,7 +773,7 @@
                     <div style="font-family:'Orbitron'; font-weight:900; font-size:1.5rem; color:var(--accent-cyan);">${p.title}</div>
                 </div>
                 
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 15px;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 15px; flex-wrap: wrap;">
                     <span style="font-size:0.8rem; color:#888; font-family:'Inter';">Proposed by: <span style="color:#fff; font-family:'Orbitron'; font-weight:900;">${p.proposer}</span></span>
                     <span style="font-family:'Orbitron'; font-size:0.65rem; color:${statusColor}; background:rgba(0,0,0,0.8); border:1px solid ${statusColor}; padding: 3px 8px; border-radius: 4px;">STATUS: ${statusText}</span>
                 </div>
@@ -1177,22 +1008,26 @@
     // --- INITIALIZATION & STATE RECOVERY ---
     sessionKit.restore().then(s => { 
         const initialHash = window.location.hash.replace('#', '') || 'home';
-        if (s) { currentSession = s; document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase(); updateBalances(s.actor.toString()); switchCategory(initialHash); 
-        } else { document.getElementById('vip-ticket-modal').style.display = 'flex'; }
+        if (s) { 
+            currentSession = s; 
+            document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase(); 
+            updateBalances(s.actor.toString()); 
+            switchCategory(initialHash); 
+        } else { 
+            document.getElementById('vip-ticket-modal').style.display = 'flex'; 
+        }
     });
 
-    // --- MOBILE STATE SWITCHING ENGINE ---
+    // --- STATE SWITCHING ENGINE ---
     window.switchCategory = (schema, fromBack = false) => {
         if (currentSchema === schema) return;
         if (!fromBack && currentSchema !== null) historyStack.push(currentSchema);
-        currentSchema = schema; currentInventoryPage = 1;
+        currentSchema = schema; 
+        currentInventoryPage = 1;
         document.getElementById('load-more-container').style.display = 'none';
 
-        isProgrammaticHashChange = true; window.location.hash = schema;
-
-        // Auto-Scroll to Top of the Mobile Viewport Container
-        const scrollContainer = document.getElementById('app-content-scroll');
-        if (scrollContainer) scrollContainer.scrollTop = 0;
+        isProgrammaticHashChange = true; 
+        window.location.hash = schema;
 
         const backBtn = document.getElementById('dapp-back-btn');
         if (backBtn) backBtn.style.display = historyStack.length > 0 ? 'block' : 'none';
@@ -1240,7 +1075,7 @@
                 list.innerHTML = validHolders.map((user, index) => {
                     let rankColor = index === 0 ? "color: #ffd700; text-shadow: 0 0 10px #ffd700;" : (index === 1 ? "color: #c0c0c0;" : (index === 2 ? "color: #cd7f32;" : "color: var(--accent-gold);"));
                     let rankText = index === 0 ? "🏆 #1" : `#${index + 1}`; let bg = index % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)';
-                    return `<div class="lb-row" style="background: ${bg};"><div style="width: 50px; font-weight: 900; ${rankColor}">${rankText}</div><div style="flex: 1; color: #fff; text-transform: uppercase;">${user.account}</div><div style="width: 80px; text-align: right; color: var(--accent-cyan); font-weight: 900;">${user.assets} <span style="font-size: 0.55rem; color: #555;">BOARDS</span></div></div>`;
+                    return `<div class="lb-row" style="background: ${bg};"><div style="width: 80px; font-weight: 900; ${rankColor}">${rankText}</div><div style="flex: 1; color: #fff; text-transform: uppercase;">${user.account}</div><div style="width: 150px; text-align: right; color: var(--accent-cyan); font-weight: 900;">${user.assets} <span style="font-size: 0.55rem; color: #555;">BOARDS</span></div></div>`;
                 }).join('');
             }
         } catch (e) { list.innerHTML = `<div style="padding:40px; text-align:center; color:#ff3366; font-family:'Orbitron';">BLOCKCHAIN CONNECTION FAILED</div>`; }
@@ -1248,20 +1083,167 @@
 
     const renderStat = (label, value, cssClass, max) => {
         const num = parseInt(value) || 0, pct = Math.min((num / max) * 100, 100); 
-        return `<div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">${label} <span style="color: #fff;">${num}/${max}</span></div><div class="stat-bar-container"><div class="stat-bar ${cssClass}" style="width: ${pct}%"></div></div></div>`;
+        return `<div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">${label} <span style="color: #fff;">${num}/${max}</span></div><div class="stat-bar-container"><div class="stat-bar ${cssClass}" style="width: ${pct}%"></div></div></div>`;
     };
 
     function resetBuilderStats() {
         document.getElementById('craft-stats-hud').innerHTML = `
-            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TOTAL POP <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-pop" style="width: 0%"></div></div></div>
-            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TOTAL BALANCE <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-balance" style="width: 0%"></div></div></div>
-            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TOTAL SPEED <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-speed" style="width: 0%"></div></div></div>
+            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TOTAL POP <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-pop" style="width: 0%"></div></div></div>
+            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TOTAL BALANCE <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-balance" style="width: 0%"></div></div></div>
+            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TOTAL SPEED <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-speed" style="width: 0%"></div></div></div>
             <div style="margin-top:15px; border-top:1px dashed #333; padding-top:15px;">
-                <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.6rem; color: #888;">TRUE TOTAL POWER <span style="color: #fff;">0/30</span></div><div class="stat-bar-container"><div class="stat-bar stat-total" style="width: 0%"></div></div></div>
+                <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TRUE TOTAL POWER <span style="color: #fff;">0/30</span></div><div class="stat-bar-container"><div class="stat-bar stat-total" style="width: 0%"></div></div></div>
             </div>
             <div style="margin-top:20px; padding:15px; background:rgba(255,215,0,0.1); border:1px solid var(--accent-gold); border-radius:6px; text-align:center;">
-                <div style="color:var(--accent-gold); font-size:0.65rem; font-family:'Orbitron'; margin-bottom: 5px;">AIRDROP PROJECTED</div>
-                <div style="font-family:'Orbitron'; font-weight: 900; font-size:1.6rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon" style="width: 22px; height: 22px;"> 0 $SKATE</div>
+                <div style="color:var(--accent-gold); font-size:0.6rem; font-family:'Orbitron';">AIRDROP PROJECTED</div>
+                <div style="font-family:'Orbitron'; font-weight: 900; font-size:2rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon"> 0 $SKATE</div>
+            </div>`;
+        document.getElementById('initiate-blend-btn').disabled = true;
+    }
+
+    window.updateCraftingStats = () => {
+        const d = document.getElementById('craft-deck-select').selectedOptions[0], t1 = document.getElementById('craft-truck1-select').selectedOptions[0], t2 = document.getElementById('craft-truck2-select').selectedOptions[0];
+        const w1 = document.getElementById('craft-wheel1-select').selectedOptions[0], w2 = document.getElementById('craft-wheel2-select').selectedOptions[0], w3 = document.getElementById('craft-wheel3-select').selectedOptions[0], w4 = document.getElementById('craft-wheel4-select').selectedOptions[0];
+
+        if (d.value && t1.value && t2.value && w1.value && w2.value && w3.value && w4.value) {
+            const getGroupScore = (attr) => {
+                const deck = parseInt(d.dataset[attr]) || 0;
+                const truckSet = Math.round(((parseInt(t1.dataset[attr]) || 0) + (parseInt(t2.dataset[attr]) || 0)) / 2);
+                const wheelSet = Math.round(((parseInt(w1.dataset[attr]) || 0) + (parseInt(w2.dataset[attr]) || 0) + (parseInt(w3.dataset[attr]) || 0) + (parseInt(w4.dataset[attr]) || 0)) / 4);
+                return deck + truckSet + wheelSet; 
+            };
+
+            const fPop = getGroupScore('pop'), fSpeed = getGroupScore('speed'), fBal = getGroupScore('bal');
+            let totalPower = fPop + fSpeed + fBal; if (totalPower > 30) totalPower = 30; 
+            const rewards = totalPower * 1000;
+            selectedAssetIds = [d.value, t1.value, t2.value, w1.value, w2.value, w3.value, w4.value];
+            
+            const uniqueIds = new Set(selectedAssetIds);
+            if(uniqueIds.size !== 7) { showErrorModal("DUPLICATE DETECTED: You have selected the exact same specific NFT (Asset ID) in multiple slots."); resetBuilderStats(); return; }
+
+            const rarityMap = { 'common': 1, 'uncommon': 2, 'rare': 3, 'epic': 4, 'legendary': 5, 'mythic': 6, 'ridiculous': 7, 'insane': 8 };
+            const rarities = [d.dataset.rarity, t1.dataset.rarity, t2.dataset.rarity, w1.dataset.rarity, w2.dataset.rarity, w3.dataset.rarity, w4.dataset.rarity];
+            
+            let maxTier = 1;
+            rarities.forEach(r => { const cleanRarity = (r || 'common').toLowerCase(); if (rarityMap[cleanRarity] && rarityMap[cleanRarity] > maxTier) maxTier = rarityMap[cleanRarity]; });
+            calculatedWaxFee = maxTier * 1000;
+
+            const visualHtml = `
+                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px;">
+                    <img src="https://ipfs.io/ipfs/${d.dataset.img}" class="nft-visual-thumbnail" onerror="this.style.display='none'">
+                    <span style="color: var(--accent-cyan); font-weight: 900; align-self: center;">+</span>
+                    <div style="display:flex; gap:4px;"><img src="https://ipfs.io/ipfs/${t1.dataset.img}" class="nft-visual-thumbnail" onerror="this.style.display='none'"><img src="https://ipfs.io/ipfs/${t2.dataset.img}" class="nft-visual-thumbnail" onerror="this.style.display='none'"></div>
+                    <span style="color: var(--accent-cyan); font-weight: 900; align-self: center;">+</span>
+                    <div style="display:flex; gap:4px;"><img src="https://ipfs.io/ipfs/${w1.dataset.img}" class="nft-visual-thumbnail" onerror="this.style.display='none'"><img src="https://ipfs.io/ipfs/${w2.dataset.img}" class="nft-visual-thumbnail" onerror="this.style.display='none'"><img src="https://ipfs.io/ipfs/${w3.dataset.img}"
+                    // --- MOBILE NAV INTERACTION LOGIC ---
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mainNav = document.getElementById('main-nav');
+    const navLinks = document.querySelectorAll('nav a');
+
+    if (mobileMenuBtn && mainNav) {
+        // Toggle menu open/close
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('nav-active');
+            // Switch icon from hamburger to X when open
+            mobileMenuBtn.innerText = mainNav.classList.contains('nav-active') ? '✕' : '☰';
+        });
+
+        // Auto-close menu when a link is clicked
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mainNav.classList.remove('nav-active');
+                mobileMenuBtn.innerText = '☰';
+            });
+        });
+    }
+
+    // --- INITIALIZATION & STATE RECOVERY ---
+    sessionKit.restore().then(s => { 
+        const initialHash = window.location.hash.replace('#', '') || 'home';
+        if (s) { currentSession = s; document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase(); updateBalances(s.actor.toString()); switchCategory(initialHash); 
+        } else { document.getElementById('vip-ticket-modal').style.display = 'flex'; }
+    });
+
+    // --- STATE SWITCHING ENGINE ---
+    window.switchCategory = (schema, fromBack = false) => {
+        if (currentSchema === schema) return;
+        if (!fromBack && currentSchema !== null) historyStack.push(currentSchema);
+        currentSchema = schema; currentInventoryPage = 1;
+        document.getElementById('load-more-container').style.display = 'none';
+
+        isProgrammaticHashChange = true; window.location.hash = schema;
+
+        const backBtn = document.getElementById('dapp-back-btn');
+        if (backBtn) backBtn.style.display = historyStack.length > 0 ? 'block' : 'none';
+
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        if(document.getElementById(`nav-${schema}`)) document.getElementById(`nav-${schema}`).classList.add('active');
+        
+        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper'];
+        wrappers.forEach(w => { const el = document.getElementById(w); if(el) el.style.display = 'none'; });
+
+        if (schema === 'home') { document.getElementById('home-wrapper').style.display = 'block';
+        } else if (schema === 'builder') { document.getElementById('builder-wrapper').style.display = 'block'; resetBuilderStats(); if (currentSession) loadCraftingData(currentSession.actor.toString());
+        } else if (schema === 'leaderboard') { document.getElementById('leaderboard-container').style.display = 'block'; fetchLeaderboard();
+        } else if (schema === 'clips') { document.getElementById('clips-wrapper').style.display = 'block';
+        } else if (schema === 'defi') { document.getElementById('defi-wrapper').style.display = 'block'; syncPrices(); if(!defiWarningShown) { document.getElementById('defi-warning-modal').style.display = 'flex'; defiWarningShown = true; }
+        } else if (schema === 'treasury') { document.getElementById('treasury-wrapper').style.display = 'block'; fetchTreasuryData();
+        } else if (schema === 'dao') { document.getElementById('dao-wrapper').style.display = 'block'; fetchTreasuryData(); refreshDAODashboard();
+        } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
+        } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
+        
+        // Ensure mobile views jump to top when switching pages
+        window.scrollTo(0,0);
+    };
+
+    window.goBack = () => { if (historyStack.length > 0) { const prevSchema = historyStack.pop(); switchCategory(prevSchema, true); } };
+    window.addEventListener('hashchange', () => { if (isProgrammaticHashChange) { isProgrammaticHashChange = false; return; } const hashSchema = window.location.hash.replace('#', '') || 'home'; if (hashSchema !== currentSchema) switchCategory(hashSchema, true); });
+    window.continueAsGuest = () => { document.getElementById('vip-ticket-modal').style.display = 'none'; const initialHash = window.location.hash.replace('#', '') || 'home'; switchCategory(initialHash); };
+
+    async function updateBalances(user) {
+        try {
+            const waxRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, { method: 'POST', body: JSON.stringify({ code: "eosio.token", account: user, symbol: "WAX" }) });
+            const waxBal = await waxRes.json(); document.getElementById('wax-bal').innerText = waxBal[0] ? waxBal[0].replace(' WAX', '') : "0.00";
+            const skateRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, { method: 'POST', body: JSON.stringify({ code: "skatecoinwax", account: user, symbol: "SKATE" }) });
+            const skateBal = await skateRes.json(); document.getElementById('skate-bal').innerText = skateBal[0] ? skateBal[0].replace(' SKATE', '') : "0.00";
+            document.getElementById('wallet-balances').style.display = 'flex';
+        } catch (e) {}
+    }
+
+    async function fetchLeaderboard() {
+        const list = document.getElementById('leaderboard-list'); list.innerHTML = `<div style="padding:40px; text-align:center; color:var(--accent-cyan); font-family:'Orbitron';">SCANNING WAX BLOCKCHAIN...</div>`;
+        try {
+            const res = await fetch(`${ATOMIC_API}/accounts?collection_name=${COLLECTION}&schema_name=skateboards&page=1&limit=100`);
+            const json = await res.json();
+            if (json.success) {
+                const excludeAccounts = ['blend.nefty', 'skatecoinwax', 'ufuau.wam', 'bridge.wax', 'neftyblocksd'];
+                const validHolders = json.data.filter(user => !excludeAccounts.includes(user.account)).slice(0, 100);
+                if (validHolders.length === 0) { list.innerHTML = `<div style="padding:40px; text-align:center; color:#888; font-family:'Orbitron';">NO SKATEBOARD HOLDERS FOUND YET</div>`; return; }
+                list.innerHTML = validHolders.map((user, index) => {
+                    let rankColor = index === 0 ? "color: #ffd700; text-shadow: 0 0 10px #ffd700;" : (index === 1 ? "color: #c0c0c0;" : (index === 2 ? "color: #cd7f32;" : "color: var(--accent-gold);"));
+                    let rankText = index === 0 ? "🏆 #1" : `#${index + 1}`; let bg = index % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)';
+                    return `<div class="lb-row" style="background: ${bg};"><div style="width: 80px; font-weight: 900; ${rankColor}">${rankText}</div><div style="flex: 1; color: #fff; text-transform: uppercase;">${user.account}</div><div style="width: 150px; text-align: right; color: var(--accent-cyan); font-weight: 900;">${user.assets} <span style="font-size: 0.55rem; color: #555;">BOARDS</span></div></div>`;
+                }).join('');
+            }
+        } catch (e) { list.innerHTML = `<div style="padding:40px; text-align:center; color:#ff3366; font-family:'Orbitron';">BLOCKCHAIN CONNECTION FAILED</div>`; }
+    }
+
+    const renderStat = (label, value, cssClass, max) => {
+        const num = parseInt(value) || 0, pct = Math.min((num / max) * 100, 100); 
+        return `<div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">${label} <span style="color: #fff;">${num}/${max}</span></div><div class="stat-bar-container"><div class="stat-bar ${cssClass}" style="width: ${pct}%"></div></div></div>`;
+    };
+
+    function resetBuilderStats() {
+        document.getElementById('craft-stats-hud').innerHTML = `
+            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TOTAL POP <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-pop" style="width: 0%"></div></div></div>
+            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TOTAL BALANCE <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-balance" style="width: 0%"></div></div></div>
+            <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TOTAL SPEED <span style="color: #fff;">0/20</span></div><div class="stat-bar-container"><div class="stat-bar stat-speed" style="width: 0%"></div></div></div>
+            <div style="margin-top:15px; border-top:1px dashed #333; padding-top:15px;">
+                <div style="margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.55rem; color: #888;">TRUE TOTAL POWER <span style="color: #fff;">0/30</span></div><div class="stat-bar-container"><div class="stat-bar stat-total" style="width: 0%"></div></div></div>
+            </div>
+            <div style="margin-top:20px; padding:15px; background:rgba(255,215,0,0.1); border:1px solid var(--accent-gold); border-radius:6px; text-align:center;">
+                <div style="color:var(--accent-gold); font-size:0.6rem; font-family:'Orbitron';">AIRDROP PROJECTED</div>
+                <div style="font-family:'Orbitron'; font-weight: 900; font-size:2rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon"> 0 $SKATE</div>
             </div>`;
         document.getElementById('initiate-blend-btn').disabled = true;
     }
@@ -1310,8 +1292,8 @@
                     ${renderStat('TRUE TOTAL POWER', totalPower, 'stat-total', 30)}
                 </div>
                 <div style="margin-top:20px; padding:15px; background:rgba(255,215,0,0.1); border:1px solid var(--accent-gold); border-radius:6px; text-align:center;">
-                    <div style="color:var(--accent-gold); font-size:0.65rem; font-family:'Orbitron'; margin-bottom: 5px;">AIRDROP PROJECTED</div>
-                    <div style="font-family:'Orbitron'; font-weight: 900; font-size:1.6rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon" style="width: 22px; height: 22px;"> ${rewards.toLocaleString()} $SKATE</div>
+                    <div style="color:var(--accent-gold); font-size:0.6rem; font-family:'Orbitron';">AIRDROP PROJECTED</div>
+                    <div style="font-family:'Orbitron'; font-weight: 900; font-size:2rem; display:flex; align-items:center; justify-content:center;"><img src="https://ipfs.io/ipfs/bafybeifeyjngg5kvmkv56aowt2jad2txdo737yonaor3hcgrroyrqjfx3m" class="skate-icon"> ${rewards.toLocaleString()} $SKATE</div>
                 </div>`;
             document.getElementById('initiate-blend-btn').disabled = false;
         } else { resetBuilderStats(); }
@@ -1464,5 +1446,8 @@
         } catch (e) { console.error(e); showErrorModal("Transaction Cancelled or Failed."); }
     };
 </script>
-    </div> </div> </body>
+</head>
 </html>
+
+
+    
