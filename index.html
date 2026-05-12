@@ -6,7 +6,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- GLOBAL STYLE PROPERTIES --- */
+        /* --- GLOBAL STYLE PROPERTIES & SHADOW DOM VARIABLES --- */
         :root {
             --bg-deep: #050a1a;
             --bg-panel: rgba(15, 26, 71, 0.95);
@@ -15,16 +15,19 @@
             --accent-gold: #ffd700;
             --accent-cyber-yellow: #ffea00; 
 
-            /* --- NEFTYBLOCKS SHADOW DOM BRANDING VARS --- */
+            /* --- NEFTYBLOCKS EMBED INFECTION VARIABLES --- */
             --nefty-font-family: 'Orbitron', sans-serif;
             --nefty-font-size: 14px;
+            --nefty-font-size--small: 12px;
             --nefty-radius: 8px;
             --nefty-radius-image: 6px;
+            --nefty-radius-markdown: 6px;
+            --nefty-radius-small: 4px;
             
             --nefty-bg-drop: rgba(5, 10, 26, 0.8);
             --nefty-bg-mint: #050a1a;
             --nefty-bg-inputs: #000000;
-            --nefty-bg-markdown: rgba(0, 0, 0, 0.4);
+            --nefty-bg-markdown: rgba(0, 0, 0, 0.5);
             
             --nefty-border: #222222;
             --nefty-border-drop: var(--accent-cyber-yellow);
@@ -34,6 +37,7 @@
             --nefty-color-secondary: #888888;
             --nefty-color-highlight: var(--accent-cyan);
             
+            /* Claim Button Styling overrides */
             --nefty-btn-primary: #000000;
             --nefty-btn-primary-bg: var(--accent-cyber-yellow);
             --nefty-btn-primary-border: var(--accent-cyber-yellow);
@@ -41,12 +45,16 @@
             --nefty-btn-primary-bg--active: var(--accent-pink);
             --nefty-btn-primary-border--active: var(--accent-pink);
 
+            /* Navigation, Info Carousels, and Pagination styling */
             --nefty-btn-secondary: #ffffff;
             --nefty-btn-secondary-bg: #000000;
             --nefty-btn-secondary-border: #333333;
+            --nefty-btn-secondary--active: #000000;
+            --nefty-btn-secondary-bg--active: var(--accent-cyan);
+            --nefty-btn-secondary-border--active: var(--accent-cyan);
         }
 
-        /* --- THEME WRAPPER STYLING --- */
+        /* --- FRAME PROTOCOLS --- */
         body { 
             background-color: var(--bg-deep);
             color: #fff; 
@@ -83,10 +91,11 @@
             margin: auto; 
         }
 
-        /* --- DEEP SHADOW PARTS CUSTOM OVERRIDES --- */
+        /* --- DEEP RE-STYLING VIA SHADOW PARTS --- */
         neftyblocks-drops::part(drop) {
             box-shadow: 0 0 25px rgba(255, 234, 0, 0.15);
             background: linear-gradient(180deg, rgba(15,26,71,0.9), rgba(5,10,26,0.9)) !important;
+            border: 2px solid var(--accent-cyber-yellow) !important;
         }
 
         neftyblocks-drops::part(drop-title) {
@@ -94,6 +103,15 @@
             font-family: 'Orbitron' !important;
             font-weight: 900 !important;
             text-shadow: 0 0 8px var(--accent-cyan);
+            text-transform: uppercase;
+        }
+
+        neftyblocks-drops::part(drop-claim) {
+            font-family: 'Orbitron' !important;
+            font-weight: 900 !important;
+            letter-spacing: 1px;
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+            transition: 0.2s;
         }
 
         neftyblocks-drops::part(pagination-btn) {
@@ -111,8 +129,9 @@
 </header>
 
 <div class="container">
-    <div style="margin-bottom: 30px; text-align: center; border-left: 3px solid var(--accent-cyan); padding: 15px; background: rgba(0,0,0,0.4);">
-        <span style="font-family:'Orbitron'; font-weight:900; color:var(--accent-cyan); letter-spacing:1px;">LAUNCHING VERIFIED SUPREME DROP GATEWAY</span>
+    
+    <div style="margin-bottom: 40px; text-align: center; border-left: 3px solid var(--accent-cyan); padding: 15px; background: rgba(0,0,0,0.4);">
+        <span style="font-family:'Orbitron'; font-weight:900; color:var(--accent-cyan); letter-spacing:1px;">LAUNCHING VERIFIED NETFY AUTOMATED INVENTORY GATEWAY</span>
     </div>
 
     <neftyblocks-drops 
@@ -122,6 +141,9 @@
         chain="wax">
     </neftyblocks-drops>
 
-</div> <script type="module" src="https://cdn.jsdelivr.net/npm/@neftyblocks/drops@latest"></script>
+</div>
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/@neftyblocks/drops@latest"></script>
+
 </body>
 </html>
