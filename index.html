@@ -174,3 +174,260 @@
         }
     </style>
 </head>
+
+    <body>
+
+<header>
+    <h1 class="logo">sk8dao</h1>
+    <div class="auth-cluster">
+        <div id="wallet-balances" class="balance-pill" style="display: none;">
+            <div>WAX: <span id="wax-bal">0.00</span></div>
+            <div>SKATE: <span id="skate-bal">0.00</span></div>
+        </div>
+        <button id="connect-btn" class="wallet-btn" onclick="toggleWalletAction()">CONNECT WALLET</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <div style="margin-bottom: 40px; text-align: center; border-left: 3px solid var(--accent-cyan); padding: 15px; background: rgba(0,0,0,0.4);">
+        <h2 style="margin:0; font-family:'Orbitron'; font-weight:900; color:var(--accent-cyan); font-size:1.2rem; text-transform: uppercase; letter-spacing: 1px;">DIRECT CONTRACT EXTRACTION FEED</h2>
+    </div>
+
+    <div id="tx-status-overlay" style="display: none; padding: 15px; margin-bottom: 30px; background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent-cyan); font-family: 'Orbitron'; font-size: 0.85rem; text-align: center;">
+        <span id="tx-status-msg" style="color: #fff;"></span>
+    </div>
+
+    <div id="loading-status" style="text-align: center; font-family: 'Orbitron'; color: var(--accent-cyan); padding: 40px;">
+        INTERCEPTING WAX ATOMICDROPS CONTRACT FOR "SKATECOINWAX"...
+    </div>
+
+    <div class="drop-grid" id="ledger-drop-grid"></div>
+
+</div>
+
+       <script type="module">
+    import { SessionKit } from 'https://esm.sh/@wharfkit/session@1.2.6';
+    import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer@1.0.8';
+    import { WalletPluginCloudWallet } from 'https://esm.sh/@wharfkit/wallet-plugin-cloudwallet@1.0.1';
+
+    // --- IMMUTABLE SYSTEM PARAMETERS ---
+    const WAX_RPC = "https://wax.greymass.com";
+    const INTERCEPT_COLLECTION = "skatecoinwax";
+    const ADMIN_WALLET = "ufuau.wam";
+
+    // --- SYSTEM STATE INSTANCES ---
+    let activeSession = null;
+    let skatePerWax = 7.6897; 
+
+    // Initialize the WharfKit SessionKit Instance via GreyMass Modules
+    const sessionKit = new SessionKit({
+        appName: 'sk8dao-direct-terminal',
+        chains: [{ 
+            id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', 
+            url: WAX_RPC 
+        }],
+        ui: new WebRenderer(),
+        walletPlugins: [ new WalletPluginCloudWallet() ]
+    });
+
+    // Make utility routers accessible globally for native HTML action hooks
+    window.toggleWalletAction = toggleWalletAction;
+    window.triggerDirectClaim = triggerDirectClaim; 
+
+     // --- LIVE USER LEDGER TOKEN SCANNER ---
+    async function updateOnChainBalances(userAccount) {
+        try {
+            // Pull raw token row data directly from eosio.token node address parameters
+            const waxRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, {
+                method: 'POST',
+                body: JSON.stringify({ code: "eosio.token", account: userAccount, symbol: "WAX" })
+            });
+            const waxBal = await waxRes.json();
+            const waxDisplay = waxBal[0] ? waxBal[0].replace(' WAX', '') : "0.00";
+            document.getElementById('wax-bal').innerText = parseFloat(waxDisplay).toFixed(2);
+
+            // Cross-query internal custom $SKATE contract metrics 
+            const skateRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, {
+                method: 'POST',
+                body: JSON.stringify({ code: "skatecoinwax", account: userAccount, symbol: "SKATE" })
+            });
+            const skateBal = await skateRes.json();
+            const skateDisplay = skateBal[0] ? skateBal[0].replace(' SKATE', '') : "0.00";
+            document.getElementById('skate-bal').innerText = parseFloat(skateDisplay).toFixed(2);
+
+            document.getElementById('wallet-balances').style.display = 'flex';
+        } catch (e) { 
+            console.warn("Crypto engine scanning restriction encountered or token balance row empty.", e); 
+        }
+    }
+
+    // --- AUTOMATED NOTIFICATION LAYER ---
+    function notifyStatus(msg, isError = false) {
+        const frame = document.getElementById('tx-status-overlay');
+        const text = document.getElementById('tx-status-msg');
+        if(!frame || !text) return;
+
+        text.innerText = msg;
+        frame.style.display = 'block';
+        frame.style.borderColor = isError ? 'var(--accent-pink)' : 'var(--accent-cyan)';
+        frame.style.background = isError ? 'rgba(255,0,85,0.1)' : 'rgba(0,240,255,0.1)';
+    }
+
+      // --- DIRECT LEDGER ATOMICDROPS READ LAYER ---
+    async function pullDirectOnChainDrops() {
+        const grid = document.getElementById('ledger-drop-grid');
+        const loader = document.getElementById('loading-status');
+        
+        try {
+            // Read atomicdropsx table states directly via RPC row index parameters
+            const res = await fetch(`${WAX_RPC}/v1/chain/get_table_rows`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    json: true,
+                    code: "atomicdropsx",
+                    scope: "atomicdropsx",
+                    table: "drops",
+                    index_position: 2, // Query via the secondary index (collection)
+                    key_type: "name",
+                    lower_bound: INTERCEPT_COLLECTION,
+                    upper_bound: INTERCEPT_COLLECTION,
+                    limit: 20
+                })
+            });
+            
+            const data = await res.json();
+            if(loader) loader.style.display = 'none';
+            grid.innerHTML = "";
+
+            if (!data.rows || data.rows.length === 0) {
+                grid.innerHTML = `<h3 style="grid-column:1/-1; text-align:center; color:#888; font-family:'Orbitron';">NO ACTIVE COLLECTION DROPS REGISTERED ON CONTRACT</h3>`;
+                return;
+            }
+
+            data.rows.forEach(drop => {
+                // Ensure we filter out hidden or completely deleted data structures
+                if(drop.collection_name !== INTERCEPT_COLLECTION) return;
+
+                const priceInfo = drop.listing_price[0] ? drop.listing_price[0] : "FREE";
+                const maxClaimStr = drop.max_claimable == 0 ? 'UNLIMITED' : drop.max_claimable.toLocaleString();
+                
+                const card = `
+                    <div class="native-drop-card">
+                        <div class="card-header">DROP ID #${drop.drop_id}</div>
+                        <div class="card-body">
+                            <div>
+                                <h3 class="drop-title">SKATE ASSET DISPATCH</h3>
+                                <div class="drop-meta">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">PRICE: <span style="color:var(--accent-cyber-yellow)">${priceInfo}</span></div>
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">MAX RELEASES: <span>${maxClaimStr}</span></div>
+                                    <div style="display:flex; justify-content:space-between;">CURRENT MINT: <span>#${drop.current_claimable}</span></div>
+                                </div>
+                            </div>
+                            <button class="claim-btn" onclick="triggerDirectClaim('${drop.drop_id}', '${priceInfo}')">CLAIM ASSET</button>
+                        </div>
+                    </div>`;
+                grid.insertAdjacentHTML('beforeend', card);
+            });
+
+        } catch (e) {
+            if(loader) loader.innerText = "LEDGER EXTRACTION FAULT: Verify RPC connection properties.";
+            console.error("Smart contract data scrape faulted.", e);
+        }
+    }
+
+      // --- WHARFKIT AUTH ROUTER ---
+    async function toggleWalletAction() {
+        if (!activeSession) {
+            try {
+                const { session } = await sessionKit.login();
+                applySessionState(session);
+                notifyStatus("CRYPTOGRAPHIC METADATA SYNC COMPLETE.");
+            } catch(e) { 
+                console.warn("Authentication routine aborted by client."); 
+            }
+        } else {
+            const confirmQuit = confirm("Disconnect your WAX wallet from the application session?");
+            if (confirmQuit) {
+                await sessionKit.logout();
+                activeSession = null;
+                const btn = document.getElementById('connect-btn');
+                btn.innerText = "CONNECT WALLET";
+                btn.classList.remove('disconnect');
+                document.getElementById('wallet-balances').style.display = 'none';
+                notifyStatus("WALLET DISCONNECTED.");
+            }
+        }
+    }
+
+    function applySessionState(session) {
+        activeSession = session;
+        const btn = document.getElementById('connect-btn');
+        if (btn) {
+            btn.innerText = session.actor.toString().toUpperCase();
+            btn.classList.add('disconnect');
+        }
+        updateOnChainBalances(session.actor.toString());
+    }
+
+    // --- DIRECT ON-CHAIN SMART CONTRACT CLAIM TRANSACTOR ---
+    async function triggerDirectClaim(dropId, priceString) {
+        if (!activeSession) return toggleWalletAction();
+        
+        const actor = activeSession.actor.toString();
+        const actions = [];
+
+        // Dynamic Payment Router (Checks if drop requires WAX or $SKATE)
+        if (priceString !== "FREE") {
+            const [amount, symbol] = priceString.split(' ');
+            const tokenContract = symbol === "WAX" ? "eosio.token" : "skatecoinwax";
+            const decimals = symbol === "WAX" ? 8 : 4;
+            
+            actions.push({
+                account: tokenContract,
+                name: 'transfer',
+                authorization: [activeSession.permissionLevel],
+                data: {
+                    from: actor,
+                    to: "atomicdropsx",
+                    quantity: parseFloat(amount).toFixed(decimals) + ` ${symbol}`,
+                    memo: "deposit"
+                }
+            });
+        }
+
+        // Direct Core Atomic Drops Contract Execution Parameters
+        actions.push({
+            account: "atomicdropsx",
+            name: "claimdrop",
+            authorization: [activeSession.permissionLevel],
+            data: {
+                claimer: actor,
+                drop_id: parseInt(dropId),
+                amount: 1,
+                intended_delphi_median: 0,
+                referrer: "sk8dao",
+                country_code: "US"
+            }
+        });
+
+        try {
+            notifyStatus("FORWARDING SECURITY PAYLOAD TO WAX BLOCKCHAIN...");
+            await activeSession.transact({ actions });
+            notifyStatus("💥 IMMUTABLE ACTION RECONCILED. CHECK YOUR INVENTORY TRUNK!");
+            updateOnChainBalances(actor);
+            pullDirectOnChainDrops();
+        } catch(e) {
+            console.error(e);
+            notifyStatus(e.message || "TRANSACTION REJECTED BY BLOCKCHAIN CONSENSUS.", true);
+        }
+    }
+
+    // --- SYSTEM RECOVERY LAYER ON RUNTIME BOOTSTRAP ---
+    sessionKit.restore().then(s => {
+        if (s) applySessionState(s);
+        pullDirectOnChainDrops();
+    });
+</script>
+</body>
+</html>     
