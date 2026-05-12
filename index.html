@@ -2,432 +2,177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>sk8dao | DIRECT BLOCKCHAIN DROP GATEWAY</title>
+    <title>sk8dao | THE SENATE CHAMBER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- DESIGN FRAME MATRIX --- */
+        /* --- GLOBAL VARIABLES --- */
         :root {
             --bg-deep: #050a1a;
             --bg-panel: rgba(15, 26, 71, 0.95);
             --accent-cyan: #00f0ff;
-            --accent-cyber-yellow: #ffea00; 
             --accent-pink: #ff0055;
             --accent-gold: #ffd700;
+            --accent-cyber-yellow: #ffea00; 
+            --card-border: rgba(0, 240, 255, 0.2);
+            
+            /* BASE RARITIES */
+            --rarity-common: #94a3b8; 
+            --rarity-uncommon: #00ffaa; 
+            --rarity-rare: #00bfff;
+            --rarity-epic: #d946ef; 
+            
+            /* GOD TIER BASE COLORS */
+            --rarity-legendary: #ffd700; 
+            --rarity-mythic: #ff00ff; 
+            --rarity-insane: #ff0033; 
+            --rarity-ridiculous: #ff007f; 
         }
 
+        /* --- CYBER-YELLOW FRAME PROTOCOL --- */
+        .cyber-yellow-frame {
+            border: 2px solid var(--accent-cyber-yellow) !important;
+            box-shadow: 0 0 20px rgba(255, 234, 0, 0.2), inset 0 0 15px rgba(255, 234, 0, 0.1) !important;
+        }
+
+        /* --- RGB TEXT ANIMATION --- */
+        @keyframes rainbowText {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        .text-rgb {
+            background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000);
+            background-size: 200% auto;
+            color: transparent !important; 
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: rainbowText 1.5s linear infinite; 
+            font-weight: 900;
+        }
+
+        /* --- RGB HUD & STAT BAR INFECTION --- */
+        @keyframes rgbHUDPulse {
+            0% { border-color: rgba(255,0,0,0.8); box-shadow: inset 0 0 10px rgba(255,0,0,0.2); }
+            33% { border-color: rgba(0,255,0,0.8); box-shadow: inset 0 0 10px rgba(0,255,0,0.2); }
+            66% { border-color: rgba(0,0,255,0.8); box-shadow: inset 0 0 10px rgba(0,0,255,0.2); }
+            100% { border-color: rgba(255,0,0,0.8); box-shadow: inset 0 0 10px rgba(255,0,0,0.2); }
+        }
+        .card-glow-rgb .rgb-hud-frame {
+            border: 1px solid #ff0000;
+            animation: rgbHUDPulse 2s linear infinite !important;
+        }
+        .card-glow-rgb .stat-bar {
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000) !important;
+            background-size: 200% !important;
+            animation: rainbowText 1.5s linear infinite !important;
+        }
+
+        /* --- SUPREME RGB BEARING GLOW --- */
+        @keyframes rgbCardPulse {
+            0% { box-shadow: inset 0 0 50px rgba(255,0,0,0.3), 0 0 25px rgba(255,0,0,0.6); border-color: #ff0000; }
+            33% { box-shadow: inset 0 0 50px rgba(0,255,0,0.3), 0 0 25px rgba(0,255,0,0.6); border-color: #00ffaa; }
+            66% { box-shadow: inset 0 0 50px rgba(0,0,255,0.3), 0 0 25px rgba(0,0,255,0.6); border-color: #00bfff; }
+            100% { box-shadow: inset 0 0 50px rgba(255,0,0,0.3), 0 0 25px rgba(255,0,0,0.6); border-color: #ff0000; }
+        }
+        .card-glow-rgb { animation: rgbCardPulse 2s linear infinite !important; }
+        .card-glow-rgb .rarity-header { background: linear-gradient(90deg, #ff0000, #00ff00, #0000ff, #ff0000) !important; background-size: 200% !important; animation: rainbowText 2s linear infinite !important; color: #fff !important; text-shadow: 1px 1px 2px #000; box-shadow: 0 0 20px rgba(255,255,255,0.3) !important; }
+        .card-glow-rgb .skate-img { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)); }
+
+        /* --- EXTREME GOD TIER GLOW CLASSES --- */
+        .card-glow-epic { box-shadow: inset 0 0 50px rgba(217, 70, 239, 0.3), 0 0 20px rgba(217, 70, 239, 0.5) !important; border-color: var(--rarity-epic) !important; }
+        .card-glow-epic .rarity-header { background: var(--rarity-epic) !important; color: #fff !important; box-shadow: 0 0 30px rgba(217, 70, 239, 0.8) !important; }
+        .card-glow-epic .skate-img { filter: drop-shadow(0 0 15px rgba(217, 70, 239, 0.9)); }
+
+        .card-glow-legendary { box-shadow: inset 0 0 50px rgba(255, 215, 0, 0.2), 0 0 20px rgba(255, 215, 0, 0.4) !important; border-color: var(--rarity-legendary) !important; }
+        .card-glow-legendary .rarity-header { background: var(--rarity-legendary) !important; color: #000 !important; box-shadow: 0 0 30px rgba(255, 215, 0, 0.7) !important; }
+        .card-glow-legendary .skate-img { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)); }
+
+        /* --- BASE BODY & LAYOUT --- */
         body { 
             background-color: var(--bg-deep);
             color: #fff; 
             font-family: 'Inter', sans-serif; 
             margin: 0; 
             background-image: radial-gradient(circle at 50% 50%, #162a5e 0%, #050a1a 100%); 
-            background-attachment: fixed;
+            background-attachment: fixed; 
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background: #000;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--accent-cyber-yellow);
-            box-shadow: 0 0 25px rgba(255,234,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-family: 'Orbitron';
-            font-weight: 900;
-            color: var(--accent-cyber-yellow);
-            margin: 0;
-            font-size: 1.6rem;
-            text-transform: lowercase;
-        }
-
-        /* --- AUTH DISPLAY FLOATING CLUSTERS --- */
-        .auth-cluster {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .balance-pill { 
-            background: rgba(255, 234, 0, 0.05); 
-            border: 1px solid var(--accent-cyber-yellow); 
-            padding: 6px 15px; 
-            border-radius: 50px; 
-            font-family: 'Orbitron'; 
-            font-size: 0.65rem; 
             display: flex; 
-            gap: 15px; 
+            flex-direction: column; 
         }
-        .balance-pill span { color: var(--accent-gold); font-weight: 900; }
 
-        .wallet-btn {
-            background: var(--accent-cyber-yellow);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            font-family: 'Orbitron';
-            font-weight: 900;
-            cursor: pointer;
-            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
-            transition: 0.2s;
+        /* --- HEADER & NAV --- */
+        header { 
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 40px; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 2px solid var(--accent-cyber-yellow);
+            box-shadow: 0 5px 20px rgba(255, 234, 0, 0.1);
         }
-        .wallet-btn:hover { background: #fff; }
+        .header-inner { width: 100%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; }
+        .senate-logo { margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: 1.8rem; cursor: pointer; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-cyber-yellow), 0 0 20px var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); text-transform: lowercase; }
+        .senate-logo span { color: var(--accent-pink); text-shadow: 0 0 10px var(--accent-pink), 0 0 20px var(--accent-pink); }
+
+        nav ul { display: flex; list-style: none; gap: 18px; margin: 0; padding: 0; }
+        nav a { color: #888; text-decoration: none; font-family: 'Orbitron'; font-size: 0.75rem; font-weight: 900; letter-spacing: 2px; padding-bottom: 5px; transition: 0.2s; }
+        nav a.active, nav a:hover { color: var(--accent-cyber-yellow); text-shadow: 0 0 8px var(--accent-cyber-yellow); border-bottom: 2px solid var(--accent-cyber-yellow); }
         
-        .wallet-btn.disconnect {
-            background: rgba(255, 0, 85, 0.1);
-            border: 1px solid var(--accent-pink);
-            color: var(--accent-pink);
-        }
-        .wallet-btn.disconnect:hover {
-            background: var(--accent-pink);
-            color: #000;
-        }
+        .balance-pill { background: rgba(255, 234, 0, 0.05); border: 1px solid var(--accent-cyber-yellow); padding: 6px 15px; border-radius: 50px; font-family: 'Orbitron'; font-size: 0.65rem; display: flex; gap: 15px; align-items: center;}
+        .balance-pill span { color: var(--accent-gold); font-weight: 900; }
+        
+        .wallet-btn { background: var(--accent-cyber-yellow); color: #000; border: none; padding: 10px 20px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); transition: 0.2s; }
+        .wallet-btn:hover { background: #fff; }
+        .wallet-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .wallet-btn.disconnect { background: rgba(255, 0, 85, 0.1); border: 1px solid var(--accent-pink); color: var(--accent-pink); }
+        .wallet-btn.disconnect:hover { background: var(--accent-pink); color: #000; }
 
-        .container { 
-            padding: 40px; 
-            max-width: 1200px; 
-            margin: auto; 
-            flex: 1;
-            width: 100%;
-            box-sizing: border-box;
-        }
+        /* --- LAYOUT WRAPPERS --- */
+        .dashboard-wrapper { padding: 40px; max-width: 1400px; margin: auto; flex: 1; width: 100%; box-sizing: border-box; position: relative; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        /* --- UTILITY CLASSES FOR LATER STAGES --- */
+        .master-dash-btn { background: rgba(0, 0, 0, 0.6); color: #fff; border: 1px solid var(--accent-cyber-yellow); padding: 15px 25px; font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; cursor: pointer; transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+        .master-dash-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 15px var(--accent-cyber-yellow); }
+        .master-dash-btn.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+        .master-dash-btn.gold:hover { background: var(--accent-gold); color: #000; box-shadow: 0 0 15px var(--accent-gold); }
 
-        /* --- DISPLAY LAYOUT ELEMENT BLOCKS --- */
-        .drop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
+        #dapp-back-btn { display: none; position: fixed; top: 120px; left: 40px; z-index: 999; background: rgba(0,0,0,0.85); color: var(--accent-cyber-yellow); border: 2px solid var(--accent-cyber-yellow); padding: 12px 25px; font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 900; cursor: pointer; backdrop-filter: blur(8px); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: 0.2s; }
+        #dapp-back-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 25px var(--accent-cyber-yellow); }
 
-        .native-drop-card {
-            background: var(--bg-panel);
-            border: 2px solid var(--accent-cyber-yellow);
-            box-shadow: 0 0 20px rgba(255, 234, 0, 0.05);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+        /* --- MODAL OVERLAY STYLES --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--bg-panel); padding: 40px; border-radius: 15px; border: 2px solid var(--accent-cyber-yellow); text-align: center; box-shadow: 0 0 30px rgba(255, 234, 0, 0.15); }
 
-        .card-header {
-            background: var(--accent-cyber-yellow);
-            color: #000;
-            padding: 10px;
-            font-family: 'Orbitron';
-            font-weight: 900;
-            font-size: 0.8rem;
-            text-align: center;
-        }
+        /* --- IPFS EMOJI REPLACEMENT ICONS --- */
+        .ipfs-icon { height: 18px; width: auto; vertical-align: middle; margin-right: 8px; }
 
-        .card-body {
-            padding: 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .drop-title {
-            font-family: 'Orbitron';
-            font-weight: 900;
-            font-size: 1.2rem;
-            color: var(--accent-cyan);
-            margin: 0 0 15px 0;
-            text-transform: uppercase;
-        }
-
-        .drop-meta {
-            background: rgba(0,0,0,0.5);
-            border: 1px dashed #333;
-            padding: 10px;
-            border-radius: 4px;
-            font-family: 'Orbitron';
-            font-size: 0.75rem;
-            margin-bottom: 15px;
-        }
-
-        .claim-btn {
-            width: 100%;
-            background: var(--accent-cyan);
-            color: #000;
-            border: none;
-            padding: 12px;
-            font-family: 'Orbitron';
-            font-weight: 900;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.2s;
-        }
-        .claim-btn:hover {
-            background: var(--accent-pink);
-            color: #fff;
-            box-shadow: 0 0 15px var(--accent-pink);
+        @media (max-width: 768px) {
+            .header-inner { flex-direction: column; gap: 15px; }
+            nav ul { flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .dashboard-wrapper { padding: 20px 15px; }
+            .master-dash-btn { width: 100%; margin-bottom: 5px; }
+            #dapp-back-btn { top: auto; bottom: 20px; left: 20px; z-index: 2000; }
         }
     </style>
 </head>
-
-    <body>
+<body>
 
 <header>
-    <h1 class="logo">sk8dao</h1>
-    <div class="auth-cluster">
-        <div id="wallet-balances" class="balance-pill" style="display: none;">
-            <div>WAX: <span id="wax-bal">0.00</span></div>
-            <div>SKATE: <span id="skate-bal">0.00</span></div>
+    <div class="header-inner">
+        <h1 class="senate-logo" onclick="switchCategory('home'); window.scrollTo(0,0);">sk8dao</h1>
+        <nav>
+            <ul>
+                <li><a href="#home" onclick="switchCategory('home'); return false;" id="nav-home" class="active">HOME</a></li>
+                <li><a href="#videos" onclick="switchCategory('clips'); return false;" id="nav-clips">VIDEOS</a></li>
+                <li><a href="#defi" onclick="switchCategory('defi'); return false;" id="nav-defi">DEFI</a></li>
+                <li><a href="#treasury" onclick="switchCategory('treasury'); return false;" id="nav-treasury">TREASURY</a></li>
+                <li><a href="#dao" onclick="switchCategory('dao'); return false;" id="nav-dao">DAO</a></li>
+                <li><a href="#sk8shop" onclick="switchCategory('sk8shop'); return false;" id="nav-sk8shop">SK8SHOP</a></li>
+            </ul>
+        </nav>
+        <div class="header-controls" style="display:flex; gap:15px; align-items:center;">
+            <div id="wallet-balances" class="balance-pill" style="display: none;">
+                <div>WAX: <span id="wax-bal">0.00</span></div>
+                <div>SKATE: <span id="skate-bal">0.00</span></div>
+            </div>
+            <button id="connect-btn" class="wallet-btn" onclick="toggleWalletAction()">CONNECT</button>
         </div>
-        <button id="connect-btn" class="wallet-btn" onclick="toggleWalletAction()">CONNECT WALLET</button>
     </div>
 </header>
-
-<div class="container">
-
-    <div style="margin-bottom: 40px; text-align: center; border-left: 3px solid var(--accent-cyan); padding: 15px; background: rgba(0,0,0,0.4);">
-        <h2 style="margin:0; font-family:'Orbitron'; font-weight:900; color:var(--accent-cyan); font-size:1.2rem; text-transform: uppercase; letter-spacing: 1px;">DIRECT CONTRACT EXTRACTION FEED</h2>
-    </div>
-
-    <div id="tx-status-overlay" style="display: none; padding: 15px; margin-bottom: 30px; background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent-cyan); font-family: 'Orbitron'; font-size: 0.85rem; text-align: center;">
-        <span id="tx-status-msg" style="color: #fff;"></span>
-    </div>
-
-    <div id="loading-status" style="text-align: center; font-family: 'Orbitron'; color: var(--accent-cyan); padding: 40px;">
-        INTERCEPTING WAX ATOMICDROPS CONTRACT FOR "SKATECOINWAX"...
-    </div>
-
-    <div class="drop-grid" id="ledger-drop-grid"></div>
-
-</div>
-
-       <script type="module">
-    import { SessionKit } from 'https://esm.sh/@wharfkit/session@1.2.6';
-    import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer@1.0.8';
-    import { WalletPluginCloudWallet } from 'https://esm.sh/@wharfkit/wallet-plugin-cloudwallet@1.0.1';
-
-    // --- IMMUTABLE SYSTEM PARAMETERS ---
-    const WAX_RPC = "https://wax.greymass.com";
-    const INTERCEPT_COLLECTION = "skatecoinwax";
-    const ADMIN_WALLET = "ufuau.wam";
-
-    // --- SYSTEM STATE INSTANCES ---
-    let activeSession = null;
-    let skatePerWax = 7.6897; 
-
-    // Initialize the WharfKit SessionKit Instance via GreyMass Modules
-    const sessionKit = new SessionKit({
-        appName: 'sk8dao-direct-terminal',
-        chains: [{ 
-            id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', 
-            url: WAX_RPC 
-        }],
-        ui: new WebRenderer(),
-        walletPlugins: [ new WalletPluginCloudWallet() ]
-    });
-
-    // Make utility routers accessible globally for native HTML action hooks
-    window.toggleWalletAction = toggleWalletAction;
-    window.triggerDirectClaim = triggerDirectClaim; 
-
-     // --- LIVE USER LEDGER TOKEN SCANNER ---
-    async function updateOnChainBalances(userAccount) {
-        try {
-            // Pull raw token row data directly from eosio.token node address parameters
-            const waxRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, {
-                method: 'POST',
-                body: JSON.stringify({ code: "eosio.token", account: userAccount, symbol: "WAX" })
-            });
-            const waxBal = await waxRes.json();
-            const waxDisplay = waxBal[0] ? waxBal[0].replace(' WAX', '') : "0.00";
-            document.getElementById('wax-bal').innerText = parseFloat(waxDisplay).toFixed(2);
-
-            // Cross-query internal custom $SKATE contract metrics 
-            const skateRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, {
-                method: 'POST',
-                body: JSON.stringify({ code: "skatecoinwax", account: userAccount, symbol: "SKATE" })
-            });
-            const skateBal = await skateRes.json();
-            const skateDisplay = skateBal[0] ? skateBal[0].replace(' SKATE', '') : "0.00";
-            document.getElementById('skate-bal').innerText = parseFloat(skateDisplay).toFixed(2);
-
-            document.getElementById('wallet-balances').style.display = 'flex';
-        } catch (e) { 
-            console.warn("Crypto engine scanning restriction encountered or token balance row empty.", e); 
-        }
-    }
-
-    // --- AUTOMATED NOTIFICATION LAYER ---
-    function notifyStatus(msg, isError = false) {
-        const frame = document.getElementById('tx-status-overlay');
-        const text = document.getElementById('tx-status-msg');
-        if(!frame || !text) return;
-
-        text.innerText = msg;
-        frame.style.display = 'block';
-        frame.style.borderColor = isError ? 'var(--accent-pink)' : 'var(--accent-cyan)';
-        frame.style.background = isError ? 'rgba(255,0,85,0.1)' : 'rgba(0,240,255,0.1)';
-    }
-
-      // --- DIRECT LEDGER ATOMICDROPS READ LAYER ---
-    async function pullDirectOnChainDrops() {
-        const grid = document.getElementById('ledger-drop-grid');
-        const loader = document.getElementById('loading-status');
-        
-        try {
-            // Read atomicdropsx table states directly via RPC row index parameters
-            const res = await fetch(`${WAX_RPC}/v1/chain/get_table_rows`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    json: true,
-                    code: "atomicdropsx",
-                    scope: "atomicdropsx",
-                    table: "drops",
-                    index_position: 2, // Query via the secondary index (collection)
-                    key_type: "name",
-                    lower_bound: INTERCEPT_COLLECTION,
-                    upper_bound: INTERCEPT_COLLECTION,
-                    limit: 20
-                })
-            });
-            
-            const data = await res.json();
-            if(loader) loader.style.display = 'none';
-            grid.innerHTML = "";
-
-            if (!data.rows || data.rows.length === 0) {
-                grid.innerHTML = `<h3 style="grid-column:1/-1; text-align:center; color:#888; font-family:'Orbitron';">NO ACTIVE COLLECTION DROPS REGISTERED ON CONTRACT</h3>`;
-                return;
-            }
-
-            data.rows.forEach(drop => {
-                // Ensure we filter out hidden or completely deleted data structures
-                if(drop.collection_name !== INTERCEPT_COLLECTION) return;
-
-                const priceInfo = drop.listing_price[0] ? drop.listing_price[0] : "FREE";
-                const maxClaimStr = drop.max_claimable == 0 ? 'UNLIMITED' : drop.max_claimable.toLocaleString();
-                
-                const card = `
-                    <div class="native-drop-card">
-                        <div class="card-header">DROP ID #${drop.drop_id}</div>
-                        <div class="card-body">
-                            <div>
-                                <h3 class="drop-title">SKATE ASSET DISPATCH</h3>
-                                <div class="drop-meta">
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">PRICE: <span style="color:var(--accent-cyber-yellow)">${priceInfo}</span></div>
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">MAX RELEASES: <span>${maxClaimStr}</span></div>
-                                    <div style="display:flex; justify-content:space-between;">CURRENT MINT: <span>#${drop.current_claimable}</span></div>
-                                </div>
-                            </div>
-                            <button class="claim-btn" onclick="triggerDirectClaim('${drop.drop_id}', '${priceInfo}')">CLAIM ASSET</button>
-                        </div>
-                    </div>`;
-                grid.insertAdjacentHTML('beforeend', card);
-            });
-
-        } catch (e) {
-            if(loader) loader.innerText = "LEDGER EXTRACTION FAULT: Verify RPC connection properties.";
-            console.error("Smart contract data scrape faulted.", e);
-        }
-    }
-
-      // --- WHARFKIT AUTH ROUTER ---
-    async function toggleWalletAction() {
-        if (!activeSession) {
-            try {
-                const { session } = await sessionKit.login();
-                applySessionState(session);
-                notifyStatus("CRYPTOGRAPHIC METADATA SYNC COMPLETE.");
-            } catch(e) { 
-                console.warn("Authentication routine aborted by client."); 
-            }
-        } else {
-            const confirmQuit = confirm("Disconnect your WAX wallet from the application session?");
-            if (confirmQuit) {
-                await sessionKit.logout();
-                activeSession = null;
-                const btn = document.getElementById('connect-btn');
-                btn.innerText = "CONNECT WALLET";
-                btn.classList.remove('disconnect');
-                document.getElementById('wallet-balances').style.display = 'none';
-                notifyStatus("WALLET DISCONNECTED.");
-            }
-        }
-    }
-
-    function applySessionState(session) {
-        activeSession = session;
-        const btn = document.getElementById('connect-btn');
-        if (btn) {
-            btn.innerText = session.actor.toString().toUpperCase();
-            btn.classList.add('disconnect');
-        }
-        updateOnChainBalances(session.actor.toString());
-    }
-
-    // --- DIRECT ON-CHAIN SMART CONTRACT CLAIM TRANSACTOR ---
-    async function triggerDirectClaim(dropId, priceString) {
-        if (!activeSession) return toggleWalletAction();
-        
-        const actor = activeSession.actor.toString();
-        const actions = [];
-
-        // Dynamic Payment Router (Checks if drop requires WAX or $SKATE)
-        if (priceString !== "FREE") {
-            const [amount, symbol] = priceString.split(' ');
-            const tokenContract = symbol === "WAX" ? "eosio.token" : "skatecoinwax";
-            const decimals = symbol === "WAX" ? 8 : 4;
-            
-            actions.push({
-                account: tokenContract,
-                name: 'transfer',
-                authorization: [activeSession.permissionLevel],
-                data: {
-                    from: actor,
-                    to: "atomicdropsx",
-                    quantity: parseFloat(amount).toFixed(decimals) + ` ${symbol}`,
-                    memo: "deposit"
-                }
-            });
-        }
-
-        // Direct Core Atomic Drops Contract Execution Parameters
-        actions.push({
-            account: "atomicdropsx",
-            name: "claimdrop",
-            authorization: [activeSession.permissionLevel],
-            data: {
-                claimer: actor,
-                drop_id: parseInt(dropId),
-                amount: 1,
-                intended_delphi_median: 0,
-                referrer: "sk8dao",
-                country_code: "US"
-            }
-        });
-
-        try {
-            notifyStatus("FORWARDING SECURITY PAYLOAD TO WAX BLOCKCHAIN...");
-            await activeSession.transact({ actions });
-            notifyStatus("💥 IMMUTABLE ACTION RECONCILED. CHECK YOUR INVENTORY TRUNK!");
-            updateOnChainBalances(actor);
-            pullDirectOnChainDrops();
-        } catch(e) {
-            console.error(e);
-            notifyStatus(e.message || "TRANSACTION REJECTED BY BLOCKCHAIN CONSENSUS.", true);
-        }
-    }
-
-    // --- SYSTEM RECOVERY LAYER ON RUNTIME BOOTSTRAP ---
-    sessionKit.restore().then(s => {
-        if (s) applySessionState(s);
-        pullDirectOnChainDrops();
-    });
-</script>
-</body>
-</html>     
