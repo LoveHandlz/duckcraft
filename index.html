@@ -2,29 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>sk8dao | NEFTY EMBEDDED MARKETPLACE</title>
+    <title>sk8dao | DIRECT BLOCKCHAIN DROP GATEWAY</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- GLOBAL retro STYLING --- */
         :root {
             --bg-deep: #050a1a;
+            --bg-panel: rgba(15, 26, 71, 0.95);
             --accent-cyan: #00f0ff;
             --accent-cyber-yellow: #ffea00; 
             --accent-pink: #ff0055;
-
-            /* --- EMBED VARIABLES INFECTION --- */
-            --nefty-font-family: 'Orbitron', sans-serif;
-            --nefty-font-size: 14px;
-            --nefty-radius: 8px;
-            --nefty-border-drop: var(--accent-cyber-yellow);
-            --nefty-border-size: 2px;
-            --nefty-color: #ffffff;
-            --nefty-color-highlight: var(--accent-cyan);
-            
-            --nefty-btn-primary: #000000;
-            --nefty-btn-primary-bg: var(--accent-cyber-yellow);
-            --nefty-btn-primary-border: var(--accent-cyber-yellow);
         }
 
         body { 
@@ -42,36 +29,269 @@
             margin: auto; 
         }
 
-        /* --- HEAVY SHADOW DOM RENDERING FORCES --- */
-        neftyblocks-drops::part(drop) {
-            background: rgba(15, 26, 71, 0.9) !important;
-            border: 2px solid var(--accent-cyber-yellow) !important;
-            box-shadow: 0 0 25px rgba(255, 234, 0, 0.15);
+        header {
+            background: #000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-cyber-yellow);
+            box-shadow: 0 0 25px rgba(255,234,0,0.1);
+            margin-bottom: 40px;
         }
-        neftyblocks-drops::part(drop-title) {
-            color: var(--accent-cyan) !important;
-            text-shadow: 0 0 8px var(--accent-cyan);
+
+        .logo {
+            font-family: 'Orbitron';
+            font-weight: 900;
+            color: var(--accent-cyber-yellow);
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .wallet-btn {
+            background: var(--accent-cyber-yellow);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            cursor: pointer;
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+        }
+
+        /* --- IMMUTABLE LEDGER DISPLAY GRID --- */
+        .drop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .native-drop-card {
+            background: var(--bg-panel);
+            border: 2px solid var(--accent-cyber-yellow);
+            box-shadow: 0 0 20px rgba(255, 234, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            background: var(--accent-cyber-yellow);
+            color: #000;
+            padding: 10px;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .drop-title {
+            font-family: 'Orbitron';
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+        }
+
+        .drop-meta {
+            background: rgba(0,0,0,0.5);
+            border: 1px dashed #333;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Orbitron';
+            font-size: 0.75rem;
+            margin-bottom: 15px;
+        }
+
+        .claim-btn {
+            width: 100%;
+            background: var(--accent-cyan);
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+        .claim-btn:hover {
+            background: var(--accent-pink);
+            color: #fff;
+            box-shadow: 0 0 15px var(--accent-pink);
         }
     </style>
 </head>
 <body>
 
+<header>
+    <h1 class="logo">sk8dao // direct court drops</h1>
+    <button id="connect-btn" class="wallet-btn" onclick="loginWallet()">CONNECT WALLET</button>
+</header>
+
 <div class="container">
-    
-    <div style="margin-bottom: 40px; text-align: center; border-left: 3px solid var(--accent-cyan); padding: 15px; background: rgba(0,0,0,0.4);">
-        <h2 style="margin:0; font-family:'Orbitron'; font-weight:900; color:var(--accent-cyan); font-size:1.2rem;">SK8DAO DROP TERMINAL</h2>
+
+    <div id="loading-status" style="text-align: center; font-family: 'Orbitron'; color: var(--accent-cyan); padding: 40px;">
+        INTERCEPTING WAX ATOMICDROPS CONTRACT...
     </div>
 
-    <neftyblocks-drops 
-        collection="skatecoinwax" 
-        limit="8" 
-        network="mainnet"
-        chain="wax">
-    </neftyblocks-drops>
+    <div class="drop-grid" id="ledger-drop-grid"></div>
 
 </div>
 
-<script type="module" src="https://cdn.jsdelivr.net/npm/@neftyblocks/drops@latest"></script>
+<script type="module">
+    import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
+    import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
+    import { WalletPluginCloudWallet } from 'https://esm.sh/@wharfkit/wallet-plugin-cloudwallet?bundle';
 
+    const WAX_RPC = "https://wax.greymass.com";
+    const INTERCEPT_COLLECTION = "skatecoinwax";
+
+    const sessionKit = new SessionKit({
+        appName: 'sk8dao-direct',
+        chains: [{ id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', url: WAX_RPC }],
+        ui: new WebRenderer(),
+        walletPlugins: [ new WalletPluginCloudWallet() ]
+    });
+
+    let activeSession = null;
+
+    // --- DIRECT LEDGER READ LAYER ---
+    async function pullDirectOnChainDrops() {
+        const grid = document.getElementById('ledger-drop-grid');
+        const loader = document.getElementById('loading-status');
+        
+        try {
+            // Read atomicdropsx table states directly via RPC row index parameters
+            const res = await fetch(`${WAX_RPC}/v1/chain/get_table_rows`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    json: true,
+                    code: "atomicdropsx",
+                    scope: "atomicdropsx",
+                    table: "drops",
+                    index_position: 2, // Query by collection index
+                    key_type: "name",
+                    lower_bound: INTERCEPT_LIMIT_COLLECTION(),
+                    upper_bound: INTERCEPT_LIMIT_COLLECTION(),
+                    limit: 20
+                })
+            });
+            
+            const data = await res.json();
+            loader.style.display = 'none';
+            grid.innerHTML = "";
+
+            if (!data.rows || data.rows.length === 0) {
+                grid.innerHTML = `<h3 style="grid-column:1/-1; text-align:center; color:#888; font-family:'Orbitron';">NO ACTIVE COLLECTION DROPS REGISTERED ON CONTRACT</h3>`;
+                return;
+            }
+
+            data.rows.forEach(drop => {
+                // Render custom retro layout card blocks based on immutably extracted node data
+                const priceInfo = drop.listing_price[0] ? drop.listing_price[0] : "FREE";
+                const card = `
+                    <div class="native-drop-card">
+                        <div class="card-header">DROP ID #${drop.drop_id}</div>
+                        <div class="card-body">
+                            <div>
+                                <h3 class="drop-title">SKATE ASSET DISPATCH</h3>
+                                <div class="drop-meta">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">PRICE: <span style="color:var(--accent-cyber-yellow)">${priceInfo}</span></div>
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">MAX CLAIMABLE: <span>${drop.max_claimable == 0 ? 'UNLIMITED' : drop.max_claimable}</span></div>
+                                    <div style="display:flex; justify-content:space-between;">CURRENT MINT: <span>#${drop.current_claimable}</span></div>
+                                </div>
+                            </div>
+                            <button class="claim-btn" onclick="triggerDirectClaim('${drop.drop_id}', '${priceInfo}')">CLAIM ASSET</button>
+                        </div>
+                    </div>`;
+                grid.insertAdjacentHTML('beforeend', card);
+            });
+
+        } catch (e) {
+            loader.innerText = "LEDGER EXTRACTION FAULT: Verify RPC connection properties.";
+            console.error(e);
+        }
+    }
+
+    function INTERCEPT_LIMIT_COLLECTION() { return INTERCEPT_COLLECTION; }
+
+    // --- TRANSACTION MANAGEMENT MATRIX ---
+    window.loginWallet = async () => {
+        try {
+            const { session } = await sessionKit.login();
+            activeSession = session;
+            document.getElementById('connect-btn').innerText = session.actor.toString().toUpperCase();
+            pullDirectOnChainDrops();
+        } catch(e) { console.error(e); }
+    };
+
+    window.triggerDirectClaim = async (dropId, priceString) => {
+        if (!activeSession) return window.loginWallet();
+        
+        const actor = activeSession.actor.toString();
+        const actions = [];
+
+        // If the drop specifies an asset cost protocol, generate a prerequisite payment transfer step
+        if (priceString !== "FREE") {
+            const [amount, symbol] = priceString.split(' ');
+            const tokenContract = symbol === "WAX" ? "eosio.token" : "skatecoinwax";
+            
+            actions.push({
+                account: tokenContract,
+                name: 'transfer',
+                authorization: [activeSession.permissionLevel],
+                data: {
+                    from: actor,
+                    to: "atomicdropsx",
+                    quantity: parseFloat(amount).toFixed(symbol === "WAX" ? 8 : 4) + ` ${symbol}`,
+                    memo: "deposit"
+                }
+            });
+        }
+
+        // Push immediate claim request sequence targeting main smart contract parameters
+        actions.push({
+            account: "atomicdropsx",
+            name: "claimdrop",
+            authorization: [activeSession.permissionLevel],
+            data: {
+                claimer: actor,
+                drop_id: parseInt(dropId),
+                amount: 1,
+                intended_delphi_median: 0,
+                referrer: "sk8dao"
+            }
+        });
+
+        try {
+            await activeSession.transact({ actions });
+            alert("💥 IMMUTABLE CLAIM SUCCESSFUL // CHECK YOUR INVENTORY TRUNK");
+            pullDirectOnChainDrops();
+        } catch(e) {
+            alert("TRANSACTION REJECTED: Check network memory allocations or balance liquidity constraints.");
+            console.error(e);
+        }
+    };
+
+    // Auto-restore session status
+    sessionKit.restore().then(s => {
+        if (s) {
+            activeSession = s;
+            document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase();
+        }
+        pullDirectOnChainDrops();
+    });
+</script>
 </body>
 </html>
