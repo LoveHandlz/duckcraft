@@ -317,7 +317,6 @@
                 <li><a href="#treasury" onclick="switchCategory('treasury'); return false;" id="nav-treasury">TREASURY</a></li>
                 <li><a href="#dao" onclick="switchCategory('dao'); return false;" id="nav-dao">DAO</a></li>
                 <li><a href="#sk8shop" onclick="switchCategory('sk8shop'); return false;" id="nav-sk8shop">SK8SHOP</a></li>
-                <li><a href="#food" onclick="document.getElementById('food-mission-modal').style.display='flex'; return false;" id="nav-food" style="color: #00ffaa; text-shadow: 0 0 5px rgba(0,255,170,0.5);">FOOD</a></li>
             </ul>
         </nav>
         
@@ -344,8 +343,11 @@
                 <span style="color: #00ffaa; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px;">FUEL YOUR BODY. FUEL THE STREETS.</span>
             </div>
         </div>
-        <button class="wallet-btn" onclick="document.getElementById('food-mission-modal').style.display='none'; switchCategory('food');" style="width: 100%; background: #00ffaa; color: #000; padding: 15px; font-size: 1.1rem; margin-bottom: 15px;">ACCESS FOOD TOKENS</button>
-        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ BAIL ]</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+            <button class="wallet-btn" onclick="document.getElementById('food-mission-modal').style.display='none'; switchCategory('food');" style="flex: 1; background: #00ffaa; color: #000; padding: 15px; font-size: 1rem;">ACCESS LUNCHBOX</button>
+            <button class="wallet-btn" onclick="document.getElementById('food-mission-modal').style.display='none'; switchCategory('food-builder');" style="flex: 1; background: rgba(0,255,170,0.2); border: 1px solid #00ffaa; color: #fff; padding: 15px; font-size: 1rem; text-shadow: 0 0 5px #000;">ENTER FOOD COURT</button>
+        </div>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -362,7 +364,7 @@
             <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='none'; switchCategory('builder'); return false;" style="text-align: center; margin-top: 10px;">⚙️ SKATEBOARD BUILDER</button>
         </div>
         
-        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ CLOSE TRUNK ]</button>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -406,7 +408,7 @@
     <div class="modal-content" style="max-width: 800px; height: 85vh; border-color: var(--accent-cyan); background: #050a1a; display: flex; flex-direction: column; overflow: hidden; padding: clamp(15px, 3vw, 20px);">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); padding-bottom: 15px; margin-bottom: 20px;">
             <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyan); margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); letter-spacing: 1px;">THE SUPREME COURT FLOOR</h2>
-            <button onclick="closeModals()" style="background:transparent; color:var(--accent-pink); border: 1px solid var(--accent-pink); padding: 5px 15px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.85rem; transition: 0.2s;">CLOSE</button>
+            <button onclick="closeModals()" style="background:transparent; color:var(--accent-pink); border: 1px solid var(--accent-pink); padding: 5px 15px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.85rem; transition: 0.2s;">[ BAIL. ]</button>
         </div>
         
         <div id="active-motions-list" style="flex: 1; overflow-y: auto; padding-right: 10px; text-align: left;">
@@ -442,7 +444,8 @@
             <p>You are crossing into the decentralized world. There is no customer support desk to save you if you lose your private keys.</p>
             <p><strong>THE SYMBIOTIC TOKENOMICS:</strong> By providing liquidity and sponsoring skaters, you generate protocol yield and level up your profile with unlockable NFT badges. Earn higher rank and reap locked rewards. But if you sit on the sidelines hoarding assets without contributing to the culture, Poser status will remain. Skaters need funding to progress; sponsors need skaters to earn yield. Play the game, respect the chain, and support the streets.</p>
         </div>
-        <button class="wallet-btn" onclick="document.getElementById('defi-warning-modal').style.display='none';" style="width: 100%; background: #ffaa00; color: #000;">I UNDERSTAND THE TOKENOMICS. LET ME IN.</button>
+        <button class="wallet-btn" onclick="document.getElementById('defi-warning-modal').style.display='none';" style="width: 100%; background: #ffaa00; color: #000; margin-bottom: 15px;">I UNDERSTAND THE TOKENOMICS. LET ME IN.</button>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -468,7 +471,7 @@
             <div id="food-modal-wax-fee" style="font-family:'Orbitron'; font-weight: 900; font-size: clamp(1.5rem, 5vw, 2rem); color: #fff;">0 WAX</div>
         </div>
         <button class="wallet-btn" onclick="executeFoodBlend()" style="width: 100%; background: #00ffaa; color: #000;">SERVE MEAL</button>
-        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ CANCEL ORDER ]</button>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -477,7 +480,7 @@
         <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 15px; font-size: clamp(1.4rem, 4vw, 1.6rem);">🐔 LOGGING OUT?</h2>
         <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px; text-align: left;">Bailing so soon? Hit the streets and be safe. We'll hold the line against the mega-corps until you return.</p>
         <button class="wallet-btn" id="logout-trigger" style="width: 100%; background: rgba(255,0,85,0.1); border: 1px solid var(--accent-pink); color: var(--accent-pink); margin-bottom: 15px;">DISCONNECT WALLET</button>
-        <button onclick="closeModals()" style="background:transparent; color:var(--accent-cyber-yellow); border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.85rem;">[ KEEP SKATING. ]</button>
+        <button onclick="closeModals()" style="background:transparent; color:var(--accent-cyber-yellow); border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.85rem;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -494,7 +497,7 @@
             <input type="number" id="custom-donate-amt" placeholder="CUSTOM AMOUNT" style="flex: 1; padding: 15px; background: rgba(0,0,0,0.8); border: 1px solid #333; color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 1rem; outline: none; border-radius: 4px; min-width: 150px;">
             <button class="wallet-btn" onclick="executeCustomDonation()" style="background: var(--accent-cyber-yellow); color: #000; border-radius: 4px; flex: 1;">DEPLOY LIQUIDITY</button>
         </div>
-        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ EXIT ]</button>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -511,7 +514,8 @@
         <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 15px; font-size: clamp(1.4rem, 4vw, 1.5rem);">💀 SYSTEM ERROR. TRANSACTION FAILED.</h2>
         <p id="error-modal-msg" style="color: #ccc; font-size: 0.95rem; margin-bottom: 10px; line-height: 1.6;"></p>
         <p style="color: #ccc; font-size: 0.95rem; margin-bottom: 30px; line-height: 1.6;">The chain rejected your request. Check your liquidity, adjust your slippage, and try again.</p>
-        <button class="wallet-btn" onclick="closeModals()" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; font-size: 1.1rem;">TRY AGAIN</button>
+        <button class="wallet-btn" onclick="closeModals()" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; font-size: 1.1rem; margin-bottom: 15px;">TRY AGAIN</button>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem; transition: 0.2s;">[ BAIL. ]</button>
     </div>
 </div>
 
@@ -526,14 +530,13 @@
 
     <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap;">
         <button class="master-dash-btn gold cyber-yellow-frame" onclick="document.getElementById('trunk-modal').style.display='flex';" style="font-size: 1.2rem; padding: 20px 30px; width: auto;">🚗 OPEN TRUNK</button>
-        <button class="master-dash-btn cyber-yellow-frame" onclick="switchCategory('food')" style="font-size: 1.2rem; padding: 20px 30px; width: auto; background: rgba(0, 255, 170, 0.1); border-color: #00ffaa; color: #00ffaa;">🍱 OPEN LUNCHBOX</button>
-        <button class="master-dash-btn cyber-yellow-frame" onclick="switchCategory('food-builder')" style="font-size: 1.2rem; padding: 20px 30px; width: auto; background: rgba(0, 255, 170, 0.2); border-color: #00ffaa; color: #fff; text-shadow: 0 0 10px #000;">🍔 FOOD COURT</button>
+        <button class="master-dash-btn cyber-yellow-frame" onclick="document.getElementById('food-mission-modal').style.display='flex';" style="font-size: 1.2rem; padding: 20px 30px; width: auto; background: rgba(0, 255, 170, 0.1); border-color: #00ffaa; color: #00ffaa;">🍔 KITCHEN</button>
     </div>
 
     <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--accent-gold); border-radius: 8px; padding: clamp(20px, 4vw, 40px); max-width: 900px; margin: 0 auto; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.5);">
         <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; letter-spacing: 2px; margin-top: 0;">WELCOME TO THE PARK</h3>
         <p style="color: #ccc; line-height: 1.8; font-size: 0.95rem; margin-bottom: 0;">
-            The central hub for the decentralized skate movement. From here, you can access your equipment in the Trunk or head to the drafting rooms for the next motion.
+            The central hub for the decentralized skate movement. From here, you can access your equipment in the Trunk, craft meals in the Kitchen, or head to the drafting rooms for the next motion.
             <br><br>
             <span style="color: #fff; font-weight: bold;">STATUS: You must hold a completed skateboard to access advanced protocol yield. Build yours at the bench.</span>
         </p>
@@ -610,7 +613,7 @@
                     </div>
                 </div>
             </div>
-            <button id="initiate-blend-btn" class="wallet-btn" style="width: 100%; padding: 20px; background: var(--accent-gold); margin-top: 15px;" disabled onclick="openCraftConfirmModal()">CRAFT SHIPPABLE ASSET</button>
+            <button id="initiate-blend-btn" class="wallet-btn" style="width: 100%; padding: 20px; background: var(--accent-gold); margin-top: 15px;" disabled onclick="document.getElementById('craft-confirm-modal').style.display='flex'">CRAFT SHIPPABLE ASSET</button>
         </div>
     </div>
 </div>
@@ -997,16 +1000,16 @@
         <button class="wallet-btn" onclick="document.getElementById('active-motions-modal').style.display='flex'" style="background: var(--accent-cyan); color: #000; padding: 20px; font-size: 1.1rem; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);">
             ⚖️ VIEW ACTIVE MOTIONS
         </button>
-        <button class="wallet-btn" onclick="document.getElementById('dao-skater-modal').style.display='flex'" style="background: transparent; color: var(--rarity-epic); border: 2px solid var(--rarity-epic); padding: 20px; font-size: 1.1rem;">
+        <button class="wallet-btn" onclick="showErrorModal('Skater matrix coming soon.')" style="background: transparent; color: var(--rarity-epic); border: 2px solid var(--rarity-epic); padding: 20px; font-size: 1.1rem;">
             🛹 SKATER MATRIX
         </button>
-        <button class="wallet-btn" onclick="document.getElementById('dao-footy-modal').style.display='flex'" style="background: transparent; color: var(--accent-cyan); border: 2px solid var(--accent-cyan); padding: 20px; font-size: 1.1rem;">
+        <button class="wallet-btn" onclick="showErrorModal('Footy pipeline coming soon.')" style="background: transparent; color: var(--accent-cyan); border: 2px solid var(--accent-cyan); padding: 20px; font-size: 1.1rem;">
             📹 FOOTY PIPELINE
         </button>
-        <button class="wallet-btn" onclick="document.getElementById('dao-treasury-modal').style.display='flex'" style="background: transparent; color: var(--accent-gold); border: 2px solid var(--accent-gold); padding: 20px; font-size: 1.1rem;">
+        <button class="wallet-btn" onclick="showErrorModal('Treasury routing coming soon.')" style="background: transparent; color: var(--accent-gold); border: 2px solid var(--accent-gold); padding: 20px; font-size: 1.1rem;">
             🏦 TREASURY ROUTING
         </button>
-        <button class="wallet-btn" onclick="document.getElementById('dao-veto-modal').style.display='flex'" style="background: rgba(255, 0, 85, 0.1); color: var(--accent-pink); border: 2px solid var(--accent-pink); padding: 20px; font-size: 1.1rem;">
+        <button class="wallet-btn" onclick="showErrorModal('Veto terminal coming soon.')" style="background: rgba(255, 0, 85, 0.1); color: var(--accent-pink); border: 2px solid var(--accent-pink); padding: 20px; font-size: 1.1rem;">
             🛑 VETO TERMINAL
         </button>
     </div>
@@ -1047,7 +1050,10 @@
             const val = this.getRaw(nft, key);
             return val ? String(val).toUpperCase() : fallback; 
         }
-        static getImg(nft) { return this.getRaw(nft, 'img') || ''; }
+        // UPGRADED TO CATCH MULTIPLE IPFS HASH KEYS (img, image, video)
+        static getImg(nft) { 
+            return this.getRaw(nft, 'img') || this.getRaw(nft, 'image') || this.getRaw(nft, 'video') || ''; 
+        }
         static getRarity(nft) { return this.getString(nft, 'rarity', 'COMMON').toLowerCase(); }
     }
 
@@ -1079,7 +1085,7 @@
     
     window.currentUserMaxVotes = 0; 
 
-    // --- GLOBAL MODAL ROUTERS ---
+    // --- GLOBAL MODAL ROUTERS & ESCAPE BAIL SYSTEM ---
     window.showErrorModal = (msg) => {
         closeModals();
         document.getElementById('error-modal-msg').innerText = msg;
@@ -1097,6 +1103,9 @@
     window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
     window.openBrandModal = (brandName) => { closeModals(); document.getElementById('brand-modal-title').innerText = brandName; document.getElementById('brand-detail-modal').style.display = 'flex'; };
     window.openStoreComingSoon = () => { closeModals(); document.getElementById('store-coming-soon-modal').style.display = 'flex'; };
+
+    // UNIVERSAL ESCAPE KEY BAIL
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModals(); });
 
     // --- ORACLE SYNC ---
     async function syncPrices() {
@@ -1668,7 +1677,3 @@
 </script>
 </body>
 </html>
-
-    
-
-    
