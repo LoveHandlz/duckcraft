@@ -6,12 +6,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
+        /* --- DESIGN FRAME MATRIX --- */
         :root {
             --bg-deep: #050a1a;
             --bg-panel: rgba(15, 26, 71, 0.95);
             --accent-cyan: #00f0ff;
             --accent-cyber-yellow: #ffea00; 
             --accent-pink: #ff0055;
+            --accent-gold: #ffd700;
         }
 
         body { 
@@ -21,23 +23,22 @@
             margin: 0; 
             background-image: radial-gradient(circle at 50% 50%, #162a5e 0%, #050a1a 100%); 
             background-attachment: fixed;
-        }
-
-        .container { 
-            padding: 40px; 
-            max-width: 1200px; 
-            margin: auto; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
             background: #000;
-            padding: 20px 40px;
+            padding: 15px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--accent-cyber-yellow);
             box-shadow: 0 0 25px rgba(255,234,0,0.1);
-            margin-bottom: 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .logo {
@@ -46,7 +47,27 @@
             color: var(--accent-cyber-yellow);
             margin: 0;
             font-size: 1.6rem;
+            text-transform: lowercase;
         }
+
+        /* --- AUTH & PILL DISPLAYS --- */
+        .auth-cluster {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .balance-pill { 
+            background: rgba(255, 234, 0, 0.05); 
+            border: 1px solid var(--accent-cyber-yellow); 
+            padding: 6px 15px; 
+            border-radius: 50px; 
+            font-family: 'Orbitron'; 
+            font-size: 0.65rem; 
+            display: flex; 
+            gap: 15px; 
+        }
+        .balance-pill span { color: var(--accent-gold); font-weight: 900; }
 
         .wallet-btn {
             background: var(--accent-cyber-yellow);
@@ -57,6 +78,26 @@
             font-weight: 900;
             cursor: pointer;
             clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+            transition: 0.2s;
+        }
+        .wallet-btn:hover { background: #fff; }
+        .wallet-btn.disconnect {
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+        }
+        .wallet-btn.disconnect:hover {
+            background: var(--accent-pink);
+            color: #000;
+        }
+
+        .container { 
+            padding: 40px; 
+            max-width: 1200px; 
+            margin: auto; 
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         /* --- IMMUTABLE LEDGER DISPLAY GRID --- */
@@ -135,11 +176,21 @@
 <body>
 
 <header>
-    <h1 class="logo">sk8dao // direct court drops</h1>
-    <button id="connect-btn" class="wallet-btn" onclick="loginWallet()">CONNECT WALLET</button>
+    <h1 class="logo">sk8dao</h1>
+    <div class="auth-cluster">
+        <div id="wallet-balances" class="balance-pill" style="display: none;">
+            <div>WAX: <span id="wax-bal">0.00</span></div>
+            <div>SKATE: <span id="skate-bal">0.00</span></div>
+        </div>
+        <button id="connect-btn" class="wallet-btn" onclick="toggleWalletAction()">CONNECT WALLET</button>
+    </div>
 </header>
 
 <div class="container">
+
+    <div style="margin-bottom: 40px; text-align: center; border-left: 3px solid var(--accent-cyan); padding: 15px; background: rgba(0,0,0,0.4);">
+        <h2 style="margin:0; font-family:'Orbitron'; font-weight:900; color:var(--accent-cyan); font-size:1.2rem; text-transform: uppercase; letter-spacing: 1px;">Direct smart contract atomic drops</h2>
+    </div>
 
     <div id="loading-status" style="text-align: center; font-family: 'Orbitron'; color: var(--accent-cyan); padding: 40px;">
         INTERCEPTING WAX ATOMICDROPS CONTRACT...
@@ -157,6 +208,7 @@
     const WAX_RPC = "https://wax.greymass.com";
     const INTERCEPT_COLLECTION = "skatecoinwax";
 
+    // Initialize WharfKit SessionKit Configuration
     const sessionKit = new SessionKit({
         appName: 'sk8dao-direct',
         chains: [{ id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', url: WAX_RPC }],
@@ -172,7 +224,6 @@
         const loader = document.getElementById('loading-status');
         
         try {
-            // Read atomicdropsx table states directly via RPC row index parameters
             const res = await fetch(`${WAX_RPC}/v1/chain/get_table_rows`, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -180,16 +231,16 @@
                     code: "atomicdropsx",
                     scope: "atomicdropsx",
                     table: "drops",
-                    index_position: 2, // Query by collection index
+                    index_position: 2, 
                     key_type: "name",
-                    lower_bound: INTERCEPT_LIMIT_COLLECTION(),
-                    upper_bound: INTERCEPT_LIMIT_COLLECTION(),
+                    lower_bound: INTERCEPT_COLLECTION,
+                    upper_bound: INTERCEPT_COLLECTION,
                     limit: 20
                 })
             });
             
             const data = await res.json();
-            loader.style.display = 'none';
+            if(loader) loader.style.display = 'none';
             grid.innerHTML = "";
 
             if (!data.rows || data.rows.length === 0) {
@@ -198,7 +249,6 @@
             }
 
             data.rows.forEach(drop => {
-                // Render custom retro layout card blocks based on immutably extracted node data
                 const priceInfo = drop.listing_price[0] ? drop.listing_price[0] : "FREE";
                 const card = `
                     <div class="native-drop-card">
@@ -219,30 +269,68 @@
             });
 
         } catch (e) {
-            loader.innerText = "LEDGER EXTRACTION FAULT: Verify RPC connection properties.";
+            if(loader) loader.innerText = "LEDGER EXTRACTION FAULT: Verify RPC connection properties.";
             console.error(e);
         }
     }
 
-    function INTERCEPT_LIMIT_COLLECTION() { return INTERCEPT_COLLECTION; }
-
-    // --- TRANSACTION MANAGEMENT MATRIX ---
-    window.loginWallet = async () => {
+    // --- LIVE USER LEDGER TOKEN SCANNER ---
+    async function updateOnChainBalances(userAccount) {
         try {
-            const { session } = await sessionKit.login();
-            activeSession = session;
-            document.getElementById('connect-btn').innerText = session.actor.toString().toUpperCase();
-            pullDirectOnChainDrops();
-        } catch(e) { console.error(e); }
+            const waxRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, {
+                method: 'POST',
+                body: JSON.stringify({ code: "eosio.token", account: userAccount, symbol: "WAX" })
+            });
+            const waxBal = await waxRes.json();
+            document.getElementById('wax-bal').innerText = waxBal[0] ? waxBal[0].replace(' WAX', '') : "0.00";
+
+            const skateRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, {
+                method: 'POST',
+                body: JSON.stringify({ code: "skatecoinwax", account: userAccount, symbol: "SKATE" })
+            });
+            const skateBal = await skateRes.json();
+            document.getElementById('skate-bal').innerText = skateBal[0] ? skateBal[0].replace(' SKATE', '') : "0.00";
+
+            document.getElementById('wallet-balances').style.display = 'flex';
+        } catch (e) { console.error("Balance scan faulted.", e); }
+    }
+
+    // --- WHARFKIT AUTH MATRIX ROUTER ---
+    window.toggleWalletAction = async () => {
+        if (!activeSession) {
+            // Login Routine
+            try {
+                const { session } = await sessionKit.login();
+                applySessionState(session);
+            } catch(e) { console.error("Login sequence aborted by client.", e); }
+        } else {
+            // Logout Routine
+            const confirmQuit = confirm("Disconnect your WAX wallet from the application session?");
+            if (confirmQuit) {
+                await sessionKit.logout();
+                activeSession = null;
+                document.getElementById('connect-btn').innerText = "CONNECT WALLET";
+                document.getElementById('connect-btn').classList.remove('disconnect');
+                document.getElementById('wallet-balances').style.display = 'none';
+            }
+        }
     };
 
+    function applySessionState(session) {
+        activeSession = session;
+        const btn = document.getElementById('connect-btn');
+        btn.innerText = session.actor.toString().toUpperCase();
+        btn.classList.add('disconnect'); // Styles button to secondary warning theme for disconnect action mapping
+        updateOnChainBalances(session.actor.toString());
+    }
+
+    // --- IMMUTABLE WRITE STRAT MATRIX ---
     window.triggerDirectClaim = async (dropId, priceString) => {
-        if (!activeSession) return window.loginWallet();
+        if (!activeSession) return window.toggleWalletAction();
         
         const actor = activeSession.actor.toString();
         const actions = [];
 
-        // If the drop specifies an asset cost protocol, generate a prerequisite payment transfer step
         if (priceString !== "FREE") {
             const [amount, symbol] = priceString.split(' ');
             const tokenContract = symbol === "WAX" ? "eosio.token" : "skatecoinwax";
@@ -260,7 +348,6 @@
             });
         }
 
-        // Push immediate claim request sequence targeting main smart contract parameters
         actions.push({
             account: "atomicdropsx",
             name: "claimdrop",
@@ -276,20 +363,18 @@
 
         try {
             await activeSession.transact({ actions });
-            alert("💥 IMMUTABLE CLAIM SUCCESSFUL // CHECK YOUR INVENTORY TRUNK");
+            alert("💥 DIRECT ACTION CONFIRMED // DISPATCH COMPLETE");
+            updateOnChainBalances(actor);
             pullDirectOnChainDrops();
         } catch(e) {
-            alert("TRANSACTION REJECTED: Check network memory allocations or balance liquidity constraints.");
+            alert("TRANSACTION FALSIFIED: Ledger execution dropped by user action or consensus constraints.");
             console.error(e);
         }
     };
 
-    // Auto-restore session status
+    // Auto-restore session status on layout bootstrap
     sessionKit.restore().then(s => {
-        if (s) {
-            activeSession = s;
-            document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase();
-        }
+        if (s) applySessionState(s);
         pullDirectOnChainDrops();
     });
 </script>
