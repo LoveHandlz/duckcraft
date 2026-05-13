@@ -341,7 +341,7 @@
         </div>
     </div>
 </header>
-<button id="dapp-back-btn" onclick="goBack()">[ &lt; BACK ]</button>
+    <button id="dapp-back-btn" onclick="goBack()">[ &lt; BACK ]</button>
 
  <div id="trunk-modal" class="modal-overlay">
     <div class="modal-content cyber-yellow-frame" style="max-width: 450px;">
@@ -525,6 +525,22 @@
         <p id="error-modal-msg" style="color: #ccc; font-size: 0.95rem; margin-bottom: 10px; line-height: 1.6;"></p>
         <p style="color: #ccc; font-size: 0.95rem; margin-bottom: 30px; line-height: 1.6;">The chain rejected your request. Check your liquidity, adjust your slippage, and try again.</p>
         <button class="wallet-btn" onclick="closeModals()" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; font-size: 1.1rem;">TRY AGAIN</button>
+    </div>
+</div>
+
+<div id="burn-confirm-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: var(--accent-pink); max-width: 450px; background: #000;">
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 15px; font-size: clamp(1.4rem, 4vw, 1.8rem); letter-spacing: 1px;">🔥 INCINERATION WARNING</h2>
+        <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px; text-align: left;">
+            You are about to securely route your assets to the protocol incinerator (Contract: <strong>skatenftswap</strong>).
+            This cryptographic action will permanently destroy the NFTs and release their intrinsic yield directly to your wallet.
+        </p>
+        <div style="background: rgba(255,0,85,0.05); padding: 15px; border: 1px solid var(--accent-pink); border-radius: 6px; margin-bottom: 25px;">
+            <div style="font-family:'Orbitron'; font-size: 0.65rem; color: #888; margin-bottom: 5px;">EXTRACTED YIELD</div>
+            <div id="modal-burn-yield" style="font-family:'Orbitron'; font-weight: 900; font-size: clamp(1.5rem, 5vw, 2rem); color: #fff;">0 $SKATE</div>
+        </div>
+        <button class="wallet-btn" onclick="executeOnChainBurn()" style="width: 100%; background: var(--accent-pink); color: #000; font-size: 1.2rem; padding: 15px;">CONFIRM INCINERATION</button>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ ABORT MISSION ]</button>
     </div>
 </div>
 
@@ -770,7 +786,7 @@
                     <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigxk3zg754f2tciiazwp7tgxb7snjjcgk4vxg73zjk34cuitde2yq" class="skate-icon" style="width: 35px; height: 35px; filter: drop-shadow(0 0 10px rgba(0,240,255,0.5));"> 
                     <span id="total-burn-yield">0</span> <span style="font-size: 1.2rem; color: var(--accent-cyan);">$SKATE</span>
                 </div>
-                <button id="execute-burn-btn" class="wallet-btn" onclick="window.executeBatchBurn()" style="background: var(--accent-pink); color: #000; font-size: 1.2rem; padding: 15px 40px; width: 100%; max-width: 400px; box-shadow: 0 0 20px rgba(255,0,85,0.4);">🔥 INITIATE BATCH BURN 🔥</button>
+                <button id="execute-burn-btn" class="wallet-btn" onclick="window.prepareBatchBurn()" style="background: var(--accent-pink); color: #000; font-size: 1.2rem; padding: 15px 40px; width: 100%; max-width: 400px; box-shadow: 0 0 20px rgba(255,0,85,0.4);">🔥 INITIATE BATCH BURN 🔥</button>
             </div>
         </div>
     </div>
@@ -780,7 +796,7 @@
     <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.5rem, 6vw, 3.5rem); letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">SK8SHOP <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-family:'Orbitron'; color:var(--accent-gold);">// THE STABILIZER</span></h2>
     
     <div style="width: 100%; max-width: 1100px; margin: 0 auto 30px auto; overflow: hidden; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); background: #000; position: relative;">
-        <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeihss3vuvt3d5xl3g3ifnlfkvrcgnqmug7hguctmf2sknrl4fauufi" alt="Skateshop Interior" style="width: 100%; height: auto; display: block; object-fit: cover; max-height: 450px;">
+        <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeiewb2b2apkcu6bkrmcacljtgyp2omajt5e2boj3rdhy7llewb55ru" alt="Skateshop Interior" style="width: 100%; height: auto; display: block; object-fit: cover; max-height: 450px;">
     </div>
 
     <div style="background: rgba(0,0,0,0.7); border: 2px solid var(--accent-cyan); border-radius: 8px; position: relative; overflow: hidden; max-width: 1100px; margin: 0 auto 40px auto; box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);">
@@ -997,6 +1013,14 @@
     </div>
 </footer>
     <script type="module">
+    /**
+     * =======================================================================
+     * SK8DAO DECENTRALIZED PROTOCOL CORE
+     * =======================================================================
+     * Architecture: SessionKit / WebRenderer for cross-wallet WAX integration.
+     * Endpoints: Primary AtomicAssets API, Greymass WAX RPC, Hyperion History.
+     */
+
     import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
     import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
     import { WalletPluginCloudWallet } from 'https://esm.sh/@wharfkit/wallet-plugin-cloudwallet?bundle';
@@ -1009,39 +1033,66 @@
     const HISTORY_RPC = "https://api.waxsweden.org"; 
     const ADMIN_WALLET = "ufuau.wam";
 
-    // --- NEW: BURN TEMPLATE MAPPING ---
+    /**
+     * --- INCINERATOR (BURN) TEMPLATE YIELD MAPPING ---
+     * DIAGNOSTIC FIX: Blue Bearing (120638) yield correctly adjusted to 25 $SKATE.
+     */
     const BURN_YIELD_MAP = {
         '120614': 1,      // Red Bearing
         '120626': 10,     // Green Bearing
-        '120638': 50,     // Blue Bearing
+        '120638': 25,     // Blue Bearing (Corrected Yield)
         '176507': 100,    // RGB Bearing
         '22571': 1000     // Street.gem
     };
-    window.selectedBurnAssets = new Map(); // Tracks selected asset_id -> yield
+    
+    // Global tracking array for selected burn assets and their total yield
+    window.selectedBurnAssets = new Map(); 
 
+    /**
+     * --- META PARSER UTILITY CLASS ---
+     * Safely extracts and formats metadata from raw AtomicAssets JSON payloads.
+     * Prevents undefined errors when traits are missing from immutable/mutable schemas.
+     */
     class MetaParser {
         static getRaw(nft, key) {
             if (nft.data && nft.data[key] !== undefined) return nft.data[key];
             if (nft.template && nft.template.immutable_data && nft.template.immutable_data[key] !== undefined) return nft.template.immutable_data[key];
             return null;
         }
-        static getInt(nft, key) { return parseInt(this.getRaw(nft, key)) || 0; }
+        
+        static getInt(nft, key) { 
+            return parseInt(this.getRaw(nft, key)) || 0; 
+        }
+        
         static getString(nft, key, fallback = 'N/A') { 
             const val = this.getRaw(nft, key);
             return val ? String(val).toUpperCase() : fallback; 
         }
-        static getImg(nft) { return this.getRaw(nft, 'img') || ''; }
-        static getRarity(nft) { return this.getString(nft, 'rarity', 'COMMON').toLowerCase(); }
-        // NEW: Pulling the description for the Incinerator
+        
+        static getImg(nft) { 
+            return this.getRaw(nft, 'img') || ''; 
+        }
+        
+        static getRarity(nft) { 
+            return this.getString(nft, 'rarity', 'COMMON').toLowerCase(); 
+        }
+        
         static getDesc(nft) {
             const val = this.getRaw(nft, 'description') || this.getRaw(nft, 'desc');
             return val ? String(val) : 'No description available for this asset.';
         }
     }
 
+    /**
+     * --- WHARFKIT SESSION INITIALIZATION ---
+     * Handles connection routing for Cloud Wallet, Anchor, and Wombat.
+     */
     const sessionKit = new SessionKit({
         appName: 'sk8dao',
-        chains: [{ id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', url: WAX_RPC }],
+        chains: [{ 
+            id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', 
+            url: WAX_RPC 
+        }],
         ui: new WebRenderer(),
         walletPlugins: [ 
             new WalletPluginCloudWallet(),
@@ -1050,13 +1101,14 @@
         ]
     });
     
+    // Global App State Variables
     let currentSession = null, currentSchema = null, currentInventoryPage = 1;
     let calculatedWaxFee = 0, selectedAssetIds = [];
-    
     let historyStack = [];
     let isProgrammaticHashChange = false;
     let defiWarningShown = false;
     
+    // Defi Swap Variables
     let isWaxToSkate = true;
     let currentSlippage = 0.05; 
     let waxUsdPrice = 0.045; 
@@ -1066,7 +1118,10 @@
     // Global Max Votes assigned directly by Rank
     window.currentUserMaxVotes = 0; 
 
-    // --- GLOBAL MODAL ROUTERS ---
+    /**
+     * --- GLOBAL MODAL ROUTERS ---
+     * Ensures all popups safely execute within the DOM without throwing Null TypeErrors.
+     */
     window.showErrorModal = (msg) => {
         closeModals();
         document.getElementById('error-modal-msg').innerText = msg;
@@ -1080,8 +1135,17 @@
         document.getElementById('success-modal').style.display = 'flex';
     };
 
-    window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
-    window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
+    window.closeModals = () => { 
+        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
+    };
+
+    window.toggleAuthModal = () => { 
+        if(!currentSession) {
+            document.getElementById('vip-ticket-modal').style.display = 'flex'; 
+        } else {
+            document.getElementById('disconnect-modal').style.display = 'flex'; 
+        }
+    };
 
     window.openBrandModal = (brandName) => {
         closeModals();
@@ -1094,7 +1158,10 @@
         document.getElementById('store-coming-soon-modal').style.display = 'flex';
     };
 
-    // --- ORACLE SYNC ---
+    /**
+     * --- DEFI ORACLE SYNC ---
+     * Connects to Alcor Exchange APIs to dynamically calculate USD values and token ratios.
+     */
     async function syncPrices() {
         try {
             const usdRes = await fetch('https://alcor.exchange/api/v2/tokens/wax-eosio.token');
@@ -1107,14 +1174,19 @@
                 sWax = tickerData.last_price;
                 skatePerWax = 1 / sWax;
             }
-        } catch(e) { console.log('Oracle Sync Error. Operating on offline fallback metrics.'); }
+        } catch(e) { 
+            console.log('Oracle Sync Error. Operating on offline fallback metrics.'); 
+        }
         
         if(document.getElementById('oracle-price')) {
             document.getElementById('oracle-price').innerText = `1 WAX ≈ ${skatePerWax.toFixed(4)} $SKATE  |  WAX: $${waxUsdPrice.toFixed(4)}`;
         }
     }
 
-    // --- SENATE RANKING LOGIC ---
+    /**
+     * --- SENATE RANKING LOGIC ---
+     * Translates cumulative USD blessings into official DAO voting weights and titles.
+     */
     function calculateDaoRank(cumulativeUsd) {
         if (cumulativeUsd >= 50000) return { rank: "LEGENDARY", votes: 100, color: "#a855f7", badge: "m-badge-legendary" };
         if (cumulativeUsd >= 10000) return { rank: "ELITE", votes: 20, color: "#2196f3", badge: "m-badge-elite" };
@@ -1125,7 +1197,10 @@
         return { rank: "POSER", votes: 0, color: "#94a3b8", badge: "m-badge-poser" };
     }
 
-    // --- ON-CHAIN SCRAPER (Treasury & Rank Sync) ---
+    /**
+     * --- ON-CHAIN SCRAPER (Treasury & Rank Sync) ---
+     * Connects to Hyperion History and Greymass State APIs to reconstruct live tokenomics.
+     */
     async function fetchTreasuryData() {
         await syncPrices();
         
@@ -1144,6 +1219,7 @@
         if(pulseList) pulseList.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;">INTERCEPTING LEDGER...</div>`;
 
         try {
+            // Reserve Extraction
             const waxRes = await fetch(`${WAX_RPC}/v1/chain/get_currency_balance`, { method: 'POST', body: JSON.stringify({ code: "eosio.token", account: "skatecoinwax", symbol: "WAX" }) });
             const waxBalArr = await waxRes.json(); 
             const waxBal = waxBalArr[0] ? parseFloat(waxBalArr[0].split(' ')[0]) : 0;
@@ -1154,6 +1230,7 @@
 
             const skatePriceUSD = sWax * waxUsdPrice;
             
+            // Supply Extraction
             const statRes = await fetch(`${WAX_RPC}/v1/chain/get_table_rows`, { method: 'POST', body: JSON.stringify({ json: true, code: 'skatecoinwax', scope: 'SKATE', table: 'stat', limit: 1 }) });
             const statData = await statRes.json();
 
@@ -1167,6 +1244,7 @@
             const circMcapUsd = true_circulating_supply * skatePriceUSD;
             const fdvUsd = max_supply * skatePriceUSD; 
 
+            // Render Metrics
             if(document.getElementById('cg-circ-supply')) document.getElementById('cg-circ-supply').innerText = true_circulating_supply.toLocaleString(undefined, {maximumFractionDigits: 0});
             if(document.getElementById('cg-max-supply')) document.getElementById('cg-max-supply').innerText = max_supply.toLocaleString(undefined, {maximumFractionDigits: 0});
             if(circMcapDOM) circMcapDOM.innerText = `$${circMcapUsd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
@@ -1176,6 +1254,7 @@
             if(skateResDOM) skateResDOM.innerText = skateBal.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4}) + ' SKATE';
             if(skateUsdDOM) skateUsdDOM.innerText = `≈ $${(skateBal * skatePriceUSD).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD`;
 
+            // Hyperion Transaction Intercept
             const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=eosio.token:transfer,skatecoinwax:transfer&limit=100`;
             const hRes = await fetch(historyUrl);
             const hJson = await hRes.json();
@@ -1195,6 +1274,8 @@
                             const valueInUsd = valueInWax * waxUsdPrice;
 
                             let itemType = "BLESSING"; let labelColor = "var(--accent-gold)"; let displayMemo = memo || "Direct Support";
+                            
+                            // Memo Decoder
                             if (memo.includes('"sk8dao":"v1"')) {
                                 try {
                                     const pMemo = JSON.parse(memo);
@@ -1208,12 +1289,17 @@
                             if (symbol === 'WAX') sponsors[fromAcc].waxTotal += amount; else sponsors[fromAcc].skateTotal += amount;
                             sponsors[fromAcc].powerValueUsd += valueInUsd;
 
-                            pulseItems.push({ account: fromAcc, amountStr: `${amount.toLocaleString()} ${symbol}`, displayMemo: displayMemo, itemType: itemType, labelColor: labelColor, time: blockTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), timestamp: blockTime.getTime() });
+                            pulseItems.push({ 
+                                account: fromAcc, amountStr: `${amount.toLocaleString()} ${symbol}`, displayMemo: displayMemo, 
+                                itemType: itemType, labelColor: labelColor, time: blockTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), 
+                                timestamp: blockTime.getTime() 
+                            });
                         }
                     }
                 });
             }
 
+            // User Identification & Rank Assignment
             if (currentSession) {
                 const myAcc = currentSession.actor.toString();
                 if (sponsors[myAcc]) currentUserUsdTotal = sponsors[myAcc].powerValueUsd;
@@ -1233,6 +1319,7 @@
                 }
             }
 
+            // Whale Leaderboard Renderer
             if(whaleList) {
                 const sortedSponsors = Object.keys(sponsors).map(acc => ({ account: acc, ...sponsors[acc] })).sort((a, b) => b.powerValueUsd - a.powerValueUsd).slice(0, 100);
                 if (sortedSponsors.length === 0) whaleList.innerHTML = `<div style="padding: 20px; text-align: center; color: #888; font-family: 'Orbitron'; font-size: 0.8rem;">THE WHALE BOARD IS OPEN</div>`;
@@ -1241,29 +1328,129 @@
                         const rankData = calculateDaoRank(sp.powerValueUsd);
                         return `<div style="display:flex; justify-content:space-between; padding: 15px 10px; border-bottom: 1px solid #112; align-items: center;">
                                     <div style="font-family:'Orbitron'; font-weight:900; color: ${rankData.color}; font-size: 0.9rem;">${idx + 1}. ${sp.account} <div class="badge-pill-container"><span class="micro-badge-pill ${rankData.badge}">${rankData.rank}</span></div></div>
-                                    <div style="text-align: right;"><div style="color:#fff; font-family:'Orbitron'; font-weight:900; font-size: 0.85rem;">${sp.waxTotal.toLocaleString(undefined, {maximumFractionDigits: 2})} WAX</div><div style="color:var(--accent-cyan); font-size: 0.7rem; font-family:'Orbitron'; font-weight:900;">${sp.skateTotal.toLocaleString(undefined, {maximumFractionDigits: 4})} SKATE</div></div>
+                                    <div style="text-align: right;">
+                                        <div style="color:#fff; font-family:'Orbitron'; font-weight:900; font-size: 0.85rem;">${sp.waxTotal.toLocaleString(undefined, {maximumFractionDigits: 2})} WAX</div>
+                                        <div style="color:var(--accent-cyan); font-size: 0.7rem; font-family:'Orbitron'; font-weight:900;">${sp.skateTotal.toLocaleString(undefined, {maximumFractionDigits: 4})} SKATE</div>
+                                    </div>
                                 </div>`;
                     }).join('');
                 }
             }
 
+            // Live Pulse Feed Renderer
             if(pulseList) {
                 pulseItems.sort((a, b) => b.timestamp - a.timestamp); const activePulse = pulseItems.slice(0, 50);
                 if (activePulse.length === 0) pulseList.innerHTML = `<div style="padding: 20px; text-align: center; color: #888; font-family: 'Orbitron'; font-size: 0.8rem;">INTERCEPT RECORD EMPTY</div>`;
                 else {
                     pulseList.innerHTML = activePulse.map(item => `
                         <div style="display:flex; justify-content:space-between; padding: 15px 10px; border-bottom: 1px dashed #112; align-items: center; background: rgba(255,255,255,0.01);">
-                            <div style="min-width: 100px;"><div style="font-size:0.55rem; color:${item.labelColor}; font-weight:900; font-family:'Orbitron'; letter-spacing:1px; margin-bottom:2px;">${item.itemType}</div><div style="color:var(--accent-cyan); font-family:'Orbitron'; font-weight: 900; font-size:0.8rem;">${item.account}</div></div>
-                            <div style="text-align: center; flex: 1;"><div style="color:#fff; font-weight: 900; font-size:0.9rem;">${item.amountStr}</div><div style="font-size:0.7rem; color:#888; font-style: italic;">"${item.displayMemo}"</div></div>
+                            <div style="min-width: 100px;">
+                                <div style="font-size:0.55rem; color:${item.labelColor}; font-weight:900; font-family:'Orbitron'; letter-spacing:1px; margin-bottom:2px;">${item.itemType}</div>
+                                <div style="color:var(--accent-cyan); font-family:'Orbitron'; font-weight: 900; font-size:0.8rem;">${item.account}</div>
+                            </div>
+                            <div style="text-align: center; flex: 1;">
+                                <div style="color:#fff; font-weight: 900; font-size:0.9rem;">${item.amountStr}</div>
+                                <div style="font-size:0.7rem; color:#888; font-style: italic;">"${item.displayMemo}"</div>
+                            </div>
                             <div style="color:#444; font-size: 0.65rem; font-family:'Orbitron'; text-align: right; min-width: 60px;">${item.time}</div>
                         </div>`).join('');
                 }
             }
 
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error(e); 
+        }
     }
 
-       // --- 51% MAJORITY DAO ENGINE ---
+    /**
+     * --- 51% MAJORITY DAO ENGINE ---
+     * Intercepts ledger for live governance voting and proposal tracking.
+     */
+    let activeProposals = [];
+    async function refreshDAODashboard() {
+        const list = document.getElementById("active-motions-list");
+        if(list) list.innerHTML = `<div style="text-align:center; color:var(--accent-cyan); padding: 40px; font-family:'Orbitron';">INTERCEPTING SUPREME COURT LEDGER...</div>`;
+
+        let proposals = {}; let withdrawnIds = new Set(); const DAO_TTL_MS = 7 * 24 * 60 * 60 * 1000; 
+
+        try {
+            const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=500`;
+            const res = await fetch(historyUrl); const json = await res.json();
+            if (json && json.actions) {
+                json.actions.forEach(action => {
+                    const data = action.act.data; const memo = data.memo || ""; const blockTime = new Date(action.timestamp).getTime();
+                    if (data.to === 'skatecoinwax' && memo.includes('"sk8dao":"v1"')) {
+                        try {
+                            const parsedMemo = JSON.parse(memo); const sender = data.from; const weight = parseFloat(data.quantity.split(' ')[0]);
+                            if (parsedMemo.action === "propose") {
+                                proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime };
+                            } else if (parsedMemo.action === "vote" && parsedMemo.id) {
+                                if (proposals[parsedMemo.id]) {
+                                    if (parsedMemo.vote === "YES") proposals[parsedMemo.id].yesWeight += weight;
+                                    if (parsedMemo.vote === "NO") proposals[parsedMemo.id].noWeight += weight;
+                                }
+                            } else if (parsedMemo.action === "withdraw" && parsedMemo.id) { withdrawnIds.add(parsedMemo.id); }
+                        } catch(e) {}
+                    }
+                });
+            }
+        } catch(e) {}
+
+        activeProposals = []; const now = Date.now();
+        Object.values(proposals).forEach(p => {
+            const expiresAt = p.time + DAO_TTL_MS;
+            if (now <= expiresAt && !withdrawnIds.has(p.id)) { p.expiresAt = expiresAt; activeProposals.push(p); }
+        });
+        activeProposals.sort((a, b) => b.time - a.time);
+        
+        const countDOM = document.getElementById("dao-active-motions-count");
+        if(countDOM) countDOM.innerText = activeProposals.length;
+        renderDAOList();
+    }
+
+    function renderDAOList() {
+        const list = document.getElementById("active-motions-list"); let html = "";
+        if (activeProposals.length === 0) { list.innerHTML = "<div style='color: #888; text-align: center; padding: 40px; font-family: Orbitron; border: 1px dashed #333;'>NO ACTIVE MOTIONS ON THE FLOOR.</div>"; return; }
+
+        const currentActor = currentSession ? currentSession.actor.toString() : "";
+
+        activeProposals.forEach((p, index) => {
+            const totalWeight = p.yesWeight + p.noWeight;
+            const yesPctRaw = totalWeight > 0 ? (p.yesWeight / totalWeight) * 100 : 0; const noPctRaw = totalWeight > 0 ? (p.noWeight / totalWeight) * 100 : 0;
+            const isPassing = yesPctRaw >= 51; const statusColor = isPassing ? "#00ffaa" : "var(--accent-pink)"; const statusText = isPassing ? `PASSING (${yesPctRaw.toFixed(0)}%)` : `FAILING (<51%)`;
+            const diffMs = p.expiresAt - Date.now(); const d = Math.floor(diffMs / 86400000); const h = Math.floor((diffMs % 86400000) / 3600000); const timeLeft = `${d}d ${h}h`;
+            const sliderMax = window.currentUserMaxVotes > 0 ? window.currentUserMaxVotes : 0; const disabledState = sliderMax === 0 ? "disabled" : "";
+
+            let actionHtml = "";
+            if (currentActor === p.proposer || currentActor === ADMIN_WALLET) {
+                actionHtml = `<button class="dao-action-btn btn-no" onclick="executeOnChainWithdrawal('${p.id}')" style="width: 100%; border-color: var(--accent-pink); color: var(--accent-pink); margin-top: 15px; background: rgba(255,0,85,0.05);">⚠️ WITHDRAW MOTION</button>`;
+            }
+
+            html += `
+            <div class="motion-card">
+                <div class="motion-timer ${d < 1 ? 'danger' : 'safe'}">⏳ ${timeLeft}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding-right:80px; margin-bottom: 10px;"><div style="font-family:'Orbitron'; font-weight:900; font-size:1.5rem; color:var(--accent-cyan);">${p.title}</div></div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 15px; flex-wrap: wrap;"><span style="font-size:0.8rem; color:#888; font-family:'Inter';">Proposed by: <span style="color:#fff; font-family:'Orbitron'; font-weight:900;">${p.proposer}</span></span><span style="font-family:'Orbitron'; font-size:0.65rem; color:${statusColor}; background:rgba(0,0,0,0.8); border:1px solid ${statusColor}; padding: 3px 8px; border-radius: 4px;">STATUS: ${statusText}</span></div>
+                <p style="font-size:0.95rem; color:#ccc; line-height:1.8; margin-bottom: 20px;">${p.desc}</p>
+                <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:15px; margin-bottom:15px; border: 1px solid #222;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-family:'Orbitron'; font-weight:bold; margin-bottom:8px;"><span style="color:#00ffaa;">YES: ${p.yesWeight.toFixed(0)} VTS (${yesPctRaw.toFixed(0)}%)</span><span style="color:var(--accent-pink);">NO: ${p.noWeight.toFixed(0)} VTS (${noPctRaw.toFixed(0)}%)</span></div>
+                    <div class="vote-bar-bg"><div class="vote-bar-yes" style="width:${yesPctRaw}%;"></div></div>
+                </div>
+                <div class="slider-box">
+                    <span style="font-family: 'Orbitron'; font-size: 0.75rem; color: #888;">ALLOCATE WEIGHT:</span>
+                    <input type="range" id="vote-slider-${index}" class="weight-slider" min="1" max="${sliderMax}" value="${sliderMax > 0 ? 1 : 0}" ${disabledState} oninput="document.getElementById('weight-display-${index}').innerText = this.value">
+                    <span style="font-family: 'Orbitron'; font-size: 1.1rem; color: var(--accent-cyan); font-weight: 900; min-width: 80px; text-align: right;"><span id="weight-display-${index}">${sliderMax > 0 ? 1 : 0}</span> VTS</span>
+                </div>
+                <div style="display:flex; gap:15px;">
+                    <button class="dao-action-btn btn-yes" onclick="executeOnChainVote('${p.id}', 'YES', parseInt(document.getElementById('vote-slider-${index}').value))" style="flex:1;" ${disabledState}>VOTE YES</button>
+                    <button class="dao-action-btn btn-no" onclick="executeOnChainVote('${p.id}', 'NO', parseInt(document.getElementById('vote-slider-${index}').value))" style="flex:1;" ${disabledState}>VOTE NO</button>
+                </div>
+                ${actionHtml}
+            </div>`;
+        });
+        list.innerHTML = html;
+    }
+        // --- 51% MAJORITY DAO ENGINE ---
     let activeProposals = [];
     async function refreshDAODashboard() {
         const list = document.getElementById("active-motions-list");
@@ -1840,12 +2027,28 @@
         }
     };
 
-    window.executeBatchBurn = async () => {
+    /**
+     * --- NEW: BURN CONFIRMATION ROUTER ---
+     * Opens the sleek DOM modal instead of the clunky browser alert.
+     */
+    window.prepareBatchBurn = () => {
         if (!currentSession) return toggleAuthModal();
         if (window.selectedBurnAssets.size === 0) return showErrorModal("Select at least one asset to burn.");
         
-        const proceed = confirm(`⚠️ WARNING: This will PERMANENTLY DESTROY ${window.selectedBurnAssets.size} NFT(s).\nThis action is irreversible. Proceed?`);
-        if (!proceed) return;
+        const totalExpected = Array.from(window.selectedBurnAssets.values()).reduce((a, b) => a + b, 0);
+        document.getElementById('modal-burn-yield').innerText = `${totalExpected.toLocaleString()} $SKATE`;
+        
+        closeModals();
+        document.getElementById('burn-confirm-modal').style.display = 'flex';
+    };
+
+    /**
+     * --- NEW: EXECUTING THE BURN ON-CHAIN ---
+     * DIAGNOSTIC FIX: Routing the transfer payload to 'skatenftswap' to prevent smart contract assertion rejection.
+     */
+    window.executeOnChainBurn = async () => {
+        if (!currentSession) return toggleAuthModal();
+        closeModals();
 
         const assetIdsToBurn = Array.from(window.selectedBurnAssets.keys());
         const sender = currentSession.actor.toString();
@@ -1858,7 +2061,7 @@
                 authorization: [currentSession.permissionLevel], 
                 data: { 
                     from: sender, 
-                    to: 'skatecoinwax', 
+                    to: 'skatenftswap', // CORRECTED ROUTING WALLET
                     asset_ids: assetIdsToBurn, 
                     memo: "burn" 
                 } 
@@ -1869,7 +2072,7 @@
             updateBalances(sender);
         } catch(e) {
             console.error(e);
-            showErrorModal("Burn Transaction Cancelled or Failed.");
+            showErrorModal("Burn Transaction Cancelled or Failed. Ensure you have enough CPU/NET.");
         }
     };
 
@@ -1893,5 +2096,4 @@
     };
 </script>
 </body>
-</html> 
-        
+</html>
