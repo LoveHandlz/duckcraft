@@ -528,6 +528,22 @@
     </div>
 </div>
 
+<div id="burn-confirm-modal" class="modal-overlay">
+    <div class="modal-content" style="border-color: var(--accent-pink); max-width: 450px; background: #000;">
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 15px; font-size: clamp(1.4rem, 4vw, 1.8rem); letter-spacing: 1px;">🔥 INCINERATION WARNING</h2>
+        <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px; text-align: left;">
+            You are about to securely route your assets to the protocol incinerator (Contract: <strong>skatenftswap</strong>).
+            This cryptographic action will permanently destroy the NFTs and release their intrinsic yield directly to your wallet.
+        </p>
+        <div style="background: rgba(255,0,85,0.05); padding: 15px; border: 1px solid var(--accent-pink); border-radius: 6px; margin-bottom: 25px;">
+            <div style="font-family:'Orbitron'; font-size: 0.65rem; color: #888; margin-bottom: 5px;">EXTRACTED YIELD</div>
+            <div id="modal-burn-yield" style="font-family:'Orbitron'; font-weight: 900; font-size: clamp(1.5rem, 5vw, 2rem); color: #fff;">0 $SKATE</div>
+        </div>
+        <button class="wallet-btn" onclick="window.executeOnChainBurn()" style="width: 100%; background: var(--accent-pink); color: #000; font-size: 1.2rem; padding: 15px;">CONFIRM INCINERATION</button>
+        <button onclick="closeModals()" style="background:transparent; color:#888; border:none; margin-top:20px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.75rem;">[ ABORT MISSION ]</button>
+    </div>
+</div>
+
     <div class="dashboard-wrapper" id="home-wrapper">
     <h2 style="text-align: center; color: var(--accent-cyber-yellow); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.5rem, 6vw, 3.5rem); letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(255,234,0,0.3);">SKATE PARK</h2>
     
@@ -996,7 +1012,8 @@
         </div>
     </div>
 </footer>
-    <script type="module">
+
+<script type="module">
     import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
     import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
     import { WalletPluginCloudWallet } from 'https://esm.sh/@wharfkit/wallet-plugin-cloudwallet?bundle';
@@ -1013,7 +1030,7 @@
     const BURN_YIELD_MAP = {
         '120614': 1,      // Red Bearing
         '120626': 10,     // Green Bearing
-        '120638': 25,     // Blue Bearing
+        '120638': 25,     // Blue Bearing (FIXED TO 25)
         '176507': 100,    // RGB Bearing
         '22571': 1000     // Street.gem
     };
@@ -1032,7 +1049,6 @@
         }
         static getImg(nft) { return this.getRaw(nft, 'img') || ''; }
         static getRarity(nft) { return this.getString(nft, 'rarity', 'COMMON').toLowerCase(); }
-        // NEW: Pulling the description for the Incinerator
         static getDesc(nft) {
             const val = this.getRaw(nft, 'description') || this.getRaw(nft, 'desc');
             return val ? String(val) : 'No description available for this asset.';
@@ -1052,21 +1068,17 @@
     
     let currentSession = null, currentSchema = null, currentInventoryPage = 1;
     let calculatedWaxFee = 0, selectedAssetIds = [];
-    
     let historyStack = [];
     let isProgrammaticHashChange = false;
     let defiWarningShown = false;
-    
     let isWaxToSkate = true;
     let currentSlippage = 0.05; 
     let waxUsdPrice = 0.045; 
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
     
-    // Global Max Votes assigned directly by Rank
     window.currentUserMaxVotes = 0; 
 
-    // --- GLOBAL MODAL ROUTERS ---
     window.showErrorModal = (msg) => {
         closeModals();
         document.getElementById('error-modal-msg').innerText = msg;
@@ -1094,7 +1106,6 @@
         document.getElementById('store-coming-soon-modal').style.display = 'flex';
     };
 
-    // --- ORACLE SYNC ---
     async function syncPrices() {
         try {
             const usdRes = await fetch('https://alcor.exchange/api/v2/tokens/wax-eosio.token');
@@ -1107,14 +1118,10 @@
                 sWax = tickerData.last_price;
                 skatePerWax = 1 / sWax;
             }
-        } catch(e) { console.log('Oracle Sync Error. Operating on offline fallback metrics.'); }
-        
-        if(document.getElementById('oracle-price')) {
-            document.getElementById('oracle-price').innerText = `1 WAX ≈ ${skatePerWax.toFixed(4)} $SKATE  |  WAX: $${waxUsdPrice.toFixed(4)}`;
-        }
+        } catch(e) {}
+        if(document.getElementById('oracle-price')) document.getElementById('oracle-price').innerText = `1 WAX ≈ ${skatePerWax.toFixed(4)} $SKATE  |  WAX: $${waxUsdPrice.toFixed(4)}`;
     }
 
-    // --- SENATE RANKING LOGIC ---
     function calculateDaoRank(cumulativeUsd) {
         if (cumulativeUsd >= 50000) return { rank: "LEGENDARY", votes: 100, color: "#a855f7", badge: "m-badge-legendary" };
         if (cumulativeUsd >= 10000) return { rank: "ELITE", votes: 20, color: "#2196f3", badge: "m-badge-elite" };
@@ -1125,18 +1132,14 @@
         return { rank: "POSER", votes: 0, color: "#94a3b8", badge: "m-badge-poser" };
     }
 
-    // --- ON-CHAIN SCRAPER (Treasury & Rank Sync) ---
     async function fetchTreasuryData() {
         await syncPrices();
-        
         const whaleList = document.getElementById('treasury-whales-list');
         const pulseList = document.getElementById('treasury-pulse-list');
-        
         const waxResDOM = document.getElementById('treasury-wax-res');
         const waxUsdDOM = document.getElementById('treasury-wax-usd');
         const skateResDOM = document.getElementById('treasury-skate-res');
         const skateUsdDOM = document.getElementById('treasury-skate-usd');
-        
         const circMcapDOM = document.getElementById('cg-circ-mcap');
         const fdvDOM = document.getElementById('cg-fdv');
 
@@ -1262,8 +1265,7 @@
 
         } catch (e) { console.error(e); }
     }
-
-       // --- 51% MAJORITY DAO ENGINE ---
+    // --- 51% MAJORITY DAO ENGINE ---
     let activeProposals = [];
     async function refreshDAODashboard() {
         const list = document.getElementById("active-motions-list");
@@ -1840,12 +1842,20 @@
         }
     };
 
-    window.executeBatchBurn = async () => {
+    window.prepareBatchBurn = () => {
         if (!currentSession) return toggleAuthModal();
         if (window.selectedBurnAssets.size === 0) return showErrorModal("Select at least one asset to burn.");
         
-        const proceed = confirm(`⚠️ WARNING: This will PERMANENTLY DESTROY ${window.selectedBurnAssets.size} NFT(s).\nThis action is irreversible. Proceed?`);
-        if (!proceed) return;
+        const totalExpected = Array.from(window.selectedBurnAssets.values()).reduce((a, b) => a + b, 0);
+        document.getElementById('modal-burn-yield').innerText = `${totalExpected.toLocaleString()} $SKATE`;
+        
+        closeModals();
+        document.getElementById('burn-confirm-modal').style.display = 'flex';
+    };
+
+    window.executeOnChainBurn = async () => {
+        if (!currentSession) return toggleAuthModal();
+        closeModals();
 
         const assetIdsToBurn = Array.from(window.selectedBurnAssets.keys());
         const sender = currentSession.actor.toString();
@@ -1858,7 +1868,7 @@
                 authorization: [currentSession.permissionLevel], 
                 data: { 
                     from: sender, 
-                    to: 'skatecoinwax', 
+                    to: 'skatenftswap', 
                     asset_ids: assetIdsToBurn, 
                     memo: "burn" 
                 } 
@@ -1869,7 +1879,7 @@
             updateBalances(sender);
         } catch(e) {
             console.error(e);
-            showErrorModal("Burn Transaction Cancelled or Failed.");
+            showErrorModal("Burn Transaction Cancelled or Failed. Ensure you have enough CPU/NET.");
         }
     };
 
@@ -1893,5 +1903,4 @@
     };
 </script>
 </body>
-</html> 
-        
+</html>
