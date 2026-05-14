@@ -1003,6 +1003,14 @@
     </div>
 </div>
 
+    <div id="cyber-alert-modal" class="modal-overlay">
+    <div class="modal-content" id="cyber-alert-box" style="border: 2px solid var(--accent-pink); box-shadow: 0 0 50px rgba(255,0,85,0.4); max-width: 450px; background: #000;">
+        <h2 id="cyber-alert-title" style="font-family:'Orbitron'; font-weight: 900; margin-bottom: 15px; font-size: clamp(1.8rem, 5vw, 2.2rem); text-transform: uppercase; letter-spacing: 2px;">TITLE</h2>
+        <p id="cyber-alert-msg" style="color: #fff; font-size: 1rem; line-height: 1.6; margin-bottom: 25px; font-family:'Inter'; font-weight: 700;"></p>
+        <button class="wallet-btn" onclick="document.getElementById('cyber-alert-modal').style.display='none'" style="width: 100%; font-size: 1.2rem; padding: 15px; color: #000;" id="cyber-alert-btn">UNDERSTOOD</button>
+    </div>
+</div>
+
 <footer>
     <div class="footer-inner">
         <div class="footer-brand">POWERED BY DECENTRALIZED PROTOCOLS <br>© 2026 <span>SK8DAO</span> / SK8 PROTOCOL</div>
@@ -1085,11 +1093,23 @@
         document.getElementById('error-modal').style.display = 'flex';
     };
 
-    window.showSuccessModal = (title, msg) => {
+   window.showSuccessModal = (title, msg) => {
         closeModals();
         document.getElementById('success-modal-title').innerText = title;
         document.getElementById('success-modal-msg').innerText = msg;
         document.getElementById('success-modal').style.display = 'flex';
+    };
+
+    window.showCyberModal = (title, msg, color) => {
+        closeModals();
+        document.getElementById('cyber-alert-title').innerText = title;
+        document.getElementById('cyber-alert-title').style.color = color;
+        document.getElementById('cyber-alert-title').style.textShadow = `0 0 20px ${color}`;
+        document.getElementById('cyber-alert-box').style.borderColor = color;
+        document.getElementById('cyber-alert-box').style.boxShadow = `inset 0 0 20px ${color}, 0 0 50px ${color}`;
+        document.getElementById('cyber-alert-msg').innerText = msg;
+        document.getElementById('cyber-alert-btn').style.background = color;
+        document.getElementById('cyber-alert-modal').style.display = 'flex';
     };
 
     window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
@@ -1274,7 +1294,10 @@
         let proposals = {}; let withdrawnIds = new Set(); const DAO_TTL_MS = 7 * 24 * 60 * 60 * 1000; 
 
         try {
-            const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=500`;
+            // Calculate exactly 7 days ago to grab all active motions
+        const cutoffTime = new Date(Date.now() - DAO_TTL_MS).toISOString();
+           // Grab 1000 records, descending, only from the last 7 days
+        const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=1000&sort=desc&after=${cutoffTime}`;
             const res = await fetch(historyUrl); const json = await res.json();
             if (json && json.actions) {
                 json.actions.forEach(action => {
@@ -1283,7 +1306,8 @@
                         try {
                             const parsedMemo = JSON.parse(memo); const sender = data.from; const weight = parseFloat(data.quantity.split(' ')[0]);
                             if (parsedMemo.action === "propose") {
-                                proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime };
+                                // Inside your parsedMemo.action === "propose" block:
+                                     proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime, voters: new Set() };
                             } else if (parsedMemo.action === "vote" && parsedMemo.id) {
                                 if (proposals[parsedMemo.id]) {
                                     if (parsedMemo.vote === "YES") proposals[parsedMemo.id].yesWeight += weight;
@@ -1339,16 +1363,11 @@
                 <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:15px; margin-bottom:15px; border: 1px solid #222;">
                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-family:'Orbitron'; font-weight:bold; margin-bottom:8px;"><span style="color:#00ffaa;">YES: ${p.yesWeight.toFixed(0)} VTS (${yesPctRaw.toFixed(0)}%)</span><span style="color:var(--accent-pink);">NO: ${p.noWeight.toFixed(0)} VTS (${noPctRaw.toFixed(0)}%)</span></div>
                     <div class="vote-bar-bg"><div class="vote-bar-yes" style="width:${yesPctRaw}%;"></div></div>
-           </div>
-               <div class="slider-box">
-               <span style="font-family: 'Orbitron'; font-size: 0.75rem; color: #888;">ALLOCATE WEIGHT:</span>
-               <input type="range" id="vote-slider-${index}" class="weight-slider" min="${sliderMin}" max="${sliderMax}" value="${sliderMin}" ${disabledState} oninput="document.getElementById('weight-display-${index}').innerText = this.value">
-               <span style="font-family: 'Orbitron'; font-size: 1.1rem; color: var(--accent-cyan); font-weight: 900; min-width: 80px; text-align: right;"><span id="weight-display-${index}">${sliderMin}</span> VTS</span>
-           </div>
-               <div style="display:flex; gap:15px;">
-               <button class="dao-action-btn btn-yes" onclick="executeOnChainVote('${p.id}', 'YES', parseInt(document.getElementById('vote-slider-${index}').value))" style="flex:1;" ${disabledState}>VOTE YES</button>
-              <button class="dao-action-btn btn-no" onclick="executeOnChainVote('${p.id}', 'NO', parseInt(document.getElementById('vote-slider-${index}').value))" style="flex:1;" ${disabledState}>VOTE NO</button>
-            </div>
+           <div style="display:flex; gap:15px; margin-top: 20px;">
+                    <button class="dao-action-btn btn-yes" onclick="executeOnChainVote('${p.id}', 'YES')" style="flex:1; padding: 15px; font-size: 1rem; box-shadow: 0 0 15px rgba(0,255,170,0.2);">VOTE YES (1 $SKATE)</button>
+                    <button class="dao-action-btn btn-no" onclick="executeOnChainVote('${p.id}', 'NO')" style="flex:1; padding: 15px; font-size: 1rem; box-shadow: 0 0 15px rgba(255,0,85,0.2);">VOTE NO (1 $SKATE)</button>
+                </div>
+            
                 ${actionHtml}
             </div>`;
         });
@@ -1473,18 +1492,23 @@
         } catch(e) { console.error(e); showErrorModal("Transaction aborted or rejected."); }
     };
 
-    window.executeOnChainVote = async (motionId, stance, weight) => {
+   window.executeOnChainVote = async (motionId, stance) => {
         if (!currentSession) return toggleAuthModal();
-        if (weight <= 0 || isNaN(weight)) return showErrorModal("Rank is too low to possess voting weight.");
-        if (weight > window.currentUserMaxVotes) return showErrorModal(`Your rank restricts you to ${window.currentUserMaxVotes} votes max.`);
         
-        const voteCost = parseFloat(weight).toFixed(4) + " SKATE"; const sender = currentSession.actor.toString();
+        // POSER CHECK: Blast them with the cyberpunk modal if they have 0 rank
+        if (window.currentUserMaxVotes === 0) {
+            return showCyberModal("ACCESS DENIED", "POSER DETECTED. You have zero skin in the game. You must hold $SKATE or WAX in the protocol to cast a vote. Go fund the streets first.", "var(--accent-pink)");
+        }
+        
+        // TRUE 1-TO-1 VOTING: Hardcode the cost to exactly 1 SKATE
+        const voteCost = (1).toFixed(4) + " SKATE"; 
+        const sender = currentSession.actor.toString();
         const voteMemo = JSON.stringify({ sk8dao: "v1", action: "vote", id: motionId, vote: stance.toUpperCase() });
         
         try {
             const actions = [{ account: 'skatecoinwax', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: sender, to: 'skatecoinwax', quantity: voteCost, memo: voteMemo } }];
             await currentSession.transact({ actions });
-            showSuccessModal("🗳️ ON-CHAIN VOTE CAST 🗳️", `Successfully logged ${weight} vote(s) of ${stance}. Votes are completely final.`);
+            showSuccessModal("🗳️ ON-CHAIN VOTE CAST 🗳️", `Successfully logged 1 vote for ${stance}. Votes are completely final.`);
             refreshDAODashboard(); updateBalances(sender); fetchTreasuryData();
         } catch(e) { console.error(e); showErrorModal("Voting transaction aborted."); }
     };
