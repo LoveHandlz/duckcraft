@@ -1271,50 +1271,104 @@
 
         } catch (e) { console.error(e); }
     }
-    // --- 51% MAJORITY DAO ENGINE ---
+// --- 51% MAJORITY DAO ENGINE ---
     let activeProposals = [];
+    
     async function refreshDAODashboard() {
         const list = document.getElementById("active-motions-list");
         if(list) list.innerHTML = `<div style="text-align:center; color:var(--accent-cyan); padding: 40px; font-family:'Orbitron';">INTERCEPTING SUPREME COURT LEDGER...</div>`;
 
-        let proposals = {}; let withdrawnIds = new Set(); const DAO_TTL_MS = 7 * 24 * 60 * 60 * 1000; 
+        let proposals = {}; 
+        let withdrawnIds = new Set(); 
+        const DAO_TTL_MS = 7 * 24 * 60 * 60 * 1000; 
+        const now = Date.now();
+        const cutoffTime = now - DAO_TTL_MS;
 
         try {
-            const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=500`;
-            const res = await fetch(historyUrl); const json = await res.json();
-            if (json && json.actions) {
-                json.actions.forEach(action => {
-                    const data = action.act.data; const memo = data.memo || ""; const blockTime = new Date(action.timestamp).getTime();
-                    if (data.to === 'skatecoinwax' && memo.includes('"sk8dao":"v1"')) {
-                        try {
-                            const parsedMemo = JSON.parse(memo); const sender = data.from; 
-                            
-                            // 1-1 Ratio Enforced: Scraper ignores whale transaction quantities entirely.
-                            const weight = 1; 
-                            
-                            if (parsedMemo.action === "propose") {
-                                proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime, voters: new Set() };
-                            } else if (parsedMemo.action === "vote" && parsedMemo.id) {
-                                if (proposals[parsedMemo.id]) {
-                                    // 1-1 Ratio Enforced: Rejects any duplicate votes from the same wallet.
-                                    if (!proposals[parsedMemo.id].voters.has(sender)) {
-                                        if (parsedMemo.vote === "YES") proposals[parsedMemo.id].yesWeight += weight;
-                                        if (parsedMemo.vote === "NO") proposals[parsedMemo.id].noWeight += weight;
-                                        proposals[parsedMemo.id].voters.add(sender);
-                                    }
-                                }
-                            } else if (parsedMemo.action === "withdraw" && parsedMemo.id) { withdrawnIds.add(parsedMemo.id); }
-                        } catch(e) {}
-                    }
-                });
-            }
-        } catch(e) {}
+            let skip = 0;
+            const limit = 500;
+            let keepFetching = true;
 
-        activeProposals = []; const now = Date.now();
+            // --- THE PAGINATION LOOP ---
+            while (keepFetching) {
+                const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=${limit}&skip=${skip}`;
+                const res = await fetch(historyUrl); 
+                const json = await res.json();
+                
+                if (json && json.actions && json.actions.length > 0) {
+                    let oldestInBatch = now;
+
+                    json.actions.forEach(action => {
+                        const data = action.act.data; 
+                        const memo = data.memo || ""; 
+                        const blockTime = new Date(action.timestamp).getTime();
+                        
+                        if (blockTime < oldestInBatch) oldestInBatch = blockTime;
+
+                        if (data.to === 'skatecoinwax' && memo.includes('"sk8dao":"v1"')) {
+                            try {
+                                const parsedMemo = JSON.parse(memo); 
+                                const sender = data.from; 
+                                
+                                // 1-1 Ratio Enforced: Scraper ignores whale transaction quantities entirely.
+                                const weight = 1; 
+                                
+                                if (parsedMemo.action === "propose") {
+                                    proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime, voters: new Set() };
+                                } else if (parsedMemo.action === "vote" && parsedMemo.id) {
+                                    if (proposals[parsedMemo.id]) {
+                                        // 1-1 Ratio Enforced
+                                        if (!proposals[parsedMemo.id].voters.has(sender)) {
+                                            if (parsedMemo.vote === "YES") proposals[parsedMemo.id].yesWeight += weight;
+                                            if (parsedMemo.vote === "NO") proposals[parsedMemo.id].noWeight += weight;
+                                            proposals[parsedMemo.id].voters.add(sender);
+                                        }
+                                    }
+                                } else if (parsedMemo.action === "withdraw" && parsedMemo.id) { 
+                                    withdrawnIds.add(parsedMemo.id); 
+                                }
+                            } catch(e) {}
+                        }
+                    });
+
+                    // If we received fewer than the limit, or the oldest action is past 7 days, stop looping.
+                    if (json.actions.length < limit || oldestInBatch < cutoffTime) {
+                        keepFetching = false;
+                    } else {
+                        skip += limit;
+                    }
+                } else {
+                    keepFetching = false;
+                }
+            }
+        } catch(e) {
+            console.error("Ledger Intercept Error:", e);
+        }
+
+        activeProposals = []; 
+        const currentActor = currentSession ? currentSession.actor.toString() : "";
+
         Object.values(proposals).forEach(p => {
             const expiresAt = p.time + DAO_TTL_MS;
-            if (now <= expiresAt && !withdrawnIds.has(p.id)) { p.expiresAt = expiresAt; activeProposals.push(p); }
+            if (now <= expiresAt && !withdrawnIds.has(p.id)) { 
+                p.expiresAt = expiresAt; 
+                
+                // --- THE LOCALSTORAGE BRIDGE ---
+                // If the user voted, but the blockchain indexer hasn't caught it yet (30s lag),
+                // we pull the truth directly from the browser's local memory to prevent the vote from vanishing.
+                if (currentActor) {
+                    const localVote = localStorage.getItem(`sk8vote_${currentActor}_${p.id}`);
+                    if (localVote && !p.voters.has(currentActor)) {
+                        if (localVote === "YES") p.yesWeight += 1;
+                        if (localVote === "NO") p.noWeight += 1;
+                        p.voters.add(currentActor);
+                    }
+                }
+
+                activeProposals.push(p); 
+            }
         });
+
         activeProposals.sort((a, b) => b.time - a.time);
         
         const countDOM = document.getElementById("dao-active-motions-count");
@@ -1503,26 +1557,24 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
             const actions = [{ account: 'skatecoinwax', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: sender, to: 'skatecoinwax', quantity: voteCost, memo: voteMemo } }];
             await currentSession.transact({ actions });
             
-            // --- OPTIMISTIC UI UPDATE START ---
+            // --- OPTIMISTIC UI & LOCALSTORAGE WRITE ---
             
-            // 1. Find the specific motion in the frontend's local memory
+            // 1. Permanently record the vote in the browser's local cache
+            localStorage.setItem(`sk8vote_${sender}_${motionId}`, stance.toUpperCase());
+
+            // 2. Find the specific motion in the frontend's local memory
             const motion = activeProposals.find(p => p.id === motionId);
             if (motion) {
-                // 2. Instantly inject the 1 vote into the local tally
+                // Instantly inject the 1 vote into the local tally
                 if (stance.toUpperCase() === 'YES') motion.yesWeight += 1;
                 if (stance.toUpperCase() === 'NO') motion.noWeight += 1;
-                
-                // 3. Locally mark this wallet address as having voted
+                // Locally mark this wallet address as having voted
                 motion.voters.add(sender); 
             }
             
-            // 4. Instantly redraw the voting floor using the local data. 
-            // NOTE: We specifically DO NOT call refreshDAODashboard() here so we don't 
-            // accidentally pull the lagged data from the slow history node.
+            // 3. Instantly redraw the voting floor using the local data. 
             renderDAOList(); 
             
-            // --- OPTIMISTIC UI UPDATE END ---
-
             updateBalances(sender); 
             fetchTreasuryData();
             
