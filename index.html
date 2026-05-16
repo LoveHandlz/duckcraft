@@ -1563,7 +1563,14 @@
         } else if (schema === 'clips') { document.getElementById('clips-wrapper').style.display = 'block';
         } else if (schema === 'defi') { document.getElementById('defi-wrapper').style.display = 'block'; syncPrices(); if(!defiWarningShown) { document.getElementById('defi-warning-modal').style.display = 'flex'; defiWarningShown = true; }
         } else if (schema === 'treasury') { document.getElementById('treasury-wrapper').style.display = 'block'; fetchTreasuryData();
-        } else if (schema === 'dao') { document.getElementById('dao-wrapper').style.display = 'block'; fetchTreasuryData(); refreshDAODashboard();
+      } else if (schema === 'dao') { 
+    document.getElementById('dao-wrapper').style.display = 'block'; 
+    
+    // THE FIX: Force the UI to wait for the blockchain to return your true $SKATE balance 
+    // BEFORE it draws the voting buttons.
+    fetchTreasuryData().then(() => {
+        refreshDAODashboard();
+    });
         } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
         } else if (schema === 'incinerator') { document.getElementById('incinerator-wrapper').style.display = 'block'; window.fetchBurnableInventory();
         } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
