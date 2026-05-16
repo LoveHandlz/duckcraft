@@ -1271,12 +1271,46 @@
 
         } catch (e) { console.error(e); }
     }
-// --- 51% MAJORITY DAO ENGINE ---
+// =======================================================================
+    // ⚠️ ARCHITECTURAL NOTE: RPC FALLBACK PATCH
+    // This Multi-Node RPC Fallback and pagination loop is a temporary patch to 
+    // ensure global consensus across unstable public WAX history APIs. 
+    //
+    // FUTURE UPGRADE REQUIREMENT: 
+    // Move DAO tally logic into a True State Table inside a WAX Smart Contract. 
+    // This will eliminate memo scraping, guarantee 100% instant consensus globally, 
+    // and completely remove the dApp's reliance on third-party history indexers.
+    // =======================================================================
+
+    const HISTORY_NODES = [
+        "https://api.waxsweden.org",
+        "https://wax.greymass.com",
+        "https://wax.pink.gg",
+        "https://wax.eosdublin.io",
+        "https://api.wax.alohaeos.com"
+    ];
+
+    // Armor-plated fetcher that cycles through nodes if one fails or rate-limits
+    async function robustHistoryFetch(queryPath) {
+        for (const node of HISTORY_NODES) {
+            try {
+                const res = await fetch(`${node}${queryPath}`);
+                if (!res.ok) throw new Error('Node rate limited or unresponsive');
+                const json = await res.json();
+                if (json && json.actions) return json; // Success, return the data
+            } catch (e) {
+                console.warn(`[sk8dao router] Node ${node} failed or lagged. Routing to fallback...`);
+            }
+        }
+        throw new Error("CRITICAL: All public WAX history nodes failed to respond.");
+    }
+
+    // --- 51% MAJORITY DAO ENGINE ---
     let activeProposals = [];
     
     async function refreshDAODashboard() {
         const list = document.getElementById("active-motions-list");
-        if(list) list.innerHTML = `<div style="text-align:center; color:var(--accent-cyan); padding: 40px; font-family:'Orbitron';">INTERCEPTING SUPREME COURT LEDGER...</div>`;
+        if(list) list.innerHTML = `<div style="text-align:center; color:var(--accent-cyan); padding: 40px; font-family:'Orbitron';">INTERCEPTING SUPREME COURT LEDGER ACROSS MULTIPLE NODES...</div>`;
 
         let proposals = {}; 
         let withdrawnIds = new Set(); 
@@ -1289,11 +1323,12 @@
             const limit = 500;
             let keepFetching = true;
 
-            // --- THE PAGINATION LOOP ---
+            // --- THE PAGINATION LOOP W/ MULTI-NODE FALLBACK ---
             while (keepFetching) {
-                const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=${limit}&skip=${skip}`;
-                const res = await fetch(historyUrl); 
-                const json = await res.json();
+                const queryPath = `/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=${limit}&skip=${skip}`;
+                
+                // Uses the fallback array instead of a single brittle API endpoint
+                const json = await robustHistoryFetch(queryPath);
                 
                 if (json && json.actions && json.actions.length > 0) {
                     let oldestInBatch = now;
@@ -1310,14 +1345,13 @@
                                 const parsedMemo = JSON.parse(memo); 
                                 const sender = data.from; 
                                 
-                                // 1-1 Ratio Enforced: Scraper ignores whale transaction quantities entirely.
+                                // 1-1 Ratio Enforced
                                 const weight = 1; 
                                 
                                 if (parsedMemo.action === "propose") {
                                     proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime, voters: new Set() };
                                 } else if (parsedMemo.action === "vote" && parsedMemo.id) {
                                     if (proposals[parsedMemo.id]) {
-                                        // 1-1 Ratio Enforced
                                         if (!proposals[parsedMemo.id].voters.has(sender)) {
                                             if (parsedMemo.vote === "YES") proposals[parsedMemo.id].yesWeight += weight;
                                             if (parsedMemo.vote === "NO") proposals[parsedMemo.id].noWeight += weight;
@@ -1331,7 +1365,7 @@
                         }
                     });
 
-                    // If we received fewer than the limit, or the oldest action is past 7 days, stop looping.
+                    // Check if we hit the end of the history or passed the 7-day mark
                     if (json.actions.length < limit || oldestInBatch < cutoffTime) {
                         keepFetching = false;
                     } else {
@@ -1343,6 +1377,8 @@
             }
         } catch(e) {
             console.error("Ledger Intercept Error:", e);
+            if(list) list.innerHTML = `<div style="text-align:center; color:var(--accent-pink); padding: 40px; font-family:'Orbitron';">NETWORK ERROR: UNABLE TO REACH WAX LEDGER</div>`;
+            return; // Stop execution if all nodes fail
         }
 
         activeProposals = []; 
@@ -1354,8 +1390,6 @@
                 p.expiresAt = expiresAt; 
                 
                 // --- THE LOCALSTORAGE BRIDGE ---
-                // If the user voted, but the blockchain indexer hasn't caught it yet (30s lag),
-                // we pull the truth directly from the browser's local memory to prevent the vote from vanishing.
                 if (currentActor) {
                     const localVote = localStorage.getItem(`sk8vote_${currentActor}_${p.id}`);
                     if (localVote && !p.voters.has(currentActor)) {
@@ -1375,7 +1409,6 @@
         if(countDOM) countDOM.innerText = activeProposals.length;
         renderDAOList();
     }
-
     function renderDAOList() {
         const list = document.getElementById("active-motions-list"); let html = "";
         if (activeProposals.length === 0) { list.innerHTML = "<div style='color: #888; text-align: center; padding: 40px; font-family: Orbitron; border: 1px dashed #333;'>NO ACTIVE MOTIONS ON THE FLOOR.</div>"; return; }
