@@ -2008,6 +2008,30 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
             loadCraftingData(currentSession.actor.toString()); updateBalances(currentSession.actor.toString());
         } catch (e) { console.error(e); showErrorModal("Transaction Cancelled or Failed."); }
     };
+    // --- GLOBAL UI HOVER SOUNDS ---
+    // 1. Define the audio source using your specific Pinata IPFS link
+    const hoverSound = new Audio('https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreienqhf75gqfwmg2m4ypapazo3szcq6lijpy7jgz4qjj35xwkzb3pi'); 
+    hoverSound.volume = 0.3; // Volume set to 30% to keep it clean and subtle
+
+    function attachHoverSounds() {
+        // Select every button in the dApp
+        const allButtons = document.querySelectorAll('button');
+        
+        allButtons.forEach(btn => {
+            // Prevent attaching the same listener twice if the DOM updates
+            if (!btn.dataset.soundAttached) {
+                btn.addEventListener('mouseenter', () => {
+                    hoverSound.currentTime = 0; // Rewind for rapid-fire hovering
+                    // The .catch prevents console errors if the browser's autoplay policy blocks it before the user's first click
+                    hoverSound.play().catch(e => {}); 
+                });
+                btn.dataset.soundAttached = "true"; // Mark it as attached
+            }
+        });
+    }
+
+    // Run the function after a slight delay to ensure all DOM elements are fully loaded
+    setTimeout(attachHoverSounds, 1000);
 </script>
 </body>
 </html>
