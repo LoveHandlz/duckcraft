@@ -1096,7 +1096,7 @@
     };
     window.selectedBurnAssets = new Map();
 
-    class MetaParser {
+   class MetaParser {
         static getRaw(nft, key) {
             if (nft.data && nft.data[key] !== undefined) return nft.data[key];
             if (nft.template && nft.template.immutable_data && nft.template.immutable_data[key] !== undefined) return nft.template.immutable_data[key];
@@ -1108,13 +1108,39 @@
             return val ? String(val).toUpperCase() : fallback; 
         }
         static getImg(nft) { return this.getRaw(nft, 'img') || ''; }
-        static getRarity(nft) { return this.getString(nft, 'rarity', 'COMMON').toLowerCase(); }
+        static getVideo(nft) { return this.getRaw(nft, 'video') || ''; }
+        
+        static getMedia(nft) {
+            const img = this.getImg(nft);
+            const vid = this.getVideo(nft);
+            const isMp4 = (vid && String(vid).includes('.mp4')) || (img && String(img).includes('.mp4'));
+            return {
+                url: isMp4 ? (vid || img) : img,
+                isVideo: isMp4
+            };
+        }
+
+        static getRarity(nft) { 
+            const rawRarity = this.getString(nft, 'rarity', 'COMMON').toUpperCase();
+            if (rawRarity.includes('GLITCH')) return 'GLITCH';
+            return rawRarity;
+        }
         static getDesc(nft) {
             const val = this.getRaw(nft, 'description') || this.getRaw(nft, 'desc');
             return val ? String(val) : 'No description available for this asset.';
         }
     }
 
+        static getRarity(nft) { 
+            const rawRarity = this.getString(nft, 'rarity', 'COMMON').toUpperCase();
+            if (rawRarity.includes('GLITCH')) return 'GLITCH';
+            return rawRarity;
+        }
+        static getDesc(nft) {
+            const val = this.getRaw(nft, 'description') || this.getRaw(nft, 'desc');
+            return val ? String(val) : 'No description available for this asset.';
+        }
+    }
     const sessionKit = new SessionKit({
         appName: 'sk8dao',
         chains: [{ id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', url: WAX_RPC }],
@@ -1774,7 +1800,7 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         if(document.getElementById(`nav-${schema}`)) document.getElementById(`nav-${schema}`).classList.add('active');
         
-        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper'];
+      const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'trickbag-wrapper'];
         wrappers.forEach(w => { const el = document.getElementById(w); if(el) el.style.display = 'none'; });
 
         if (schema === 'home') { document.getElementById('home-wrapper').style.display = 'block';
@@ -1793,6 +1819,7 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
     });
      } else if (schema === 'incinerator') { document.getElementById('incinerator-wrapper').style.display = 'block'; window.fetchBurnableInventory();
         } else if (schema === 'lunchbox') { document.getElementById('lunchbox-wrapper').style.display = 'block'; if (currentSession) fetchLunchbox(currentSession.actor.toString());
+        } else if (schema === 'trickbag') { document.getElementById('trickbag-wrapper').style.display = 'block'; if (currentSession) fetchTrickBag(currentSession.actor.toString());                                   
         } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
         } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
     };
