@@ -2188,7 +2188,7 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
                     return; 
                 }
 
-      async function fetchTrickBag(user) {
+    async function fetchTrickBag(user) {
     const loadingGrid = document.getElementById('trickbag-loading-grid');
     const containers = {
         Glitch: { wrap: document.getElementById('tier-glitch-container'), grid: document.getElementById('trickbag-grid-glitch') },
@@ -2197,7 +2197,6 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
         Common: { wrap: document.getElementById('tier-common-container'), grid: document.getElementById('trickbag-grid-common') }
     };
 
-    // Hide everything first
     Object.values(containers).forEach(c => c.wrap.style.display = 'none');
     loadingGrid.style.display = 'block';
     loadingGrid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;">SCANNING TRICK BAG...</h3>`;
@@ -2211,13 +2210,12 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
             return;
         }
 
-        // === UPGRADED METAPARSER FOR CLIPS (added right here) ===
+        // Upgraded MetaParser for clips
         MetaParser.upgradedParse = function(clip) {
             const rarity = this.getRarity(clip);
             const style = this.getString(clip, 'style', 'common').toLowerCase();
             const hasGlitch = this.getString(clip, 'effect', '').toLowerCase().includes('glitch') ||
                              this.getString(clip, 'name', '').toLowerCase().includes('glitch');
-            
             return {
                 name: this.getString(clip, 'name', 'Unnamed Clip'),
                 rarity: rarity,
@@ -2228,7 +2226,6 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
             };
         };
 
-        // === CHUNK 3 + 4 COMBINED — PURE VANILLA JS EDITION ===
         const tierBuckets = { Glitch: [], Comic: [], Sketch: [], Common: [] };
 
         json.data.forEach(clip => {
@@ -2236,15 +2233,13 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
             const media = MetaParser.getMedia(clip);
             const isVideo = meta.type === 'video';
 
-            // Build glowing card exactly like the rest of your UI
             const cardHTML = `
-                <div class="skate-card group relative overflow-hidden" style="border-radius: 20px; border: 2px solid var(--card-border);">
+                <div class="skate-card group relative overflow-hidden" style="border-radius: 20px; border: 2px solid var(--card-border); transition: all 0.3s;">
                     <div class="img-wrap" style="height: 220px; background: #000; position: relative;">
                         ${isVideo 
                             ? `<video src="https://ipfs.io/ipfs/${media.url}" class="skate-img" muted loop playsinline preload="metadata" style="width:100%; height:100%; object-fit:cover;"></video>`
                             : `<img src="https://ipfs.io/ipfs/${media.url}" class="skate-img" style="width:100%; height:100%; object-fit:cover;">`
                         }
-                        <!-- Glow overlay -->
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4">
                             <div class="flex items-center gap-2 text-xs font-mono tracking-widest text-cyan-300">
                                 ${isVideo ? '🎬 VIDEO' : '🖼️ IMAGE'}
@@ -2258,7 +2253,6 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
                     </div>
                 </div>`;
 
-            // Sort into tier
             let tier = 'Common';
             if (meta.rarity === 'GLITCH' || meta.hasGlitchEffect) tier = 'Glitch';
             else if (meta.style === 'comic' || meta.rarity === 'EPIC') tier = 'Comic';
@@ -2267,7 +2261,6 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
             tierBuckets[tier].push(cardHTML);
         });
 
-        // Render each tier
         Object.keys(tierBuckets).forEach(tier => {
             const bucket = containers[tier];
             if (tierBuckets[tier].length > 0) {
@@ -2283,7 +2276,6 @@ window.executeOnChainVote = async (motionId, stance, weight) => {
         loadingGrid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: var(--accent-pink);">ERROR SCANNING TRICK BAG</h3>`;
     }
 }
-
     window.loadMoreInventory = () => { if (!currentSession) return; currentInventoryPage++; fetchInventory(currentSession.actor.toString(), true); };
     document.getElementById('login-trigger-vip').addEventListener('click', async () => { const { session } = await sessionKit.login(); location.reload(); });
     document.getElementById('logout-trigger').addEventListener('click', async () => { await sessionKit.logout(); location.reload(); });
