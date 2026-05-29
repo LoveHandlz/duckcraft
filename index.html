@@ -1550,14 +1550,20 @@ if (allActions.length > 0) {
         const minOutDisplay = document.getElementById('swap-min-out'); 
         const usdDisplay = document.getElementById('swap-usd-value');
         const impactDisplay = document.getElementById('swap-price-impact');
-
         const impactLabel = document.getElementById('impact-label');
+        const executeBtn = document.getElementById('execute-btn');
 
         if (!amtIn || isNaN(amtIn) || amtIn <= 0) { 
             outField.value = ""; minOutDisplay.innerText = "0.00"; 
             usdDisplay.innerText = "(≈ $0.00 USD)"; 
             if (impactLabel) impactLabel.style.display = "inline";
             impactDisplay.innerText = "0.00%"; impactDisplay.style.color = "#00ffaa";
+            
+            // Reset Button to Default
+            executeBtn.innerText = "EXECUTE DECENTRALIZED SWAP";
+            executeBtn.disabled = false;
+            executeBtn.style.background = "var(--accent-cyan)";
+            executeBtn.style.color = "#000";
             return; 
         }
 
@@ -1565,6 +1571,12 @@ if (allActions.length > 0) {
         outField.value = "ROUTING...";
         if (impactLabel) impactLabel.style.display = "inline";
         impactDisplay.innerText = "CALCULATING..."; impactDisplay.style.color = "#888";
+        
+        // Reset Button during calculation
+        executeBtn.innerText = "EXECUTE DECENTRALIZED SWAP";
+        executeBtn.disabled = false;
+        executeBtn.style.background = "var(--accent-cyan)";
+        executeBtn.style.color = "#000";
 
         // Wait 500ms after typing stops to ping the Alcor router
         swapDebounceTimer = setTimeout(async () => {
@@ -1595,20 +1607,20 @@ if (allActions.length > 0) {
                     else if (impact > 2) impactDisplay.style.color = "var(--accent-gold)"; 
                     else impactDisplay.style.color = "#00ffaa"; 
 
-                } else {
-                    // FALLBACK PROTOCOL: If Alcor rejects the size, seamlessly calculate via local math
-                    console.warn("Alcor Router rejected size. Engaging local fallback.", routeData);
-                    let fallbackOut = isWaxToSkate ? (amtIn * skatePerWax) * 0.997 : (amtIn * sWax) * 0.997;
-                    outField.value = fallbackOut.toFixed(4);
-                    
-                    let usdVal = isWaxToSkate ? (amtIn * waxUsdPrice) : (fallbackOut * waxUsdPrice);
-                    usdDisplay.innerText = `(≈ $${usdVal.toFixed(2)} USD)`;
-                    
-                    const minOut = fallbackOut * (1 - currentSlippage);
-                    minOutDisplay.innerText = minOut.toFixed(4) + (isWaxToSkate ? " SKATE" : " WAX");
+               } else {
+                    // ALCOR NATIVE BEHAVIOR: Kill the route and disable the button
+                    console.warn("Alcor Router rejected size: Insufficient Liquidity.");
+                    outField.value = "";
+                    usdDisplay.innerText = "(≈ $0.00 USD)";
+                    minOutDisplay.innerText = "0.00";
                     
                     if (impactLabel) impactLabel.style.display = "none";
+                    impactDisplay.innerText = ""; 
                     
+                    executeBtn.innerText = "INSUFFICIENT LIQUIDITY";
+                    executeBtn.disabled = true;
+                    executeBtn.style.background = "#333";
+                    executeBtn.style.color = "#888";
                 }
             } catch(e) {
                 console.error("Swap calculation failed:", e);
