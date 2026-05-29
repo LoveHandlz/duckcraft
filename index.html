@@ -1137,9 +1137,9 @@
             const routeUrl = 'https://wax.alcor.exchange/api/v2/swapRouter/getRoute?trade_type=EXACT_INPUT&input=wax-eosio.token&output=skate-skatecoinwax&amount=1&slippage=0&maxHops=2';
             const routeRes = await fetch(routeUrl);
             if (routeRes.ok) {
-                const routeData = await routeRes.json();
-                if (routeData && routeData.outputAmount) {
-                    skatePerWax = parseFloat(routeData.outputAmount);
+                 const routeData = await routeRes.json();
+                if (routeData && routeData.output) {
+                    skatePerWax = parseFloat(routeData.output);
                     sWax = 1 / skatePerWax;
                 }
             }
@@ -1589,8 +1589,8 @@ if (allActions.length > 0) {
                 const res = await fetch(routeUrl);
                 const routeData = await res.json();
 
-                if (routeData && routeData.outputAmount) {
-                    const outAmt = parseFloat(routeData.outputAmount);
+                if (routeData && routeData.output) {
+                    const outAmt = parseFloat(routeData.output);
                     outField.value = outAmt.toFixed(4);
                     
                     let usdVal = isWaxToSkate ? (amtIn * waxUsdPrice) : (outAmt * waxUsdPrice);
