@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> sk8coin | sk8dao v2.0 </title>
+    <title> sk8coin | sk8dao v2.6.7 </title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -421,6 +421,19 @@
         
         <div id="active-motions-list" style="flex: 1; overflow-y: auto; padding-right: 10px; text-align: left;">
             <div style="text-align:center; color:var(--accent-cyan); padding: 40px; font-family:'Orbitron';">INTERCEPTING SUPREME COURT LEDGER...</div>
+        </div>
+    </div>
+</div>
+
+    <div id="dao-graveyard-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 800px; height: 85vh; border-color: #555; background: #050a1a; display: flex; flex-direction: column; overflow: hidden; padding: clamp(15px, 3vw, 20px);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #555; padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 style="font-family:'Orbitron'; font-weight: 900; color:#ccc; margin: 0; font-size: clamp(1.2rem, 4vw, 1.8rem); letter-spacing: 1px;">🪦 THE GRAVEYARD</h2>
+            <button onclick="closeModals()" style="background:transparent; color:#888; border: 1px solid #888; padding: 5px 15px; cursor:pointer; font-family:'Orbitron'; font-weight: 900; font-size: 0.85rem; transition: 0.2s;">CLOSE</button>
+        </div>
+        
+        <div id="graveyard-motions-list" style="flex: 1; overflow-y: auto; padding-right: 10px; text-align: left;">
+            <div style="text-align:center; color:#555; padding: 40px; font-family:'Orbitron';">EXHUMING DEAD MOTIONS...</div>
         </div>
     </div>
 </div>
@@ -1002,6 +1015,9 @@
         <button class="wallet-btn" onclick="document.getElementById('active-motions-modal').style.display='flex'" style="background: var(--accent-cyan); color: #000; padding: 20px; font-size: 1.1rem; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);">
             ⚖️ VIEW ACTIVE MOTIONS
         </button>
+        <button class="wallet-btn" onclick="document.getElementById('dao-graveyard-modal').style.display='flex'" style="background: transparent; color: #888; border: 2px solid #555; padding: 20px; font-size: 1.1rem;">
+            🪦 THE GRAVEYARD
+        </button>
         <button class="wallet-btn" onclick="document.getElementById('dao-skater-modal').style.display='flex'" style="background: transparent; color: var(--rarity-epic); border: 2px solid var(--rarity-epic); padding: 20px; font-size: 1.1rem;">
             SKATER MATRIX
         </button>
@@ -1337,47 +1353,44 @@ if (allActions.length > 0) {
         let withdrawnIds = new Set(); 
         const DAO_TTL_MS = 7 * 24 * 60 * 60 * 1000; 
         const now = Date.now();
-        const cutoffTime = now - DAO_TTL_MS;
+        let uniqueProposalsCount = 0; // Number-based counter
 
         try {
             let skip = 0;
             const limit = 500;
             let keepFetching = true;
 
-            // --- THE PAGINATION LOOP ---
             while (keepFetching) {
                 const historyUrl = `${HISTORY_RPC}/v2/history/get_actions?account=skatecoinwax&filter=skatecoinwax:transfer&limit=${limit}&skip=${skip}`;
                 const res = await fetch(historyUrl); 
                 const json = await res.json();
                 
                 if (json && json.actions && json.actions.length > 0) {
-                    let oldestInBatch = now;
-
                     json.actions.forEach(action => {
                         const data = action.act.data; 
                         const memo = data.memo || ""; 
                         const blockTime = new Date(action.timestamp).getTime();
                         
-                        if (blockTime < oldestInBatch) oldestInBatch = blockTime;
-
                         if (data.to === 'skatecoinwax' && memo.includes('"sk8dao":"v1"')) {
                             try {
                                 const parsedMemo = JSON.parse(memo); 
                                 const sender = data.from; 
-                                
-                                // 1-1 Ratio Enforced: Scraper ignores whale transaction quantities entirely.
                                 const weight = 1; 
                                 
                                 if (parsedMemo.action === "propose") {
-                                    proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime, voters: new Set() };
+                                    if (!proposals[action.trx_id]) {
+                                        proposals[action.trx_id] = { id: action.trx_id, title: parsedMemo.title, desc: parsedMemo.desc, proposer: sender, yesWeight: 0, noWeight: 0, time: blockTime, voters: new Set() };
+                                        uniqueProposalsCount++; // Count unique motions
+                                    }
                                 } else if (parsedMemo.action === "vote" && parsedMemo.id) {
-                                    if (proposals[parsedMemo.id]) {
-                                        // 1-1 Ratio Enforced
-                                        if (!proposals[parsedMemo.id].voters.has(sender)) {
-                                            if (parsedMemo.vote === "YES") proposals[parsedMemo.id].yesWeight += weight;
-                                            if (parsedMemo.vote === "NO") proposals[parsedMemo.id].noWeight += weight;
-                                            proposals[parsedMemo.id].voters.add(sender);
-                                        }
+                                    if (!proposals[parsedMemo.id]) {
+                                        proposals[parsedMemo.id] = { id: parsedMemo.id, title: "SYNCING...", desc: "", proposer: "UNKNOWN", yesWeight: 0, noWeight: 0, time: 0, voters: new Set() };
+                                        uniqueProposalsCount++;
+                                    }
+                                    if (!proposals[parsedMemo.id].voters.has(sender)) {
+                                        if (parsedMemo.vote === "YES") proposals[parsedMemo.id].yesWeight += weight;
+                                        if (parsedMemo.vote === "NO") proposals[parsedMemo.id].noWeight += weight;
+                                        proposals[parsedMemo.id].voters.add(sender);
                                     }
                                 } else if (parsedMemo.action === "withdraw" && parsedMemo.id) { 
                                     withdrawnIds.add(parsedMemo.id); 
@@ -1386,8 +1399,8 @@ if (allActions.length > 0) {
                         }
                     });
 
-                    // If we received fewer than the limit, or the oldest action is past 7 days, stop looping.
-                    if (json.actions.length < limit || oldestInBatch < cutoffTime) {
+                    // Number-based exit: Stop if we hit 30 total proposals, or run out of history
+                    if (json.actions.length < limit || uniqueProposalsCount >= 30) {
                         keepFetching = false;
                     } else {
                         skip += limit;
@@ -1401,81 +1414,43 @@ if (allActions.length > 0) {
         }
 
         activeProposals = []; 
+        let graveyardProposals = [];
         const currentActor = currentSession ? currentSession.actor.toString() : "";
 
         Object.values(proposals).forEach(p => {
+            if (p.time === 0) return; // Skip broken fragments
             const expiresAt = p.time + DAO_TTL_MS;
-            if (now <= expiresAt && !withdrawnIds.has(p.id)) { 
-                p.expiresAt = expiresAt; 
-                
-                // --- THE LOCALSTORAGE BRIDGE ---
-                // If the user voted, but the blockchain indexer hasn't caught it yet (30s lag),
-                // we pull the truth directly from the browser's local memory to prevent the vote from vanishing.
-                if (currentActor) {
-                    const localVote = localStorage.getItem(`sk8vote_${currentActor}_${p.id}`);
-                    if (localVote && !p.voters.has(currentActor)) {
-                        if (localVote === "YES") p.yesWeight += 1;
-                        if (localVote === "NO") p.noWeight += 1;
-                        p.voters.add(currentActor);
-                    }
+            p.expiresAt = expiresAt; 
+            
+            // Local Storage UI bridge
+            if (currentActor) {
+                const localVote = localStorage.getItem(`sk8vote_${currentActor}_${p.id}`);
+                if (localVote && !p.voters.has(currentActor)) {
+                    if (localVote === "YES") p.yesWeight += 1;
+                    if (localVote === "NO") p.noWeight += 1;
+                    p.voters.add(currentActor);
                 }
+            }
 
+            // Split into Active or Graveyard
+            if (now <= expiresAt && !withdrawnIds.has(p.id)) { 
                 activeProposals.push(p); 
+            } else {
+                p.isWithdrawn = withdrawnIds.has(p.id);
+                graveyardProposals.push(p);
             }
         });
 
+        // Sort both arrays newest to oldest
         activeProposals.sort((a, b) => b.time - a.time);
+        graveyardProposals.sort((a, b) => b.time - a.time);
         
         const countDOM = document.getElementById("dao-active-motions-count");
         if(countDOM) countDOM.innerText = activeProposals.length;
-        renderDAOList();
-    }
-
-    function renderDAOList() {
-        const list = document.getElementById("active-motions-list"); let html = "";
-        if (activeProposals.length === 0) { list.innerHTML = "<div style='color: #888; text-align: center; padding: 40px; font-family: Orbitron; border: 1px dashed #333;'>NO ACTIVE MOTIONS ON THE FLOOR.</div>"; return; }
-
-        const currentActor = currentSession ? currentSession.actor.toString() : "";
-
-        activeProposals.forEach((p, index) => {
-            const totalWeight = p.yesWeight + p.noWeight;
-            const yesPctRaw = totalWeight > 0 ? (p.yesWeight / totalWeight) * 100 : 0; const noPctRaw = totalWeight > 0 ? (p.noWeight / totalWeight) * 100 : 0;
-            const isPassing = yesPctRaw >= 51; const statusColor = isPassing ? "#00ffaa" : "var(--accent-pink)"; const statusText = isPassing ? `PASSING (${yesPctRaw.toFixed(0)}%)` : `FAILING (<51%)`;
-            const diffMs = p.expiresAt - Date.now(); const d = Math.floor(diffMs / 86400000); const h = Math.floor((diffMs % 86400000) / 3600000); const timeLeft = `${d}d ${h}h`;
-            
-           // 1-1 Ratio Enforced: Slider is stripped, button states are locked to boolean token check.
-           const hasRequiredToken = window.currentUserMaxVotes >= 1;
-           const disabledState = !hasRequiredToken ? "disabled" : "";
-           const hasVoted = p.voters.has(currentActor);
-           const finalDisabledState = (disabledState || hasVoted) ? "disabled" : "";
-           const voteStatusMsg = hasVoted ? "VOTE ALREADY CAST" : (hasRequiredToken ? "1 VOTE = 1 $SKATE" : "INSUFFICIENT $SKATE");
-
-            let actionHtml = "";
-            if (currentActor === p.proposer || currentActor === ADMIN_WALLET) {
-                actionHtml = `<button class="dao-action-btn btn-no" onclick="executeOnChainWithdrawal('${p.id}')" style="width: 100%; border-color: var(--accent-pink); color: var(--accent-pink); margin-top: 15px; background: rgba(255,0,85,0.05);">⚠️ WITHDRAW MOTION</button>`;
-            }
-
-            html += `
-            <div class="motion-card">
-                <div class="motion-timer ${d < 1 ? 'danger' : 'safe'}">⏳ ${timeLeft}</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding-right:80px; margin-bottom: 10px;"><div style="font-family:'Orbitron'; font-weight:900; font-size:1.5rem; color:var(--accent-cyan);">${p.title}</div></div>
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 15px; flex-wrap: wrap;"><span style="font-size:0.8rem; color:#888; font-family:'Inter';">Proposed by: <span style="color:#fff; font-family:'Orbitron'; font-weight:900;">${p.proposer}</span></span><span style="font-family:'Orbitron'; font-size:0.65rem; color:${statusColor}; background:rgba(0,0,0,0.8); border:1px solid ${statusColor}; padding: 3px 8px; border-radius: 4px;">STATUS: ${statusText}</span></div>
-                <p style="font-size:0.95rem; color:#ccc; line-height:1.8; margin-bottom: 20px;">${p.desc}</p>
-                <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:15px; margin-bottom:15px; border: 1px solid #222;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-family:'Orbitron'; font-weight:bold; margin-bottom:8px;"><span style="color:#00ffaa;">YES: ${p.yesWeight.toFixed(0)} VTS (${yesPctRaw.toFixed(0)}%)</span><span style="color:var(--accent-pink);">NO: ${p.noWeight.toFixed(0)} VTS (${noPctRaw.toFixed(0)}%)</span></div>
-                    <div class="vote-bar-bg"><div class="vote-bar-yes" style="width:${yesPctRaw}%;"></div></div>
-                </div>
-                <div class="slider-box" style="justify-content: center; background: rgba(0,240,255,0.05); border-color: var(--accent-cyan);">
-                    <span style="font-family: 'Orbitron'; font-size: 0.9rem; color: var(--accent-cyan); font-weight: 900;">${voteStatusMsg}</span>
-                </div>
-                <div style="display:flex; gap:15px;">
-                    <button class="dao-action-btn btn-yes" onclick="executeOnChainVote('${p.id}', 'YES', 1)" style="flex:1;" ${finalDisabledState}>VOTE YES</button>
-                    <button class="dao-action-btn btn-no" onclick="executeOnChainVote('${p.id}', 'NO', 1)" style="flex:1;" ${finalDisabledState}>VOTE NO</button>
-                </div>
-                ${actionHtml}
-            </div>`;
-        });
-        list.innerHTML = html;
+        
+        // Render both views
+        renderDAOList(); 
+        renderGraveyardList(graveyardProposals.slice(0, 20)); // Pass max of 20 to the graveyard
     }
 
     // --- BLESSING / DONATION LOGIC ---
@@ -1668,6 +1643,44 @@ if (allActions.length > 0) {
             refreshDAODashboard(); updateBalances(sender); fetchTreasuryData();
         } catch(e) { console.error(e); showErrorModal("Transaction aborted or rejected."); }
     };
+
+    function renderGraveyardList(graveyard) {
+        const list = document.getElementById("graveyard-motions-list");
+        if (!list) return;
+
+        let html = "";
+        if (graveyard.length === 0) {
+            html = "<div style='color: #555; text-align: center; padding: 40px; font-family: Orbitron; border: 1px dashed #333;'>THE GRAVEYARD IS EMPTY.</div>";
+        } else {
+            graveyard.forEach(p => {
+                const totalWeight = p.yesWeight + p.noWeight;
+                const yesPctRaw = totalWeight > 0 ? (p.yesWeight / totalWeight) * 100 : 0;
+                const isPassing = yesPctRaw >= 51;
+                
+                let statusBadge = ""; let glowColor = "";
+                if (p.isWithdrawn) {
+                    statusBadge = `<span style="color: #888; border: 1px solid #555; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-family: 'Orbitron'; font-weight: 900;">WITHDRAWN</span>`; glowColor = "#111";
+                } else if (isPassing) {
+                    statusBadge = `<span style="color: #00ffaa; border: 1px solid #00ffaa; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-family: 'Orbitron'; font-weight: 900;">PASSED</span>`; glowColor = "rgba(0, 255, 170, 0.05)";
+                } else {
+                    statusBadge = `<span style="color: var(--accent-pink); border: 1px solid var(--accent-pink); padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-family: 'Orbitron'; font-weight: 900;">FAILED</span>`; glowColor = "rgba(255, 0, 85, 0.05)";
+                }
+
+                html += `
+                <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; border-radius: 8px; padding: 20px; margin-bottom: 15px; box-shadow: inset 0 0 20px ${glowColor};">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 12px; gap: 10px;">
+                        <div style="font-family:'Orbitron'; font-weight:900; font-size:1.1rem; color:#ccc; line-height: 1.4;">${p.title}</div>
+                        <div style="flex-shrink: 0;">${statusBadge}</div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-family:'Inter'; font-size:0.75rem; color:#888; border-top: 1px dashed #333; padding-top: 12px;">
+                        <div>By: <span style="color:#aaa; font-family: 'Orbitron';">${p.proposer}</span></div>
+                        <div style="font-family:'Orbitron'; font-weight: 900;"><span style="color:#00ffaa;">Y: ${p.yesWeight}</span> / <span style="color:var(--accent-pink);">N: ${p.noWeight}</span></div>
+                    </div>
+                </div>`;
+            });
+        }
+        list.innerHTML = html;
+    }
 
 window.executeOnChainVote = async (motionId, stance, weight) => {
         if (!currentSession) return toggleAuthModal();
