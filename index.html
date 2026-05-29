@@ -1608,19 +1608,15 @@ if (allActions.length > 0) {
                     else impactDisplay.style.color = "#00ffaa"; 
 
                } else {
-                    // ALCOR NATIVE BEHAVIOR: Kill the route and disable the button
-                    console.warn("Alcor Router rejected size: Insufficient Liquidity.");
+                    // ALCOR STRICT SYNC: If Alcor fails to return a route, reflect zero values without disabling UI.
+                    console.warn("Alcor Router returned no numbers for this size.");
                     outField.value = "";
                     usdDisplay.innerText = "(≈ $0.00 USD)";
                     minOutDisplay.innerText = "0.00";
                     
-                    if (impactLabel) impactLabel.style.display = "none";
-                    impactDisplay.innerText = ""; 
-                    
-                    executeBtn.innerText = "INSUFFICIENT LIQUIDITY";
-                    executeBtn.disabled = true;
-                    executeBtn.style.background = "#333";
-                    executeBtn.style.color = "#888";
+                    if (impactLabel) impactLabel.style.display = "inline";
+                    impactDisplay.innerText = "0.00%"; 
+                    impactDisplay.style.color = "#00ffaa";
                 }
             } catch(e) {
                 console.error("Swap calculation failed:", e);
