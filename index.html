@@ -1168,6 +1168,40 @@
         }
     }
 
+    window.flipSwapDirection = () => {
+    // 1. Toggle the state
+    isWaxToSkate = !isWaxToSkate;
+    
+    // 2. Grab the UI elements
+    const labelIn = document.getElementById('swap-label-in');
+    const labelOut = document.getElementById('swap-label-out');
+    const swapInInput = document.getElementById('swap-in');
+    const swapOutInput = document.getElementById('swap-out');
+
+    // 3. Swap the logos, text, and colors based on direction
+    if (isWaxToSkate) {
+        labelIn.innerHTML = 'WAX <img src="https://cryptologos.cc/logos/wax-waxp-logo.png" style="height: 20px;"> ▼';
+        labelOut.innerHTML = '$SKATE <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigxk3zg754f2tciiazwp7tgxb7snjjcgk4vxg73zjk34cuitde2yq" style="height: 20px;"> ▼';
+        labelIn.style.color = 'var(--accent-gold)';
+        labelOut.style.color = 'var(--accent-cyan)';
+    } else {
+        labelIn.innerHTML = '$SKATE <img src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeigxk3zg754f2tciiazwp7tgxb7snjjcgk4vxg73zjk34cuitde2yq" style="height: 20px;"> ▼';
+        labelOut.innerHTML = 'WAX <img src="https://cryptologos.cc/logos/wax-waxp-logo.png" style="height: 20px;"> ▼';
+        labelIn.style.color = 'var(--accent-cyan)';
+        labelOut.style.color = 'var(--accent-gold)';
+    }
+
+    // 4. Clear the inputs so the user doesn't accidentally execute a stale amount
+    swapInInput.value = '';
+    swapOutInput.value = '';
+
+    // 5. Trigger your existing calculation function (if it exists) to reset the HUD to 0
+    if (typeof window.calcNativeSwap === 'function') {
+        window.calcNativeSwap();
+    }
+};
+
+    
     function calculateDaoRank(cumulativeUsd) {
         if (cumulativeUsd >= 50000) return { rank: "LEGENDARY", color: "#a855f7", badge: "m-badge-legendary" };
         if (cumulativeUsd >= 10000) return { rank: "ELITE", color: "#2196f3", badge: "m-badge-elite" };
