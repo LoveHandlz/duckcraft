@@ -2,62 +2,120 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SK8Shop - Sovereign Merch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SK8Shop - Sovereign Protocol Merch</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <style>
-        /* Retro Comic / Cyberpunk Style Accent Overlays */
-        .comic-border {
-            box-shadow: 4px 4px 0px #000;
-            border: 2px solid #000;
+        /* --- GLOBAL VARIABLES (Mapped exactly from sk8dao protocol) --- */
+        :root {
+            --bg-deep: #050a1a;
+            --bg-panel: rgba(15, 26, 71, 0.95);
+            --accent-cyan: #00f0ff;
+            --accent-pink: #ff0055;
+            --accent-gold: #ffd700;
+            --accent-cyber-yellow: #ffea00; 
+            --card-border: rgba(0, 240, 255, 0.2);
         }
-        .comic-badge {
-            background: #ff0055;
-            color: #fff;
-            font-weight: 900;
-            text-transform: uppercase;
-            transform: rotate(-3deg);
-            box-shadow: 2px 2px 0px #000;
-            border: 2px solid #000;
+
+        body {
+            background-color: var(--bg-deep);
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background-image: radial-gradient(circle at 50% 50%, #162a5e 0%, #050a1a 100%); 
+            background-attachment: fixed; 
+            min-height: 100vh;
         }
-        /* Hidden Easter Egg layers placeholder styling */
-        .easter-egg-layer {
-            pointer-events: none;
+
+        /* --- PROTOCOL STYLED COMPONENTS --- */
+        .wallet-btn { 
+            background: var(--accent-cyber-yellow); 
+            color: #000; 
+            border: none; 
+            padding: 10px 20px; 
+            font-family: 'Orbitron'; 
+            font-weight: 900; 
+            cursor: pointer; 
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); 
+            transition: 0.2s; 
+            white-space: nowrap;
         }
-        .easter-egg-layer * {
-            pointer-events: auto;
+        .wallet-btn:hover { background: #fff; transform: scale(1.02); }
+        .wallet-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+        .cyber-yellow-frame {
+            border: 2px solid var(--accent-cyber-yellow) !important;
+            box-shadow: 0 0 20px rgba(255, 234, 0, 0.2), inset 0 0 15px rgba(255, 234, 0, 0.1) !important;
         }
+
+        .skate-card { 
+            background: var(--bg-panel); 
+            border: 1px solid var(--card-border); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            transition: transform 0.2s; 
+            width: 100%; 
+            box-sizing: border-box;
+        }
+        .skate-card:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--accent-gold); 
+            box-shadow: 0 5px 20px rgba(255,215,0,0.15); 
+        }
+
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); z-index: 2000; display: none; 
+            align-items: center; justify-content: center; backdrop-filter: blur(5px); 
+        }
+        
+        .modal-content { 
+            background: var(--bg-panel); padding: clamp(20px, 4vw, 40px); 
+            border-radius: 15px; border: 2px solid var(--accent-cyber-yellow); 
+            text-align: center; box-shadow: 0 0 30px rgba(255, 234, 0, 0.15); 
+            max-height: 90vh; overflow-y: auto; width: 95%; box-sizing: border-box; 
+        }
+
+        /* Input styling matching protocol */
+        .shop-input {
+            width: 100%; padding: 15px; background: #000; border: 1px solid #333; 
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; 
+            border-radius: 4px; box-sizing: border-box; outline: none;
+        }
+        .shop-input:focus { border-color: var(--accent-cyber-yellow); }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased">
+<body>
 
-    <header class="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
+    <header style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 2px solid var(--accent-cyan); box-shadow: 0 5px 20px rgba(0, 240, 255, 0.1);">
         <div class="flex items-center gap-4">
-            <span class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500">SK8SHOP</span>
+            <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-cyan); cursor: pointer;">sk8shop<span>.</span></h1>
         </div>
         
         <div class="flex items-center gap-4">
-            <div class="bg-zinc-800 p-1.5 rounded-lg flex gap-1 text-xs">
-                <button onclick="setMockWallet('user.wam')" id="btn-user-mode" class="px-3 py-1 rounded bg-zinc-700 text-white font-medium">User View</button>
-                <button onclick="setMockWallet('ufuau.wam')" id="btn-admin-mode" class="px-3 py-1 rounded text-zinc-400 hover:text-white">Admin View</button>
-            </div>
-
-            <button onclick="toggleModal('cart-modal', true)" class="relative comic-border bg-yellow-400 text-black font-black px-4 py-2 hover:bg-yellow-300 transition cursor-pointer flex items-center gap-2">
-                CART (<span id="cart-count">0</span>)
+            <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000; display: flex; gap: 8px;">
+                🛒 BAG (<span id="cart-count">0</span>)
             </button>
+
+            <button id="connect-btn" class="wallet-btn" onclick="window.loginWax()">CONNECT</button>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-10">
         
-        <section id="admin-panel" class="hidden mb-10 p-6 bg-zinc-900 border-2 border-dashed border-yellow-500/50 rounded-xl">
+        <section id="admin-panel" class="hidden mb-10 p-6 cyber-yellow-frame" style="background: var(--bg-panel); border-radius: 12px;">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h2 class="text-xl font-bold text-yellow-400 flex items-center gap-2">⚡ Admin Control Panel</h2>
-                    <p class="text-xs text-zinc-400 mt-1">Authenticated as: <span id="admin-wallet-display" class="font-mono text-zinc-200"></span></p>
+                    <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow); letter-spacing: 1px;">⚡ SHOP ADMIN TERMINAL</h2>
+                    <p class="text-xs text-zinc-400 mt-1 font-mono">Authenticated as: <span id="admin-wallet-display" class="text-zinc-200"></span></p>
                 </div>
-                <button onclick="toggleModal('add-item-modal', true)" class="comic-border bg-emerald-500 text-black font-bold px-4 py-2 text-sm hover:bg-emerald-400 cursor-pointer">
-                    + Add New Shop Item
+                <button onclick="window.toggleModal('add-item-modal', true)" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.85rem;">
+                    + INJECT NEW INVENTORY
                 </button>
             </div>
         </section>
@@ -67,147 +125,190 @@
                 </div>
 
             <div id="load-more-container" class="mt-12 flex justify-center hidden">
-                <button onclick="expandFeed()" class="comic-border bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold px-8 py-3 hover:bg-zinc-700 transition cursor-pointer">
-                    LOAD MORE ITEMS
+                <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">
+                    ▼ LOAD MORE COMPONENTS ▼
                 </button>
             </div>
         </section>
     </main>
 
-    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" onclick="closeAllModals()"></div>
-
-    <div id="product-detail-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-zinc-900 border border-zinc-800 p-6 z-55 hidden opacity-0 scale-95 transition-all duration-300 comic-border">
-        <div id="detail-modal-content"></div>
-    </div>
-
-    <div id="cart-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-zinc-900 border border-zinc-800 p-6 z-55 hidden opacity-0 scale-95 transition-all duration-300 comic-border">
-        <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
-            <h3 class="text-xl font-black tracking-wide text-yellow-400">YOUR TRICK BAG (CART)</h3>
-            <button onclick="toggleModal('cart-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
-        </div>
-        <div id="cart-items-list" class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-2">
-            </div>
-        <div class="border-t border-zinc-800 pt-4 space-y-4">
-            <div class="flex justify-between items-center font-bold text-lg">
-                <span>TOTAL COST:</span>
-                <span class="text-emerald-400"><span id="cart-total-price">0</span> SKATE</span>
-            </div>
-            <button onclick="openShippingModal()" id="checkout-next-btn" class="w-full comic-border bg-pink-600 text-white font-black py-3 hover:bg-pink-500 transition cursor-pointer">
-                PROCEED TO SHIPPING
-            </button>
+    <div id="product-detail-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px; border-color: var(--accent-cyan);">
+            <div id="detail-modal-content" class="text-left"></div>
         </div>
     </div>
 
-    <div id="shipping-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-zinc-900 border border-zinc-800 p-6 z-55 hidden opacity-0 scale-95 transition-all duration-300 comic-border">
-        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-            <h3 class="text-xl font-black tracking-wide text-pink-500">SHIPPING & DIRECTIONS</h3>
-            <button onclick="toggleModal('shipping-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
-        </div>
-        
-        <div class="space-y-4 text-sm text-zinc-300 mb-6">
-            <div class="bg-zinc-950 p-3 border border-zinc-800 rounded">
-                <span class="text-yellow-400 font-bold block mb-1">📋 Steps to Complete Order:</span>
-                <ol class="list-decimal list-inside space-y-1 text-xs text-zinc-400">
-                    <li>Click the link below to securely lock in your address metrics.</li>
-                    <li>Return to this modal and execute the WAX blockchain signature.</li>
-                    <li>Your transaction memo link will pair instantly with the order.</li>
-                </ol>
+    <div id="cart-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px; border-color: var(--accent-gold);">
+            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
+                <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); font-size: 1.5rem; letter-spacing: 2px;">THE TRICK BAG</h3>
+                <button onclick="window.toggleModal('cart-modal', false)" class="text-zinc-500 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
             </div>
-
-            <a href="https://docs.google.com/forms/" target="_blank" class="block text-center w-full bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-zinc-200 font-bold py-2.5 rounded transition">
-                📝 Open Secure Shipping Form
-            </a>
-        </div>
-
-        <div class="border-t border-zinc-800 pt-4 flex gap-3">
-            <button onclick="backToCart()" class="w-1/3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 transition text-sm">
-                BACK
-            </button>
-            <button onclick="executeSkatePayment()" class="w-2/3 comic-border bg-emerald-500 text-black font-black py-3 hover:bg-emerald-400 transition text-sm cursor-pointer">
-                PAY WITH SKATE
-            </button>
+            
+            <div id="cart-items-list" class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-2 text-left">
+                </div>
+            
+            <div class="border-t border-zinc-800 pt-4 space-y-4 text-left">
+                <div class="flex justify-between items-center font-bold text-lg font-mono">
+                    <span style="color: #ccc;">TOTAL COST:</span>
+                    <span style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;"><span id="cart-total-price">0</span> SKATE</span>
+                </div>
+                <button onclick="window.openShippingModal()" id="checkout-next-btn" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px;">
+                    PROCEED TO SHIPPING
+                </button>
+            </div>
         </div>
     </div>
 
-    <div id="add-item-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-zinc-900 border border-zinc-800 p-6 z-55 hidden opacity-0 scale-95 transition-all duration-300 comic-border">
-        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-            <h3 class="text-lg font-bold text-yellow-400">Add New Inventory Item</h3>
-            <button onclick="toggleModal('add-item-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
+    <div id="shipping-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px; border-color: var(--accent-pink);">
+            <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 10px; font-size: 1.5rem; letter-spacing: 2px;">SHIPPING PROTOCOL</h2>
+            <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px; text-align: left;">Secure your logistics off-chain before signing the transaction.</p>
+            
+            <div class="space-y-4 text-sm text-zinc-300 mb-6 text-left">
+                <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px;">
+                    <ol class="list-decimal list-inside space-y-2 text-xs text-zinc-400 font-mono">
+                        <li>Open the secure form below.</li>
+                        <li>Log your shipping coordinates.</li>
+                        <li>Return to this interface and execute the $SKATE payment.</li>
+                    </ol>
+                </div>
+
+                <a href="https://docs.google.com/forms/" target="_blank" class="wallet-btn block text-center" style="background: transparent; border: 1px solid var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); padding: 12px; width: 100%;">
+                    📝 OPEN SECURE SHIPPING FORM
+                </a>
+            </div>
+
+            <div class="border-t border-zinc-800 pt-4 flex gap-3">
+                <button onclick="window.backToCart()" class="wallet-btn" style="flex: 1; background: transparent; border: 1px solid #888; color: #888;">BACK</button>
+                <button onclick="window.executeSkatePayment()" class="wallet-btn" style="flex: 2; background: var(--accent-cyan); color: #000;">PAY WITH SKATE</button>
+            </div>
         </div>
-        <form id="add-item-form" onsubmit="handleAddItem(event)" class="space-y-4 text-sm">
-            <div>
-                <label class="block text-zinc-400 mb-1 font-medium">Item Title</label>
-                <input type="text" id="form-title" required class="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-white focus:outline-none focus:border-yellow-500">
+    </div>
+
+    <div id="add-item-modal" class="modal-overlay">
+        <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
+            <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+                <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem;">INJECT INVENTORY</h3>
+                <button onclick="window.toggleModal('add-item-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
             </div>
-            <div>
-                <label class="block text-zinc-400 mb-1 font-medium">Description</label>
-                <textarea id="form-desc" required rows="2" class="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-white focus:outline-none focus:border-yellow-500"></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
+            
+            <form id="add-item-form" onsubmit="window.handleAddItem(event)" class="space-y-4 text-left">
                 <div>
-                    <label class="block text-zinc-400 mb-1 font-medium">SKATE Token Price</label>
-                    <input type="number" id="form-price" required min="1" class="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-white focus:outline-none focus:border-yellow-500">
+                    <label class="block text-zinc-400 mb-1 font-mono text-xs">COMPONENT TITLE</label>
+                    <input type="text" id="form-title" required class="shop-input">
                 </div>
                 <div>
-                    <label class="block text-zinc-400 mb-1 font-medium">Media Type</label>
-                    <select id="form-media-type" class="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-white focus:outline-none focus:border-yellow-500">
-                        <option value="image">Image Link / IPFS</option>
-                        <option value="video">Video Link / IPFS</option>
-                    </select>
+                    <label class="block text-zinc-400 mb-1 font-mono text-xs">SPECIFICATIONS</label>
+                    <textarea id="form-desc" required rows="2" class="shop-input"></textarea>
                 </div>
-            </div>
-            <div>
-                <label class="block text-zinc-400 mb-1 font-medium">Media Source URL or CID</label>
-                <input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." class="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-white focus:outline-none focus:border-yellow-500">
-            </div>
-            <button type="submit" class="w-full bg-yellow-400 text-black font-bold py-2.5 mt-2 hover:bg-yellow-300 transition cursor-pointer">
-                SAVE TO INVENTORY
-            </button>
-        </form>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 mb-1 font-mono text-xs">$SKATE PRICE</label>
+                        <input type="number" id="form-price" required min="1" class="shop-input">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 mb-1 font-mono text-xs">MEDIA FORMAT</label>
+                        <select id="form-media-type" class="shop-input py-3">
+                            <option value="image">IPFS Image</option>
+                            <option value="video">IPFS Video</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-zinc-400 mb-1 font-mono text-xs">CID / SOURCE URL</label>
+                    <input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." class="shop-input">
+                </div>
+                <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 15px;">
+                    DEPLOY TO LEDGER
+                </button>
+            </form>
+        </div>
     </div>
 
 
-    <script>
-        // --- SEED CORE MOCK DATA ---
-        let mockInventory = [
+    <script type="module">
+        import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
+        import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
+        import { WalletPluginCloudWallet } from 'https://esm.sh/@wharfkit/wallet-plugin-cloudwallet?bundle';
+        import { WalletPluginAnchor } from 'https://esm.sh/@wharfkit/wallet-plugin-anchor?bundle';
+        import { WalletPluginWombat } from 'https://esm.sh/@wharfkit/wallet-plugin-wombat?bundle';
+
+        // --- SESSION MANAGEMENT ---
+        const sessionKit = new SessionKit({
+            appName: 'sk8dao',
+            chains: [{ id: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4', url: 'https://wax.greymass.com' }],
+            ui: new WebRenderer(),
+            walletPlugins: [ 
+                new WalletPluginCloudWallet(),
+                new WalletPluginAnchor(),
+                new WalletPluginWombat()
+            ]
+        });
+
+        let currentSession = null;
+        let currentWallet = null;
+        const adminWallets = ["ufuau.wam", "skatcoinwax"];
+        let cart = [];
+        let itemsLimit = 12; // Platform standard standardization
+
+        // --- MOCK INVENTORY SEED ---
+        window.mockInventory = [
             { id: 1, title: "Sovereign Deck v1", desc: "Hard rock maple featuring holographic laser-etched design parameters.", price: 2500, type: "image", src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80" },
             { id: 2, title: "SK8DAO Cyber Wheels", desc: "52mm street urethene embedded with fictional ledger mechanics.", price: 1200, type: "image", src: "https://images.unsplash.com/photo-1531565637446-32307b194362?auto=format&fit=crop&w=500&q=80" },
             { id: 3, title: "Protocol Grip Tape", desc: "Coarse grit composition printed with pure cyberpunk layout patterns.", price: 500, type: "image", src: "https://images.unsplash.com/photo-1564982009-8839de721a30?auto=format&fit=crop&w=500&q=80" }
         ];
 
-        // Seed 12+ total items natively to test standard pagination rules safely
         for(let i = 4; i <= 15; i++) {
-            mockInventory.push({
+            window.mockInventory.push({
                 id: i,
-                title: `Sovereign Item Pool #${i}`,
-                desc: "An experimental archival asset added safely to confirm strict responsive grid display rules.",
+                title: `Physical Asset Module #${i}`,
+                desc: "A decentralized physical product indexed securely into the network store.",
                 price: 750 + (i * 50),
                 type: "image",
                 src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80"
             });
         }
 
-        // --- GLOBAL APPLICATIVE STATE ---
-        let currentWallet = "user.wam"; 
-        const adminWallets = ["ufuau.wam", "skatcoinwax"];
-        let cart = [];
-        let itemsLimit = 12; // Platform structural standard
+        // --- AUTHENTICATION & ADMIN ROLES ---
+        window.loginWax = async () => {
+            if (currentSession) {
+                // Handle Logout
+                await sessionKit.logout();
+                currentSession = null;
+                currentWallet = null;
+                document.getElementById('connect-btn').innerText = "CONNECT";
+                evaluateAdminStatus();
+                window.renderShopGrid();
+                return;
+            }
 
-        // --- CORE APPLICATION INITIALIZATION ---
-        document.addEventListener("DOMContentLoaded", () => {
-            renderShopGrid();
-            evaluateAdminStatus();
+            // Handle Login
+            try {
+                const { session } = await sessionKit.login();
+                currentSession = session;
+                currentWallet = session.actor.toString();
+                document.getElementById('connect-btn').innerText = currentWallet.toUpperCase();
+                evaluateAdminStatus();
+                window.renderShopGrid();
+            } catch(e) {
+                console.error("Login aborted", e);
+            }
+        };
+
+        // Auto Restore Session
+        sessionKit.restore().then(s => { 
+            if (s) { 
+                currentSession = s; 
+                currentWallet = s.actor.toString();
+                document.getElementById('connect-btn').innerText = currentWallet.toUpperCase(); 
+                evaluateAdminStatus();
+            }
+            window.renderShopGrid();
         });
 
-        function setMockWallet(walletName) {
-            currentWallet = walletName;
-            document.getElementById('btn-user-mode').className = walletName === 'user.wam' ? "px-3 py-1 rounded bg-zinc-700 text-white font-medium" : "px-3 py-1 rounded text-zinc-400 hover:text-white";
-            document.getElementById('btn-admin-mode').className = walletName === 'ufuau.wam' ? "px-3 py-1 rounded bg-zinc-700 text-white font-medium" : "px-3 py-1 rounded text-zinc-400 hover:text-white";
-            evaluateAdminStatus();
-        }
-
         function evaluateAdminStatus() {
-            const isAdmin = adminWallets.includes(currentWallet);
+            const isAdmin = currentWallet && adminWallets.includes(currentWallet);
             const panel = document.getElementById("admin-panel");
             const display = document.getElementById("admin-wallet-display");
             
@@ -219,314 +320,234 @@
             }
         }
 
-        // --- RENDER GALLERY & CARDS SYSTEM ---
-        function renderShopGrid() {
+        // --- GRID RENDERING & INVENTORY MANAGEMENT ---
+        window.renderShopGrid = () => {
             const grid = document.getElementById("products-grid");
             grid.innerHTML = "";
             
-            // Filter list to exact pagination limit configuration bounds
-            const visibleItems = mockInventory.slice(0, itemsLimit);
+            const visibleItems = window.mockInventory.slice(0, itemsLimit);
+            const isAdmin = currentWallet && adminWallets.includes(currentWallet);
             
             visibleItems.forEach((item) => {
                 const card = document.createElement("div");
-                // Relative positioning allows elements to stack correctly
-                card.className = "relative bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden group hover:border-zinc-700 transition flex flex-col justify-between";
+                card.className = "skate-card";
+                card.style.borderColor = "var(--card-border)";
+                card.style.background = "var(--bg-panel)";
                 
-                // Construct inner layout markup safely
+                // Admin Remove Logic Implementation
+                const adminRemoveHtml = isAdmin ? `
+                    <div style="padding: 10px; background: rgba(255,0,85,0.1); border-top: 1px solid var(--accent-pink);">
+                        <button onclick="window.removeShopItem(${item.id})" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; font-size: 0.75rem; padding: 8px;">
+                            ✖ REMOVE ITEM
+                        </button>
+                    </div>
+                ` : '';
+
                 card.innerHTML = `
-                    <div class="w-full aspect-square bg-zinc-950 overflow-hidden relative">
+                    <div class="img-wrap" style="height: 200px; background: #000; border-bottom: 1px solid rgba(0, 240, 255, 0.2);">
                         ${item.type === 'video' 
-                            ? `<video src="${item.src}" autoplay loop muted playsinline class="w-full h-full object-cover"></video>`
-                            : `<img src="${item.src}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">`
+                            ? `<video src="${item.src}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>`
+                            : `<img src="${item.src}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">`
                         }
                     </div>
-
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-base text-zinc-100 group-hover:text-yellow-400 transition mb-1">${item.title}</h3>
-                            <p class="text-xs text-zinc-400 line-clamp-2 mb-3">${item.desc}</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="font-black text-sm text-emerald-400">${item.price} SKATE</span>
-                            <button onclick="openProductDetail(${item.id})" class="text-xs font-bold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-1.5 transition text-zinc-300 cursor-pointer">
-                                VIEW ITEM
+                    <div class="card-body" style="padding: 20px; text-align: left;">
+                        <h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 10px; line-height: 1.2;">${item.title}</h3>
+                        <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-family: 'Inter';">${item.desc}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-gold);">${item.price} SKATE</span>
+                            <button onclick="window.openProductDetail(${item.id})" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; padding: 8px 12px; clip-path: none;">
+                                INSPECT
                             </button>
                         </div>
                     </div>
-
-                    <div class="easter-egg-layer absolute inset-0 flex flex-col justify-between p-3">
-                        <div class="flex justify-between items-start">
-                            ${item.id === 1 ? `<div class="comic-badge text-[10px] px-2 py-0.5">RARE</div>` : ''}
-                            ${item.id === 3 ? `<div class="comic-badge bg-cyan-400 text-black text-[10px] px-2 py-0.5">HOLDER</div>` : ''}
-                        </div>
-                        
-                        <div class="flex justify-end">
-                            ${item.id === 2 ? `
-                                <button onclick="alert('🛹 Radical! You discovered a hidden shop secret tag.'); event.stopPropagation();" 
-                                        class="opacity-0 group-hover:opacity-100 bg-purple-600 border border-black hover:bg-purple-500 w-6 h-6 rounded-full flex items-center justify-center text-xs text-white shadow-md transition cursor-pointer">
-                                    ★
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
+                    ${adminRemoveHtml}
                 `;
                 grid.appendChild(card);
             });
 
-            // Handle visibility metrics for the pagination expansion system
             const loadMoreBtn = document.getElementById("load-more-container");
-            if (mockInventory.length > itemsLimit) {
+            if (window.mockInventory.length > itemsLimit) {
                 loadMoreBtn.classList.remove("hidden");
             } else {
                 loadMoreBtn.classList.add("hidden");
             }
-        }
+        };
 
-        function expandFeed() {
-            itemsLimit += 12; // Step increment preserving limits
-            renderShopGrid();
-        }
+        window.expandFeed = () => {
+            itemsLimit += 12; 
+            window.renderShopGrid();
+        };
 
-        // --- LAYERED MODAL TRANSITION MANAGEMENT ---
-        function toggleModal(modalId, show) {
+        window.removeShopItem = (id) => {
+            if(!confirm("⚠️ PROTOCOL WARNING: Are you sure you want to remove this item from the inventory ledger?")) return;
+            window.mockInventory = window.mockInventory.filter(item => item.id !== id);
+            window.renderShopGrid();
+        };
+
+        window.handleAddItem = (event) => {
+            event.preventDefault();
+            const newItem = {
+                id: window.mockInventory.length > 0 ? Math.max(...window.mockInventory.map(i => i.id)) + 1 : 1,
+                title: document.getElementById("form-title").value,
+                desc: document.getElementById("form-desc").value,
+                price: parseInt(document.getElementById("form-price").value),
+                type: document.getElementById("form-media-type").value,
+                src: document.getElementById("form-media-url").value || "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80"
+            };
+            window.mockInventory.unshift(newItem);
+            document.getElementById("add-item-form").reset();
+            window.toggleModal('add-item-modal', false);
+            window.renderShopGrid();
+        };
+
+        // --- MODAL ENGINE ---
+        window.toggleModal = (modalId, show) => {
             const modal = document.getElementById(modalId);
-            const overlay = document.getElementById("modal-overlay");
-
             if (show) {
-                overlay.classList.remove("hidden");
-                modal.classList.remove("hidden");
-                // Flush layout states smoothly
-                setTimeout(() => {
-                    overlay.classList.add("opacity-100");
-                    modal.classList.add("opacity-100", "scale-100");
-                }, 10);
+                modal.style.display = 'flex';
+                if(modalId === 'cart-modal') renderCartContents();
             } else {
-                modal.classList.remove("opacity-100", "scale-100");
-                // Only hide overlay if no secondary modals are open
-                const openModals = Array.from(document.querySelectorAll('.fixed')).filter(m => !m.classList.contains('hidden') && m.id !== 'modal-overlay' && m.id !== modalId);
-                if(openModals.length === 0) {
-                    overlay.classList.remove("opacity-100");
-                }
-                setTimeout(() => {
-                    modal.classList.add("hidden");
-                    if(openModals.length === 0) overlay.classList.add("hidden");
-                }, 300);
+                modal.style.display = 'none';
             }
-        }
+        };
 
-        function closeAllModals() {
-            toggleModal('product-detail-modal', false);
-            toggleModal('cart-modal', false);
-            toggleModal('shipping-modal', false);
-            toggleModal('add-item-modal', false);
-        }
-
-        // --- ITEM DETAIL INTERACTION VIEWS ---
-        function openProductDetail(id) {
-            const item = mockInventory.find(p => p.id === id);
+        // --- PRODUCT INSPECTION & CART ---
+        window.openProductDetail = (id) => {
+            const item = window.mockInventory.find(p => p.id === id);
             if(!item) return;
 
             const content = document.getElementById("detail-modal-content");
             content.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-zinc-100">${item.title}</h3>
-                    <button onclick="toggleModal('product-detail-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
+                    <h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyan); text-transform: uppercase;">${item.title}</h3>
+                    <button onclick="window.toggleModal('product-detail-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
                 </div>
-                <div class="w-full aspect-video bg-zinc-950 rounded overflow-hidden mb-4 border border-zinc-800">
+                <div class="w-full aspect-video bg-black overflow-hidden mb-4 border border-zinc-800" style="border-color: var(--card-border);">
                     ${item.type === 'video' 
-                        ? `<video src="${item.src}" autoplay loop muted playsinline class="w-full h-full object-cover"></video>`
-                        : `<img src="${item.src}" class="w-full h-full object-cover">`
+                        ? `<video src="${item.src}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>`
+                        : `<img src="${item.src}" style="width: 100%; height: 100%; object-fit: cover;">`
                     }
                 </div>
-                <p class="text-sm text-zinc-400 mb-6 leading-relaxed">${item.desc}</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-xl font-black text-emerald-400">${item.price} SKATE</span>
-                    <button onclick="addToCart(${item.id})" class="comic-border bg-yellow-400 text-black font-black px-6 py-2.5 hover:bg-yellow-300 transition cursor-pointer">
-                        ADD TO TRICK BAG
+                <p class="text-sm text-zinc-400 mb-6 leading-relaxed font-mono">${item.desc}</p>
+                <div class="flex justify-between items-center mt-4">
+                    <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price} SKATE</span>
+                    <button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
+                        ADD TO BAG
                     </button>
                 </div>
             `;
-            toggleModal('product-detail-modal', true);
-        }
+            window.toggleModal('product-detail-modal', true);
+        };
 
-        // --- OPERATIONAL SHOPPING CART ENGINE ---
-        function addToCart(id) {
-            const item = mockInventory.find(p => p.id === id);
+        window.addToCart = (id) => {
+            const item = window.mockInventory.find(p => p.id === id);
             if(!item) return;
-
             const cartIndex = cart.findIndex(c => c.id === id);
-            if (cartIndex > -1) {
-                cart[cartIndex].quantity += 1;
-            } else {
-                cart.push({ ...item, quantity: 1 });
-            }
+            if (cartIndex > -1) cart[cartIndex].quantity += 1;
+            else cart.push({ ...item, quantity: 1 });
             
             updateCartMetrics();
-            toggleModal('product-detail-modal', false);
-            // Open the cart modal right away to demonstrate the layered strategy
-            toggleModal('cart-modal', true);
-        }
+            window.toggleModal('product-detail-modal', false);
+            window.toggleModal('cart-modal', true);
+        };
 
-        function removeFromCart(id) {
+        window.removeFromCart = (id) => {
             cart = cart.filter(c => c.id !== id);
             updateCartMetrics();
             renderCartContents();
-        }
+        };
 
         function updateCartMetrics() {
-            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            const count = cart.reduce((t, i) => t + i.quantity, 0);
             document.getElementById("cart-count").innerText = count;
             
-            const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const total = cart.reduce((t, i) => t + (i.price * i.quantity), 0);
             document.getElementById("cart-total-price").innerText = total;
 
             const nextBtn = document.getElementById("checkout-next-btn");
             if(count === 0) {
                 nextBtn.setAttribute("disabled", "true");
-                nextBtn.className = "w-full bg-zinc-800 text-zinc-600 font-black py-3 cursor-not-allowed";
             } else {
                 nextBtn.removeAttribute("disabled");
-                nextBtn.className = "w-full comic-border bg-pink-600 text-white font-black py-3 hover:bg-pink-500 transition cursor-pointer";
             }
         }
 
         function renderCartContents() {
             const container = document.getElementById("cart-items-list");
             container.innerHTML = "";
-
             if(cart.length === 0) {
-                container.innerHTML = `<p class="text-sm text-zinc-500 text-center py-6">Your bag is completely empty.</p>`;
+                container.innerHTML = `<p class="text-sm text-zinc-500 py-6 font-mono">Your stash is completely empty.</p>`;
                 return;
             }
-
             cart.forEach(item => {
-                const div = document.createElement("div");
-                div.className = "flex justify-between items-center bg-zinc-950 p-3 border border-zinc-800 rounded";
-                div.innerHTML = `
-                    <div>
-                        <h4 class="font-bold text-sm text-zinc-200">${item.title}</h4>
-                        <p class="text-xs text-zinc-500">${item.price} SKATE &times; ${item.quantity}</p>
+                container.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background: rgba(0,0,0,0.5); padding: 10px; border: 1px dashed #333; border-radius: 6px;">
+                        <div>
+                            <h4 style="font-family: 'Orbitron'; font-weight: bold; font-size: 0.85rem; color: #fff;">${item.title}</h4>
+                            <p style="font-family: 'Inter'; font-size: 0.75rem; color: var(--accent-gold);">${item.price} SKATE &times; ${item.quantity}</p>
+                        </div>
+                        <button onclick="window.removeFromCart(${item.id})" style="font-family: 'Orbitron'; font-size: 0.65rem; color: var(--accent-pink); background: transparent; border: none; cursor: pointer;">
+                            [ REMOVE ]
+                        </button>
                     </div>
-                    <button onclick="removeFromCart(${item.id})" class="text-xs font-bold text-red-400 hover:text-red-300 px-2 py-1 cursor-pointer">
-                        REMOVE
-                    </button>
                 `;
-                container.appendChild(div);
             });
         }
 
-        // Trap active view and fire cart render when triggered manually
-        const baseCartOpen = toggleModal;
-        toggleModal = function(modalId, show) {
-            if(modalId === 'cart-modal' && show) renderCartContents();
-            baseCartOpen(modalId, show);
+        // --- SHIPPING & CHECKOUT ROUTING ---
+        window.openShippingModal = () => {
+            window.toggleModal('cart-modal', false);
+            window.toggleModal('shipping-modal', true);
         };
 
-        // --- SHIPPING STRATEGY LAYER ---
-        function openShippingModal() {
-            toggleModal('cart-modal', false);
-            // Delay slightly to match programmatic overlay animation speeds smoothly
-            setTimeout(() => {
-                toggleModal('shipping-modal', true);
-            }, 150);
-        }
+        window.backToCart = () => {
+            window.toggleModal('shipping-modal', false);
+            window.toggleModal('cart-modal', true);
+        };
 
-        function backToCart() {
-            toggleModal('shipping-modal', false);
-            setTimeout(() => {
-                toggleModal('cart-modal', true);
-            }, 150);
-        }
+        window.executeSkatePayment = async () => {
+            if (!currentSession) {
+                alert("Please connect your WAX wallet first!");
+                window.toggleModal('shipping-modal', false);
+                window.loginWax();
+                return;
+            }
 
-        // --- WEB3 TRANSACTION SCAFFOLDING (WAX DEFI INTEGRATION) ---
-        function executeSkatePayment() {
             const totalCost = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-            
-            // Generate a deterministic unique memo context string linking back to the order details
             const itemSummaryString = cart.map(i => `${i.title}(x${i.quantity})`).join(', ');
-            const deterministicMemo = `SK8SHOP_ORDER:${itemSummaryString}`;
+            // Generate exact deterministic link for Google forms / sheet matching
+            const deterministicMemo = `SK8SHOP_ORDER:${itemSummaryString}`.substring(0, 256); 
+            const formattedAmt = totalCost.toFixed(4) + " SKATE";
+            const sender = currentSession.actor.toString();
 
-            alert(`
-               🚀 [WAX BLOCKS ACTION SIMULATOR]
-               -------------------------------------------
-               Sending Wallet Connection Request...
-               Target Account: skatcoinwax
-               Transfer Amount: ${totalCost}.0000 SKATE
-               Memo Generated: "${deterministicMemo}"
-               
-               Confirming RPC broadcast signatures...
-            `);
+            try {
+                // Exact WAX routing using provided protocol donation logic
+                const actions = [{ 
+                    account: 'skatecoinwax', 
+                    name: 'transfer', 
+                    authorization: [currentSession.permissionLevel], 
+                    data: { 
+                        from: sender, 
+                        to: 'skatcoinwax', // Direct to treasury
+                        quantity: formattedAmt, 
+                        memo: deterministicMemo 
+                    } 
+                }];
+                
+                await currentSession.transact({ actions });
+                
+                alert(`🔥 ORDER SECURED 🔥\nYour transaction has been broadcast to the ledger.\nOrder String: ${deterministicMemo}`);
+                
+                cart = [];
+                updateCartMetrics();
+                window.toggleModal('shipping-modal', false);
+                
+            } catch(e) { 
+                console.error(e); 
+                alert("Transaction Cancelled or Failed. Please try again."); 
+            }
+        };
 
-            /* --- INTEGRATION BLUEPRINT FOR THE ACTUAL SK8SHOP PAGE DEPLOYMENT ---
-               Ensure that your global 'wax' object is instantiated properly from 'waxjs' inside your environment.
-               
-               try {
-                   const result = await wax.api.transact({
-                       actions: [{
-                           account: "skatecontract", // Replace with your verified SKATE token contract account name
-                           name: "transfer",
-                           authorization: [{
-                               actor: wax.userAccount,
-                               permission: "active",
-                           }],
-                           data: {
-                               from: wax.userAccount,
-                               to: "skatcoinwax", // Routing direct to treasury
-                               quantity: "${totalCost}.0000 SKATE", // Format strictly matching precision rules
-                               memo: "${deterministicMemo}" // Critical tie back link to identify shipping forms
-                           },
-                       }]
-                   }, {
-                       blocksBehind: 3,
-                       expireSeconds: 30,
-                   });
-                   
-                   alert("Transaction Successful! Hash: " + result.transaction_id);
-                   cart = [];
-                   updateCartMetrics();
-                   closeAllModals();
-               } catch(e) {
-                   console.error("WAX RPC Error: ", e);
-                   alert("Transaction aborted: " + e.message);
-               }
-            */
-
-            // Simulation cleanup action
-            alert("✅ Payment confirmed by simulated WAX node. Clearing order queues!");
-            cart = [];
-            updateCartMetrics();
-            closeAllModals();
-        }
-
-        // --- ADMIN INVENTORY WRITE MANAGEMENT ---
-        function handleAddItem(event) {
-            event.preventDefault();
-            
-            const title = document.getElementById("form-title").value;
-            const desc = document.getElementById("form-desc").value;
-            const price = parseInt(document.getElementById("form-price").value);
-            const type = document.getElementById("form-media-type").value;
-            const src = document.getElementById("form-media-url").value;
-
-            const newItem = {
-                id: mockInventory.length + 1,
-                title: title,
-                desc: desc,
-                price: price,
-                type: type,
-                src: src || "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80"
-            };
-
-            // Safely prepend the new row directly to local client context
-            mockInventory.unshift(newItem);
-            
-            // Clean interface fields and close panel view
-            document.getElementById("add-item-form").reset();
-            toggleModal('add-item-modal', false);
-            
-            // Reparse elements instantly using standard boundaries
-            renderShopGrid();
-        }
     </script>
 </body>
 </html>
