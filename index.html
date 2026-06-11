@@ -1,3 +1,10 @@
+Implementing a token-gating system is a powerful Web3 utility. To keep the UI/UX clean and minimize friction, we will add a simple toggle switch in the admin panel. When toggled on, it reveals inputs for the `Template ID` and the `Marketplace Link`.
+
+On the user side, if an item is flagged as gated, the system checks their wallet (mocked in this prototype). If they lack the NFT, the standard checkout button splits into two distinct, clear calls to action: a disabled "🔒 NFT REQUIRED" button and a highly visible "BUY NFT ACCESS" button linking directly to your specified marketplace.
+
+Here is the complete, fully updated replacement code with the token-gating architecture cleanly integrated without disrupting any of your existing protocol styling or logic.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,7 +51,7 @@
             white-space: nowrap;
         }
         .wallet-btn:hover { background: #fff; transform: scale(1.02); }
-        .wallet-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .wallet-btn:disabled { background: #333 !important; color: #666 !important; cursor: not-allowed !important; border: 1px dashed #555 !important; }
 
         .cyber-yellow-frame {
             border: 2px solid var(--accent-cyber-yellow) !important;
@@ -61,6 +68,7 @@
             transition: transform 0.2s; 
             width: 100%; 
             box-sizing: border-box;
+            position: relative;
         }
         .skate-card:hover { 
             transform: translateY(-5px); 
@@ -88,6 +96,22 @@
             border-radius: 4px; box-sizing: border-box; outline: none;
         }
         .shop-input:focus { border-color: var(--accent-cyber-yellow); }
+
+        /* Custom Toggle Switch */
+        .toggle-switch {
+            position: relative; display: inline-block; width: 50px; height: 24px;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; transition: .4s; border-radius: 24px; border: 1px solid #555;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-pink); border-color: var(--accent-pink); box-shadow: 0 0 10px rgba(255,0,85,0.5);}
+        input:checked + .slider:before { transform: translateX(24px); }
     </style>
 </head>
 <body>
@@ -219,6 +243,31 @@
                     <label class="block text-zinc-400 mb-1 font-mono text-xs">CID / SOURCE URL</label>
                     <input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." class="shop-input">
                 </div>
+
+                <div style="background: rgba(255,0,85,0.05); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 15px; margin-top: 15px;">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem;">🔒 TOKEN GATE ITEM</span>
+                            <p class="text-xs text-zinc-400 font-mono mt-1">Require a specific WAX NFT to purchase.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="form-is-gated" onchange="window.toggleGateFields()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="gate-fields-container" style="display: none; margin-top: 15px; border-top: 1px dashed var(--accent-pink); padding-top: 15px;">
+                        <div class="mb-3">
+                            <label class="block text-zinc-400 mb-1 font-mono text-xs">WAX TEMPLATE ID REQUIRED</label>
+                            <input type="text" id="form-gate-template" placeholder="e.g. 123456" class="shop-input" style="padding: 10px;">
+                        </div>
+                        <div>
+                            <label class="block text-zinc-400 mb-1 font-mono text-xs">MARKETPLACE PURCHASE LINK</label>
+                            <input type="text" id="form-gate-link" placeholder="https://wax.atomichub.io/market..." class="shop-input" style="padding: 10px;">
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 15px;">
                     DEPLOY TO LEDGER
                 </button>
@@ -252,21 +301,26 @@
         let cart = [];
         let itemsLimit = 12; // Platform standard standardization
 
-        // --- MOCK INVENTORY SEED ---
+        // --- MOCK INVENTORY SEED WITH GATED EXAMPLE ---
         window.mockInventory = [
-            { id: 1, title: "Sovereign Deck v1", desc: "Hard rock maple featuring holographic laser-etched design parameters.", price: 2500, type: "image", src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80" },
-            { id: 2, title: "SK8DAO Cyber Wheels", desc: "52mm street urethene embedded with fictional ledger mechanics.", price: 1200, type: "image", src: "https://images.unsplash.com/photo-1531565637446-32307b194362?auto=format&fit=crop&w=500&q=80" },
-            { id: 3, title: "Protocol Grip Tape", desc: "Coarse grit composition printed with pure cyberpunk layout patterns.", price: 500, type: "image", src: "https://images.unsplash.com/photo-1564982009-8839de721a30?auto=format&fit=crop&w=500&q=80" }
+            { 
+                id: 1, 
+                title: "Sovereign Deck v1", 
+                desc: "Hard rock maple featuring holographic laser-etched design parameters. *REQUIRES FOUNDER BADGE TO PURCHASE.*", 
+                price: 2500, 
+                type: "image", 
+                src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80",
+                isGated: true,
+                gateTemplateId: "123456",
+                gateLink: "https://wax.atomichub.io/market?collection_name=skatecoinwax"
+            },
+            { id: 2, title: "SK8DAO Cyber Wheels", desc: "52mm street urethene embedded with fictional ledger mechanics.", price: 1200, type: "image", src: "https://images.unsplash.com/photo-1531565637446-32307b194362?auto=format&fit=crop&w=500&q=80", isGated: false },
+            { id: 3, title: "Protocol Grip Tape", desc: "Coarse grit composition printed with pure cyberpunk layout patterns.", price: 500, type: "image", src: "https://images.unsplash.com/photo-1564982009-8839de721a30?auto=format&fit=crop&w=500&q=80", isGated: false }
         ];
 
         for(let i = 4; i <= 15; i++) {
             window.mockInventory.push({
-                id: i,
-                title: `Physical Asset Module #${i}`,
-                desc: "A decentralized physical product indexed securely into the network store.",
-                price: 750 + (i * 50),
-                type: "image",
-                src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80"
+                id: i, title: `Physical Asset Module #${i}`, desc: "A decentralized physical product indexed securely into the network store.", price: 750 + (i * 50), type: "image", src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80", isGated: false
             });
         }
 
@@ -343,8 +397,16 @@
                     </div>
                 ` : '';
 
+                // Visual Gated Badge
+                const gatedBadgeHtml = item.isGated ? `
+                    <div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; box-shadow: 2px 2px 0px #000; z-index: 10; transform: rotate(-3deg);">
+                        🔒 GATED
+                    </div>
+                ` : '';
+
                 card.innerHTML = `
-                    <div class="img-wrap" style="height: 200px; background: #000; border-bottom: 1px solid rgba(0, 240, 255, 0.2);">
+                    ${gatedBadgeHtml}
+                    <div class="img-wrap" style="height: 200px; background: #000; border-bottom: 1px solid rgba(0, 240, 255, 0.2); position: relative;">
                         ${item.type === 'video' 
                             ? `<video src="${item.src}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>`
                             : `<img src="${item.src}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">`
@@ -384,18 +446,32 @@
             window.renderShopGrid();
         };
 
+        window.toggleGateFields = () => {
+            const isChecked = document.getElementById('form-is-gated').checked;
+            document.getElementById('gate-fields-container').style.display = isChecked ? 'block' : 'none';
+        };
+
         window.handleAddItem = (event) => {
             event.preventDefault();
+            const isGated = document.getElementById("form-is-gated").checked;
+            
             const newItem = {
                 id: window.mockInventory.length > 0 ? Math.max(...window.mockInventory.map(i => i.id)) + 1 : 1,
                 title: document.getElementById("form-title").value,
                 desc: document.getElementById("form-desc").value,
                 price: parseInt(document.getElementById("form-price").value),
                 type: document.getElementById("form-media-type").value,
-                src: document.getElementById("form-media-url").value || "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80"
+                src: document.getElementById("form-media-url").value || "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80",
+                isGated: isGated,
+                gateTemplateId: isGated ? document.getElementById("form-gate-template").value : null,
+                gateLink: isGated ? document.getElementById("form-gate-link").value : null
             };
+            
             window.mockInventory.unshift(newItem);
+            
+            // Reset form
             document.getElementById("add-item-form").reset();
+            document.getElementById('gate-fields-container').style.display = 'none';
             window.toggleModal('add-item-modal', false);
             window.renderShopGrid();
         };
@@ -411,10 +487,33 @@
             }
         };
 
-        // --- PRODUCT INSPECTION & CART ---
-        window.openProductDetail = (id) => {
+        // --- PRODUCT INSPECTION & CART WITH GATE LOGIC ---
+        window.openProductDetail = async (id) => {
             const item = window.mockInventory.find(p => p.id === id);
             if(!item) return;
+
+            // Handle the action button state based on Token Gating
+            let actionButtonsHtml = "";
+            
+            if (item.isGated) {
+                // MOCK CHECK: In production, query the AtomicAssets API here:
+                // `https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&template_id=${item.gateTemplateId}`
+                // For safety in this prototype, we assume they DO NOT hold the NFT to demonstrate the UI.
+                const userHoldsNFT = false; 
+
+                if (currentWallet && userHoldsNFT) {
+                    actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO BAG</button>`;
+                } else {
+                    actionButtonsHtml = `
+                        <div style="display: flex; gap: 10px; width: 100%;">
+                            <button disabled class="wallet-btn" style="flex: 1; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">🔒 NFT REQUIRED</button>
+                            <button onclick="window.open('${item.gateLink}', '_blank')" class="wallet-btn" style="flex: 1; background: var(--accent-pink); color: #000; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">BUY ACCESS NFT</button>
+                        </div>
+                    `;
+                }
+            } else {
+                actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO BAG</button>`;
+            }
 
             const content = document.getElementById("detail-modal-content");
             content.innerHTML = `
@@ -422,18 +521,19 @@
                     <h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyan); text-transform: uppercase;">${item.title}</h3>
                     <button onclick="window.toggleModal('product-detail-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
                 </div>
-                <div class="w-full aspect-video bg-black overflow-hidden mb-4 border border-zinc-800" style="border-color: var(--card-border);">
+                <div class="w-full aspect-video bg-black overflow-hidden mb-4 border border-zinc-800 relative" style="border-color: var(--card-border);">
+                    ${item.isGated ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; z-index: 10;">🔒 TOKEN GATED</div>` : ''}
                     ${item.type === 'video' 
                         ? `<video src="${item.src}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>`
                         : `<img src="${item.src}" style="width: 100%; height: 100%; object-fit: cover;">`
                     }
                 </div>
                 <p class="text-sm text-zinc-400 mb-6 leading-relaxed font-mono">${item.desc}</p>
-                <div class="flex justify-between items-center mt-4">
+                <div class="flex justify-between items-center mt-4 border-t border-zinc-800 pt-4">
                     <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price} SKATE</span>
-                    <button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
-                        ADD TO BAG
-                    </button>
+                    <div style="flex-grow: 1; max-width: 60%; display: flex; justify-content: flex-end;">
+                        ${actionButtonsHtml}
+                    </div>
                 </div>
             `;
             window.toggleModal('product-detail-modal', true);
@@ -551,3 +651,4 @@
     </script>
 </body>
 </html>
+
