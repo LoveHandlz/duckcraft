@@ -131,7 +131,7 @@
                     <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow); letter-spacing: 1px;">⚡ SHOP ADMIN TERMINAL</h2>
                     <p class="text-xs text-zinc-400 mt-1 font-mono">Authenticated as: <span id="admin-wallet-display" class="text-zinc-200"></span></p>
                 </div>
-                <button onclick="window.toggleModal('add-item-modal', true)" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.85rem;">
+                <button onclick="window.openAddModal()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.85rem;">
                     + INJECT NEW INVENTORY
                 </button>
             </div>
@@ -206,7 +206,7 @@
     <div id="add-item-modal" class="modal-overlay">
         <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-                <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem;">INJECT INVENTORY</h3>
+                <h3 id="add-edit-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem;">INJECT INVENTORY</h3>
                 <button onclick="window.toggleModal('add-item-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
             </div>
             
@@ -261,7 +261,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 15px;">
+                <button id="add-edit-submit-btn" type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 15px;">
                     DEPLOY TO LEDGER
                 </button>
             </form>
@@ -293,9 +293,10 @@
         const adminWallets = ["ufuau.wam", "skatcoinwax"];
         let cart = [];
         let itemsLimit = 12; // Platform standard standardization
+        let editingItemId = null; // Tracks if we are editing an existing card
 
         // --- LOCAL STORAGE STATE MANAGEMENT ---
-        const STORAGE_KEY = 'sk8shop_inventory_v2'; // Bumped key to force clear the old 15 items
+        const STORAGE_KEY = 'sk8shop_inventory_v3';
 
         // 1. Define the base seed data with exactly 1 example item
         const seedInventory = [
@@ -389,11 +390,14 @@
                 card.style.borderColor = "var(--card-border)";
                 card.style.background = "var(--bg-panel)";
                 
-                // Admin Remove Logic Implementation
-                const adminRemoveHtml = isAdmin ? `
-                    <div style="padding: 10px; background: rgba(255,0,85,0.1); border-top: 1px solid var(--accent-pink);">
-                        <button onclick="window.removeShopItem(${item.id})" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; font-size: 0.75rem; padding: 8px;">
-                            ✖ REMOVE ITEM
+                // Split Admin Edit & Remove Controls
+                const adminActionsHtml = isAdmin ? `
+                    <div style="display: flex; gap: 5px; padding: 10px; background: rgba(255,0,85,0.1); border-top: 1px solid var(--accent-pink);">
+                        <button onclick="window.openEditModal(${item.id})" class="wallet-btn" style="flex: 1; background: var(--accent-cyan); color: #000; font-size: 0.75rem; padding: 8px;">
+                            ✏️ EDIT
+                        </button>
+                        <button onclick="window.removeShopItem(${item.id})" class="wallet-btn" style="flex: 1; background: var(--accent-pink); color: #000; font-size: 0.75rem; padding: 8px;">
+                            ✖ REMOVE
                         </button>
                     </div>
                 ` : '';
@@ -423,7 +427,7 @@
                             </button>
                         </div>
                     </div>
-                    ${adminRemoveHtml}
+                    ${adminActionsHtml}
                 `;
                 grid.appendChild(card);
             });
@@ -441,13 +445,61 @@
             window.renderShopGrid();
         };
 
+        // --- ADMIN DYNAMIC MODAL ROUTING ---
+        window.openAddModal = () => {
+            editingItemId = null; // Clear edit tracking
+            document.getElementById("add-item-form").reset();
+            
+            // Set UI for Adding
+            document.getElementById("add-edit-modal-title").innerText = "INJECT INVENTORY";
+            document.getElementById("add-edit-submit-btn").innerText = "DEPLOY TO LEDGER";
+            document.getElementById("add-edit-submit-btn").style.background = "var(--accent-cyber-yellow)";
+            document.getElementById('gate-fields-container').style.display = 'none';
+            
+            window.toggleModal('add-item-modal', true);
+        };
+
+        window.openEditModal = (id) => {
+            const item = window.mockInventory.find(i => i.id === id);
+            if(!item) return;
+            
+            editingItemId = id; // Track the active edit target
+            
+            // Populate standard fields
+            document.getElementById("form-title").value = item.title;
+            document.getElementById("form-desc").value = item.desc;
+            document.getElementById("form-price").value = item.price;
+            document.getElementById("form-media-type").value = item.type;
+            document.getElementById("form-media-url").value = item.src;
+            
+            // Populate gate fields
+            const isGatedCheckbox = document.getElementById("form-is-gated");
+            isGatedCheckbox.checked = !!item.isGated;
+            
+            if (item.isGated) {
+                document.getElementById("form-gate-template").value = item.gateTemplateId || "";
+                document.getElementById("form-gate-link").value = item.gateLink || "";
+            } else {
+                document.getElementById("form-gate-template").value = "";
+                document.getElementById("form-gate-link").value = "";
+            }
+            
+            // Adjust toggle visibility
+            window.toggleGateFields();
+
+            // Set UI for Editing
+            document.getElementById("add-edit-modal-title").innerText = "EDIT INVENTORY";
+            document.getElementById("add-edit-submit-btn").innerText = "SAVE CHANGES";
+            document.getElementById("add-edit-submit-btn").style.background = "var(--accent-cyan)";
+            
+            window.toggleModal('add-item-modal', true);
+        };
+
         window.removeShopItem = (id) => {
             if(!confirm("⚠️ PROTOCOL WARNING: Are you sure you want to remove this item from the inventory ledger?")) return;
             window.mockInventory = window.mockInventory.filter(item => item.id !== id);
             
-            // Commit to local storage
             saveInventoryState();
-            
             window.renderShopGrid();
         };
 
@@ -460,8 +512,7 @@
             event.preventDefault();
             const isGated = document.getElementById("form-is-gated").checked;
             
-            const newItem = {
-                id: window.mockInventory.length > 0 ? Math.max(...window.mockInventory.map(i => i.id)) + 1 : 1,
+            const itemData = {
                 title: document.getElementById("form-title").value,
                 desc: document.getElementById("form-desc").value,
                 price: parseInt(document.getElementById("form-price").value),
@@ -472,12 +523,22 @@
                 gateLink: isGated ? document.getElementById("form-gate-link").value : null
             };
             
-            window.mockInventory.unshift(newItem);
+            if (editingItemId !== null) {
+                // We are editing an existing item, find and update it
+                const index = window.mockInventory.findIndex(i => i.id === editingItemId);
+                if (index !== -1) {
+                    // Merge new data over old data, preserving ID
+                    window.mockInventory[index] = { ...window.mockInventory[index], ...itemData };
+                }
+            } else {
+                // We are creating a new item
+                itemData.id = window.mockInventory.length > 0 ? Math.max(...window.mockInventory.map(i => i.id)) + 1 : 1;
+                window.mockInventory.unshift(itemData);
+            }
             
-            // Commit to local storage
             saveInventoryState();
             
-            // Reset form
+            // Clean up UI and close
             document.getElementById("add-item-form").reset();
             document.getElementById('gate-fields-container').style.display = 'none';
             window.toggleModal('add-item-modal', false);
