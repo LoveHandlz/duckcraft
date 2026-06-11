@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SK8Shop - Sovereign Protocol Merch</title>
     
-    <!-- External Fonts from Protocol -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS for rapid structural styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <style>
@@ -111,26 +109,22 @@
 </head>
 <body>
 
-    <!-- PROTOCOL HEADER -->
     <header style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 2px solid var(--accent-cyan); box-shadow: 0 5px 20px rgba(0, 240, 255, 0.1);">
         <div class="flex items-center gap-4">
             <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-cyan); cursor: pointer;">sk8shop<span>.</span></h1>
         </div>
         
         <div class="flex items-center gap-4">
-            <!-- CART BUTTON -->
             <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000; display: flex; gap: 8px;">
                 🛒 CART (<span id="cart-count">0</span>)
             </button>
 
-            <!-- WAX CONNECTION BUTTON -->
             <button id="connect-btn" class="wallet-btn" onclick="window.loginWax()">CONNECT</button>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-10">
         
-        <!-- ADMIN CONTROL PANEL (Hidden by default) -->
         <section id="admin-panel" class="hidden mb-10 p-6 cyber-yellow-frame" style="background: var(--bg-panel); border-radius: 12px;">
             <div class="flex justify-between items-center mb-4">
                 <div>
@@ -143,13 +137,10 @@
             </div>
         </section>
 
-        <!-- MAIN PRODUCTS GRID -->
         <section>
             <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Product cards inject here dynamically -->
-            </div>
+                </div>
 
-            <!-- STANDARDIZED LOAD MORE (Feed strictly expands by 12) -->
             <div id="load-more-container" class="mt-12 flex justify-center hidden">
                 <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">
                     ▼ LOAD MORE COMPONENTS ▼
@@ -158,18 +149,12 @@
         </section>
     </main>
 
-    <!-- ========================================== -->
-    <!--               LAYERED MODALS               -->
-    <!-- ========================================== -->
-
-    <!-- MODAL 1: PRODUCT DETAIL VIEW -->
     <div id="product-detail-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 500px; border-color: var(--accent-cyan);">
             <div id="detail-modal-content" class="text-left"></div>
         </div>
     </div>
 
-    <!-- MODAL 2: SHOPPING CART OVERLAY -->
     <div id="cart-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 450px; border-color: var(--accent-gold);">
             <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
@@ -178,8 +163,7 @@
             </div>
             
             <div id="cart-items-list" class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-2 text-left">
-                <!-- Cart items populate here -->
-            </div>
+                </div>
             
             <div class="border-t border-zinc-800 pt-4 space-y-4 text-left">
                 <div class="flex justify-between items-center font-bold text-lg font-mono">
@@ -193,7 +177,6 @@
         </div>
     </div>
 
-    <!-- MODAL 3: SHIPPING AND CUSTOMER INFO -->
     <div id="shipping-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 450px; border-color: var(--accent-pink);">
             <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 10px; font-size: 1.5rem; letter-spacing: 2px;">SHIPPING PROTOCOL</h2>
@@ -220,7 +203,6 @@
         </div>
     </div>
 
-    <!-- MODAL 4: ADMIN INPUT (DYNAMIC ADD/EDIT MODAL) -->
     <div id="add-item-modal" class="modal-overlay">
         <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
@@ -240,7 +222,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">$SKATE PRICE</label>
-                        <input type="number" id="form-price" required min="1" class="shop-input">
+                        <input type="text" id="form-price" required placeholder="e.g. 2,500.00" class="shop-input">
                     </div>
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">MEDIA FORMAT</label>
@@ -255,7 +237,6 @@
                     <input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." class="shop-input">
                 </div>
 
-                <!-- TOKEN GATING TOGGLE SECTION -->
                 <div style="background: rgba(255,0,85,0.05); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 15px; margin-top: 15px;">
                     <div class="flex justify-between items-center">
                         <div>
@@ -268,7 +249,6 @@
                         </label>
                     </div>
 
-                    <!-- Hidden fields that reveal when toggled -->
                     <div id="gate-fields-container" style="display: none; margin-top: 15px; border-top: 1px dashed var(--accent-pink); padding-top: 15px;">
                         <div class="mb-3">
                             <label class="block text-zinc-400 mb-1 font-mono text-xs">WAX TEMPLATE ID REQUIRED (Raw Component)</label>
@@ -293,9 +273,6 @@
     </div>
 
 
-    <!-- ========================================== -->
-    <!--              APPLICATION CORE              -->
-    <!-- ========================================== -->
     <script type="module">
         import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
         import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
@@ -323,7 +300,7 @@
         let editingItemId = null; 
 
         // --- LOCAL STORAGE STATE MANAGEMENT ---
-        const STORAGE_KEY = 'sk8shop_inventory_v6'; // Bumped key to force clear old caches
+        const STORAGE_KEY = 'sk8shop_inventory_v7'; // Bumped key to force clear old caches
 
         // 1. Define the base seed data with exactly 1 example item
         const seedInventory = [
@@ -449,7 +426,7 @@
                         <h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 10px; line-height: 1.2;">${item.title}</h3>
                         <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-family: 'Inter';">${item.desc}</p>
                         <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-top: 10px;">
-                            <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-gold); white-space: nowrap;">${item.price} SKATE</span>
+                            <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-gold); white-space: nowrap;">${item.price.toLocaleString()} SKATE</span>
                             <button onclick="window.openProductDetail(${item.id})" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; padding: 8px 16px; clip-path: none; flex-shrink: 0;">
                                 BUY
                             </button>
@@ -496,7 +473,7 @@
             // Populate standard fields
             document.getElementById("form-title").value = item.title;
             document.getElementById("form-desc").value = item.desc;
-            document.getElementById("form-price").value = item.price;
+            document.getElementById("form-price").value = item.price; // Keep raw or toString() for edit form
             document.getElementById("form-media-type").value = item.type;
             document.getElementById("form-media-url").value = item.src;
             
@@ -545,7 +522,8 @@
             const itemData = {
                 title: document.getElementById("form-title").value,
                 desc: document.getElementById("form-desc").value,
-                price: parseInt(document.getElementById("form-price").value),
+                // Parse float after removing commas and characters that aren't numbers/decimals
+                price: parseFloat(document.getElementById("form-price").value.replace(/,/g, '').replace(/[^0-9.]/g, '')) || 0,
                 type: document.getElementById("form-media-type").value,
                 src: document.getElementById("form-media-url").value || "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80",
                 isGated: isGated,
@@ -603,16 +581,14 @@
                  * const templateRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&template_id=${item.gateTemplateId}`);
                  * const templateJson = await templateRes.json();
                  * const hasRawTemplate = templateJson.data && templateJson.data.length > 0;
-                 * 
-                 * Step 2: Check if wallet holds a crafted board with the specific deck trait.
+                 * * Step 2: Check if wallet holds a crafted board with the specific deck trait.
                  * const boardRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&collection_name=skatecoinwax&schema_name=skateboards`);
                  * const boardJson = await boardRes.json();
                  * const hasCraftedDeck = boardJson.data && boardJson.data.some(asset => 
-                 *      (asset.data && asset.data.deck === item.gateDeckTrait) || 
-                 *      (asset.template && asset.template.immutable_data && asset.template.immutable_data.deck === item.gateDeckTrait)
+                 * (asset.data && asset.data.deck === item.gateDeckTrait) || 
+                 * (asset.template && asset.template.immutable_data && asset.template.immutable_data.deck === item.gateDeckTrait)
                  * );
-                 * 
-                 * const userHoldsNFT = hasRawTemplate || hasCraftedDeck;
+                 * * const userHoldsNFT = hasRawTemplate || hasCraftedDeck;
                  */
                  
                 // For safety in this prototype, we assume they DO NOT hold the NFT to demonstrate the split UI.
@@ -647,7 +623,7 @@
                 </div>
                 <p class="text-sm text-zinc-400 mb-6 leading-relaxed font-mono">${item.desc}</p>
                 <div class="flex justify-between items-center mt-4 border-t border-zinc-800 pt-4">
-                    <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price} SKATE</span>
+                    <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE</span>
                     <div style="flex-grow: 1; max-width: 60%; display: flex; justify-content: flex-end;">
                         ${actionButtonsHtml}
                     </div>
@@ -679,7 +655,7 @@
             document.getElementById("cart-count").innerText = count;
             
             const total = cart.reduce((t, i) => t + (i.price * i.quantity), 0);
-            document.getElementById("cart-total-price").innerText = total;
+            document.getElementById("cart-total-price").innerText = total.toLocaleString();
 
             const nextBtn = document.getElementById("checkout-next-btn");
             if(count === 0) {
@@ -701,7 +677,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; background: rgba(0,0,0,0.5); padding: 10px; border: 1px dashed #333; border-radius: 6px;">
                         <div>
                             <h4 style="font-family: 'Orbitron'; font-weight: bold; font-size: 0.85rem; color: #fff;">${item.title}</h4>
-                            <p style="font-family: 'Inter'; font-size: 0.75rem; color: var(--accent-gold);">${item.price} SKATE &times; ${item.quantity}</p>
+                            <p style="font-family: 'Inter'; font-size: 0.75rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE &times; ${item.quantity}</p>
                         </div>
                         <button onclick="window.removeFromCart(${item.id})" style="font-family: 'Orbitron'; font-size: 0.65rem; color: var(--accent-pink); background: transparent; border: none; cursor: pointer;">
                             [ REMOVE ]
