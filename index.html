@@ -294,8 +294,11 @@
         let cart = [];
         let itemsLimit = 12; // Platform standard standardization
 
-        // --- MOCK INVENTORY SEED WITH GATED EXAMPLE ---
-        window.mockInventory = [
+        // --- LOCAL STORAGE STATE MANAGEMENT ---
+        const STORAGE_KEY = 'sk8shop_inventory_v2'; // Bumped key to force clear the old 15 items
+
+        // 1. Define the base seed data with exactly 1 example item
+        const seedInventory = [
             { 
                 id: 1, 
                 title: "Sovereign Deck v1", 
@@ -306,15 +309,20 @@
                 isGated: true,
                 gateTemplateId: "123456",
                 gateLink: "https://wax.atomichub.io/market?collection_name=skatecoinwax"
-            },
-            { id: 2, title: "SK8DAO Cyber Wheels", desc: "52mm street urethene embedded with fictional ledger mechanics.", price: 1200, type: "image", src: "https://images.unsplash.com/photo-1531565637446-32307b194362?auto=format&fit=crop&w=500&q=80", isGated: false },
-            { id: 3, title: "Protocol Grip Tape", desc: "Coarse grit composition printed with pure cyberpunk layout patterns.", price: 500, type: "image", src: "https://images.unsplash.com/photo-1564982009-8839de721a30?auto=format&fit=crop&w=500&q=80", isGated: false }
+            }
         ];
 
-        for(let i = 4; i <= 15; i++) {
-            window.mockInventory.push({
-                id: i, title: `Physical Asset Module #${i}`, desc: "A decentralized physical product indexed securely into the network store.", price: 750 + (i * 50), type: "image", src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80", isGated: false
-            });
+        // 2. Hydrate state from browser cache or fallback to seed
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (savedData) {
+            window.mockInventory = JSON.parse(savedData);
+        } else {
+            window.mockInventory = seedInventory;
+        }
+
+        // Helper function to commit changes to local storage
+        function saveInventoryState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(window.mockInventory));
         }
 
         // --- AUTHENTICATION & ADMIN ROLES ---
@@ -436,6 +444,10 @@
         window.removeShopItem = (id) => {
             if(!confirm("⚠️ PROTOCOL WARNING: Are you sure you want to remove this item from the inventory ledger?")) return;
             window.mockInventory = window.mockInventory.filter(item => item.id !== id);
+            
+            // Commit to local storage
+            saveInventoryState();
+            
             window.renderShopGrid();
         };
 
@@ -461,6 +473,9 @@
             };
             
             window.mockInventory.unshift(newItem);
+            
+            // Commit to local storage
+            saveInventoryState();
             
             // Reset form
             document.getElementById("add-item-form").reset();
