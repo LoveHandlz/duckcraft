@@ -120,7 +120,7 @@
         <div class="flex items-center gap-4">
             <!-- CART BUTTON -->
             <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000; display: flex; gap: 8px;">
-                🛒 BAG (<span id="cart-count">0</span>)
+                🛒 CART (<span id="cart-count">0</span>)
             </button>
 
             <!-- WAX CONNECTION BUTTON -->
@@ -319,7 +319,7 @@
         let editingItemId = null; // Tracks if we are editing an existing card
 
         // --- LOCAL STORAGE STATE MANAGEMENT ---
-        const STORAGE_KEY = 'sk8shop_inventory_v4'; // Bumped key to force clear old caches
+        const STORAGE_KEY = 'sk8shop_inventory_v5'; // Bumped key to force clear old caches
 
         // 1. Define the base seed data with exactly 1 example item
         const seedInventory = [
@@ -433,6 +433,7 @@
                 ` : '';
 
                 // Swapped object-fit: cover to object-fit: contain
+                // Added gap, margin, flex-shrink, and white-space overrides for spacing
                 card.innerHTML = `
                     ${gatedBadgeHtml}
                     <div class="img-wrap" style="height: 200px; background: #000; border-bottom: 1px solid rgba(0, 240, 255, 0.2); position: relative;">
@@ -444,10 +445,10 @@
                     <div class="card-body" style="padding: 20px; text-align: left;">
                         <h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 10px; line-height: 1.2;">${item.title}</h3>
                         <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-family: 'Inter';">${item.desc}</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-gold);">${item.price} SKATE</span>
-                            <button onclick="window.openProductDetail(${item.id})" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; padding: 8px 12px; clip-path: none;">
-                                INSPECT
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-top: 10px;">
+                            <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-gold); white-space: nowrap;">${item.price} SKATE</span>
+                            <button onclick="window.openProductDetail(${item.id})" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; padding: 8px 16px; clip-path: none; flex-shrink: 0;">
+                                BUY
                             </button>
                         </div>
                     </div>
@@ -595,7 +596,7 @@
                 const userHoldsNFT = false; 
 
                 if (currentWallet && userHoldsNFT) {
-                    actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO BAG</button>`;
+                    actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`;
                 } else {
                     actionButtonsHtml = `
                         <div style="display: flex; gap: 10px; width: 100%;">
@@ -605,7 +606,7 @@
                     `;
                 }
             } else {
-                actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO BAG</button>`;
+                actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`;
             }
 
             // Swapped object-fit: cover to object-fit: contain
