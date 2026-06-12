@@ -138,16 +138,11 @@
         </section>
 
         <section>
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
-                <button id="cat-tab-ALL" onclick="window.setShopCategory('ALL')" class="wallet-btn" style="background: var(--accent-cyan); color: #000; padding: 8px 15px; font-size: 0.8rem;">ALL</button>
-                <button id="cat-tab-DECKS" onclick="window.setShopCategory('DECKS')" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">DECKS</button>
-                <button id="cat-tab-APPAREL" onclick="window.setShopCategory('APPAREL')" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">APPAREL</button>
-                <button id="cat-tab-HARDWARE" onclick="window.setShopCategory('HARDWARE')" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">HARDWARE</button>
-                <button id="cat-tab-ACCESSORIES" onclick="window.setShopCategory('ACCESSORIES')" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">ACCESSORIES</button>
+            <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
             </div>
 
             <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                </div>
+            </div>
 
             <div id="load-more-container" class="mt-12 flex justify-center hidden">
                 <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">
@@ -171,7 +166,7 @@
             </div>
             
             <div id="cart-items-list" class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-2 text-left">
-                </div>
+            </div>
             
             <div class="border-t border-zinc-800 pt-4 space-y-4 text-left">
                 <div class="flex justify-between items-center font-bold text-lg font-mono">
@@ -211,6 +206,24 @@
         </div>
     </div>
 
+    <div id="add-category-modal" class="modal-overlay" style="z-index: 2020;">
+        <div class="modal-content cyber-yellow-frame" style="max-width: 400px; background: #050a1a;">
+            <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+                <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.2rem;">ADD CATEGORY</h3>
+                <button onclick="window.toggleModal('add-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
+            </div>
+            <form id="add-category-form" onsubmit="window.handleAddCategory(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-zinc-400 mb-1 font-mono text-xs">NEW CATEGORY NAME</label>
+                    <input type="text" id="new-category-name" required placeholder="e.g. COLLECTIBLES" class="shop-input" style="text-transform: uppercase;">
+                </div>
+                <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 5px;">
+                    CREATE CATEGORY
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div id="add-item-modal" class="modal-overlay">
         <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
@@ -235,11 +248,7 @@
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">CATEGORY</label>
                         <select id="form-category" class="shop-input py-3" style="padding-top: 15px; padding-bottom: 15px;">
-                            <option value="DECKS">DECKS</option>
-                            <option value="APPAREL">APPAREL</option>
-                            <option value="HARDWARE">HARDWARE</option>
-                            <option value="ACCESSORIES">ACCESSORIES</option>
-                        </select>
+                            </select>
                     </div>
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">MEDIA FORMAT</label>
@@ -315,12 +324,22 @@
         let cart = [];
         let itemsLimit = 12; 
         let editingItemId = null; 
-        let currentShopCategory = 'ALL'; // Start by showing everything
+        let currentShopCategory = 'ALL'; 
 
         // --- LOCAL STORAGE STATE MANAGEMENT ---
         const STORAGE_KEY = 'sk8shop_inventory_master'; // Permanently locked key
+        const CATEGORY_STORAGE_KEY = 'sk8shop_categories_master'; // Categories locked key
 
-        // 1. Define the base seed data
+        // --- CATEGORIES STATE ---
+        const defaultCategories = ['DECKS', 'APPAREL', 'HARDWARE', 'ACCESSORIES'];
+        const savedCategories = localStorage.getItem(CATEGORY_STORAGE_KEY);
+        window.shopCategories = savedCategories ? JSON.parse(savedCategories) : defaultCategories;
+
+        function saveCategoriesState() {
+            localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(window.shopCategories));
+        }
+
+        // --- INVENTORY STATE ---
         const seedInventory = [
             { 
                 id: 1, 
@@ -337,19 +356,17 @@
             }
         ];
 
-        // 2. Hydrate state from browser cache or fallback to seed
         const savedData = localStorage.getItem(STORAGE_KEY);
         let loadedData = savedData ? JSON.parse(savedData) : seedInventory;
 
-        // HYDRATION SCRIPT: Automatically updates old data to the new schema without erasing it
+        // HYDRATION SCRIPT
         window.mockInventory = loadedData.map(item => {
             if (!item.category) {
-                item.category = "DECKS"; // Default fallback for old items
+                item.category = "DECKS"; 
             }
             return item;
         });
 
-        // Helper function to commit changes to local storage
         function saveInventoryState() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(window.mockInventory));
         }
@@ -357,7 +374,6 @@
         // --- AUTHENTICATION & ADMIN ROLES ---
         window.loginWax = async () => {
             if (currentSession) {
-                // Handle Logout
                 await sessionKit.logout();
                 currentSession = null;
                 currentWallet = null;
@@ -367,7 +383,6 @@
                 return;
             }
 
-            // Handle Login
             try {
                 const { session } = await sessionKit.login();
                 currentSession = session;
@@ -380,7 +395,6 @@
             }
         };
 
-        // Auto Restore Session
         sessionKit.restore().then(s => { 
             if (s) { 
                 currentSession = s; 
@@ -402,35 +416,69 @@
             } else {
                 panel.classList.add("hidden");
             }
+
+            window.renderCategoryTabs();
         }
 
-        // --- GRID RENDERING & INVENTORY MANAGEMENT ---
+        // --- CATEGORY UI DYNAMICS ---
+        window.renderCategoryTabs = () => {
+            const container = document.getElementById("category-tabs-container");
+            if (!container) return;
+            container.innerHTML = "";
+
+            const isAdmin = currentWallet && adminWallets.includes(currentWallet);
+
+            // ALL tab
+            container.innerHTML += `<button onclick="window.setShopCategory('ALL')" class="wallet-btn" style="background: ${currentShopCategory === 'ALL' ? 'var(--accent-cyan)' : 'transparent'}; color: ${currentShopCategory === 'ALL' ? '#000' : 'var(--accent-cyan)'}; border: 1px solid var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">ALL</button>`;
+
+            // Dynamic Tabs
+            window.shopCategories.forEach(cat => {
+                const isActive = currentShopCategory === cat;
+                container.innerHTML += `<button onclick="window.setShopCategory('${cat}')" class="wallet-btn" style="background: ${isActive ? 'var(--accent-cyan)' : 'transparent'}; border: 1px solid var(--accent-cyan); color: ${isActive ? '#000' : 'var(--accent-cyan)'}; padding: 8px 15px; font-size: 0.8rem;">${cat}</button>`;
+            });
+
+            // Admin Add Tab
+            if (isAdmin) {
+                container.innerHTML += `<button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); padding: 8px 15px; font-size: 0.8rem;">+ CATEGORY</button>`;
+            }
+        };
+
+        window.updateCategoryDropdown = () => {
+            const select = document.getElementById("form-category");
+            if (select) {
+                select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            }
+        };
+
         window.setShopCategory = (cat) => {
             currentShopCategory = cat;
-            itemsLimit = 12; // Reset pagination limit on category switch
-            
-            // Update tab styling
-            ['ALL', 'DECKS', 'APPAREL', 'HARDWARE', 'ACCESSORIES'].forEach(c => {
-                const btn = document.getElementById(`cat-tab-${c}`);
-                if (btn) {
-                    if (c === cat) {
-                        btn.style.background = 'var(--accent-cyan)';
-                        btn.style.color = '#000';
-                    } else {
-                        btn.style.background = 'transparent';
-                        btn.style.color = 'var(--accent-cyan)';
-                    }
-                }
-            });
-            
+            itemsLimit = 12; 
+            window.renderCategoryTabs();
             window.renderShopGrid();
         };
 
+        window.openAddCategoryModal = () => {
+            document.getElementById("add-category-form").reset();
+            window.toggleModal("add-category-modal", true);
+        };
+
+        window.handleAddCategory = (event) => {
+            event.preventDefault();
+            const newCat = document.getElementById("new-category-name").value.trim().toUpperCase();
+            if (newCat && !window.shopCategories.includes(newCat)) {
+                window.shopCategories.push(newCat);
+                saveCategoriesState();
+                window.renderCategoryTabs();
+                window.updateCategoryDropdown();
+            }
+            window.toggleModal("add-category-modal", false);
+        };
+
+        // --- GRID RENDERING & INVENTORY MANAGEMENT ---
         window.renderShopGrid = () => {
             const grid = document.getElementById("products-grid");
             grid.innerHTML = "";
             
-            // Filter array based on active category tab
             const filteredInventory = currentShopCategory === 'ALL' 
                 ? window.mockInventory 
                 : window.mockInventory.filter(i => i.category === currentShopCategory);
@@ -448,7 +496,6 @@
                 card.style.borderColor = "var(--card-border)";
                 card.style.background = "var(--bg-panel)";
                 
-                // Split Admin Edit & Remove Controls
                 const adminActionsHtml = isAdmin ? `
                     <div style="display: flex; gap: 5px; padding: 10px; background: rgba(255,0,85,0.1); border-top: 1px solid var(--accent-pink);">
                         <button onclick="window.openEditModal(${item.id})" class="wallet-btn" style="flex: 1; background: var(--accent-cyan); color: #000; font-size: 0.75rem; padding: 8px;">
@@ -460,7 +507,6 @@
                     </div>
                 ` : '';
 
-                // Visual Gated Badge
                 const gatedBadgeHtml = item.isGated ? `
                     <div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; box-shadow: 2px 2px 0px #000; z-index: 10; transform: rotate(-3deg);">
                         🔒 GATED
@@ -505,10 +551,9 @@
 
         // --- ADMIN DYNAMIC MODAL ROUTING ---
         window.openAddModal = () => {
-            editingItemId = null; // Clear edit tracking
+            editingItemId = null; 
             document.getElementById("add-item-form").reset();
             
-            // Set UI for Adding
             document.getElementById("add-edit-modal-title").innerText = "INJECT INVENTORY";
             document.getElementById("add-edit-submit-btn").innerText = "DEPLOY TO LEDGER";
             document.getElementById("add-edit-submit-btn").style.background = "var(--accent-cyber-yellow)";
@@ -521,17 +566,15 @@
             const item = window.mockInventory.find(i => i.id === id);
             if(!item) return;
             
-            editingItemId = id; // Track the active edit target
+            editingItemId = id; 
             
-            // Populate standard fields
             document.getElementById("form-title").value = item.title;
             document.getElementById("form-desc").value = item.desc;
-            document.getElementById("form-price").value = item.price; // Keep raw or toString() for edit form
+            document.getElementById("form-price").value = item.price; 
             document.getElementById("form-category").value = item.category || "DECKS";
             document.getElementById("form-media-type").value = item.type;
             document.getElementById("form-media-url").value = item.src;
             
-            // Populate gate fields
             const isGatedCheckbox = document.getElementById("form-is-gated");
             isGatedCheckbox.checked = !!item.isGated;
             
@@ -545,10 +588,8 @@
                 document.getElementById("form-gate-link").value = "";
             }
             
-            // Adjust toggle visibility
             window.toggleGateFields();
 
-            // Set UI for Editing
             document.getElementById("add-edit-modal-title").innerText = "EDIT INVENTORY";
             document.getElementById("add-edit-submit-btn").innerText = "SAVE CHANGES";
             document.getElementById("add-edit-submit-btn").style.background = "var(--accent-cyan)";
@@ -576,7 +617,6 @@
             const itemData = {
                 title: document.getElementById("form-title").value,
                 desc: document.getElementById("form-desc").value,
-                // Parse float after removing commas and characters that aren't numbers/decimals
                 price: parseFloat(document.getElementById("form-price").value.replace(/,/g, '').replace(/[^0-9.]/g, '')) || 0,
                 category: document.getElementById("form-category").value,
                 type: document.getElementById("form-media-type").value,
@@ -588,21 +628,17 @@
             };
             
             if (editingItemId !== null) {
-                // We are editing an existing item, find and update it
                 const index = window.mockInventory.findIndex(i => i.id === editingItemId);
                 if (index !== -1) {
-                    // Merge new data over old data, preserving ID
                     window.mockInventory[index] = { ...window.mockInventory[index], ...itemData };
                 }
             } else {
-                // We are creating a new item
                 itemData.id = window.mockInventory.length > 0 ? Math.max(...window.mockInventory.map(i => i.id)) + 1 : 1;
                 window.mockInventory.unshift(itemData);
             }
             
             saveInventoryState();
             
-            // Clean up UI and close
             document.getElementById("add-item-form").reset();
             document.getElementById('gate-fields-container').style.display = 'none';
             window.toggleModal('add-item-modal', false);
@@ -620,33 +656,14 @@
             }
         };
 
-        // --- PRODUCT INSPECTION & CART WITH DUAL-GATE LOGIC ---
+        // --- PRODUCT INSPECTION & CART ---
         window.openProductDetail = async (id) => {
             const item = window.mockInventory.find(p => p.id === id);
             if(!item) return;
 
-            // Handle the action button state based on Dual Token Gating
             let actionButtonsHtml = "";
             
             if (item.isGated) {
-                /*
-                 * MOCK DUAL-GATE CHECK: In production, query the AtomicAssets API here.
-                 *
-                 * Step 1: Check if wallet holds the raw template.
-                 * const templateRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&template_id=${item.gateTemplateId}`);
-                 * const templateJson = await templateRes.json();
-                 * const hasRawTemplate = templateJson.data && templateJson.data.length > 0;
-                 * * Step 2: Check if wallet holds a crafted board with the specific deck trait.
-                 * const boardRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&collection_name=skatecoinwax&schema_name=skateboards`);
-                 * const boardJson = await boardRes.json();
-                 * const hasCraftedDeck = boardJson.data && boardJson.data.some(asset => 
-                 * (asset.data && asset.data.deck === item.gateDeckTrait) || 
-                 * (asset.template && asset.template.immutable_data && asset.template.immutable_data.deck === item.gateDeckTrait)
-                 * );
-                 * * const userHoldsNFT = hasRawTemplate || hasCraftedDeck;
-                 */
-                 
-                // For safety in this prototype, we assume they DO NOT hold the NFT to demonstrate the split UI.
                 const userHoldsNFT = false; 
 
                 if (currentWallet && userHoldsNFT) {
@@ -763,20 +780,18 @@
 
             const totalCost = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
             const itemSummaryString = cart.map(i => `${i.title}(x${i.quantity})`).join(', ');
-            // Generate exact deterministic link for Google forms / sheet matching
             const deterministicMemo = `SK8SHOP_ORDER:${itemSummaryString}`.substring(0, 256); 
             const formattedAmt = totalCost.toFixed(4) + " SKATE";
             const sender = currentSession.actor.toString();
 
             try {
-                // Exact WAX routing using provided protocol donation logic
                 const actions = [{ 
                     account: 'skatecoinwax', 
                     name: 'transfer', 
                     authorization: [currentSession.permissionLevel], 
                     data: { 
                         from: sender, 
-                        to: 'skatcoinwax', // Direct to treasury
+                        to: 'skatcoinwax', 
                         quantity: formattedAmt, 
                         memo: deterministicMemo 
                     } 
@@ -795,6 +810,11 @@
                 alert("Transaction Cancelled or Failed. Please try again."); 
             }
         };
+
+        // --- INITIAL RENDER ---
+        window.renderCategoryTabs();
+        window.updateCategoryDropdown();
+        window.renderShopGrid();
 
     </script>
 </body>
