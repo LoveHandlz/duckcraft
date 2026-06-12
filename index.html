@@ -143,6 +143,7 @@
         </section>
 
         <section>
+            <!-- CATEGORY TABS (Dynamically Populated) -->
             <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
             </div>
 
@@ -211,6 +212,7 @@
         </div>
     </div>
 
+    <!-- MODAL: ADD CATEGORY -->
     <div id="add-category-modal" class="modal-overlay" style="z-index: 2020;">
         <div class="modal-content cyber-yellow-frame" style="max-width: 400px; background: #050a1a;">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
@@ -229,6 +231,7 @@
         </div>
     </div>
 
+    <!-- MODAL: REMOVE CATEGORY -->
     <div id="remove-category-modal" class="modal-overlay" style="z-index: 2020;">
         <div class="modal-content" style="max-width: 400px; background: #050a1a; border-color: var(--accent-pink);">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
@@ -239,7 +242,8 @@
                 <div>
                     <label class="block text-zinc-400 mb-1 font-mono text-xs">SELECT CATEGORY TO DELETE</label>
                     <select id="remove-category-select" required class="shop-input py-3">
-                        </select>
+                        <!-- Dynamically Populated -->
+                    </select>
                 </div>
                 <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; margin-top: 5px;">
                     DELETE CATEGORY
@@ -248,6 +252,7 @@
         </div>
     </div>
 
+    <!-- MODAL: ADD/EDIT ITEM -->
     <div id="add-item-modal" class="modal-overlay">
         <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
@@ -272,7 +277,8 @@
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">CATEGORY</label>
                         <select id="form-category" class="shop-input py-3" style="padding-top: 15px; padding-bottom: 15px;">
-                            </select>
+                            <!-- Dynamically Populated -->
+                        </select>
                     </div>
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">MEDIA FORMAT</label>
@@ -351,13 +357,12 @@
         let currentShopCategory = 'ALL'; 
 
         // --- GLOBAL STATE ROUTING (IPFS vs LOCAL) ---
-        // 1. Put your Pinata CID here when ready. Leave blank to default to local browser storage.
         const GLOBAL_IPFS_CID = "bafkreifmyx4slnwvkrrm6f7v4vwgcm5s2c6xcsgu3aohf5xuuclggzmrgy"; 
         const STORAGE_KEY = 'sk8shop_inventory_master'; 
-        const CATEGORY_STORAGE_KEY = 'sk8shop_categories_master'; 
 
-        // Default Seeds
-        const defaultCategories = ['DECKS', 'APPAREL', 'HARDWARE', 'ACCESSORIES'];
+        // Default categories list is now dynamically built. 
+        window.shopCategories = ['DECKS']; 
+
         const seedInventory = [
             { 
                 id: 1, 
@@ -374,7 +379,6 @@
             }
         ];
 
-        // Hydration Logic Function
         const hydrateInventory = (dataArray) => {
             return dataArray.map(item => {
                 if (!item.category) item.category = "DECKS"; 
@@ -382,11 +386,17 @@
             });
         };
 
+        // --- OPTION A: DYNAMIC CATEGORY EXTRACTION ---
+        window.extractCategories = () => {
+            const uniqueCats = new Set(['DECKS']); // Guarantee 'DECKS' always exists as base
+            window.mockInventory.forEach(item => {
+                if (item.category) uniqueCats.add(item.category.toUpperCase().trim());
+            });
+            window.shopCategories = Array.from(uniqueCats);
+        };
+
         // --- LOAD ENGINE ---
         window.initShopData = async () => {
-            const savedCatData = localStorage.getItem(CATEGORY_STORAGE_KEY);
-            window.shopCategories = savedCatData ? JSON.parse(savedCatData) : defaultCategories;
-
             let finalInventoryData = seedInventory;
             let loadedFromIPFS = false;
 
@@ -412,7 +422,9 @@
 
             window.mockInventory = hydrateInventory(finalInventoryData);
             
-            // Initial Render Triggers
+            // Generate tabs strictly from the loaded items
+            window.extractCategories();
+            
             window.renderCategoryTabs();
             window.updateCategoryDropdown();
             window.renderShopGrid();
@@ -420,10 +432,6 @@
 
         // Initialize immediately
         window.initShopData();
-
-        function saveCategoriesState() {
-            localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(window.shopCategories));
-        }
 
         function saveInventoryState() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(window.mockInventory));
@@ -535,12 +543,18 @@
             event.preventDefault();
             const newCat = document.getElementById("new-category-name").value.trim().toUpperCase();
             if (newCat && !window.shopCategories.includes(newCat)) {
+                // Temporarily inject category into the session so admin can assign an item to it.
+                // It will naturally disappear if the admin refreshes without assigning an item.
                 window.shopCategories.push(newCat);
-                saveCategoriesState();
                 window.renderCategoryTabs();
                 window.updateCategoryDropdown();
+                
+                // Convenience: auto-select the new category in the form
+                const select = document.getElementById("form-category");
+                if(select) select.value = newCat;
             }
             window.toggleModal("add-category-modal", false);
+            window.openAddModal(); // Streamline the process
         };
 
         window.openRemoveCategoryModal = () => {
@@ -556,10 +570,6 @@
             if (catToRemove) {
                 if(!confirm(`⚠️ WARNING: Are you sure you want to delete the "${catToRemove}" category? Any existing items in this category will be safely reassigned to "DECKS".`)) return;
 
-                // Remove from state
-                window.shopCategories = window.shopCategories.filter(c => c !== catToRemove);
-                saveCategoriesState();
-                
                 // Safe reassignment of orphaned products
                 let inventoryChanged = false;
                 window.mockInventory.forEach(item => {
@@ -571,10 +581,12 @@
                 
                 if (inventoryChanged) saveInventoryState();
 
+                // Re-scan inventory. The category will naturally vanish if no items hold it.
+                window.extractCategories();
+
                 // Reset view if we were currently looking at the deleted category
                 if (currentShopCategory === catToRemove) currentShopCategory = 'ALL';
 
-                // Rerender UI
                 window.renderCategoryTabs();
                 window.updateCategoryDropdown();
                 window.renderShopGrid();
@@ -711,6 +723,16 @@
             window.mockInventory = window.mockInventory.filter(item => item.id !== id);
             
             saveInventoryState();
+            
+            // Re-scan categories in case a category was orphaned
+            window.extractCategories();
+            
+            if (currentShopCategory !== 'ALL' && !window.shopCategories.includes(currentShopCategory)) {
+                currentShopCategory = 'ALL';
+            }
+            
+            window.renderCategoryTabs();
+            window.updateCategoryDropdown();
             window.renderShopGrid();
         };
 
@@ -748,9 +770,15 @@
             
             saveInventoryState();
             
+            // Guarantee the active categories array locks in the change
+            window.extractCategories();
+            
             document.getElementById("add-item-form").reset();
             document.getElementById('gate-fields-container').style.display = 'none';
             window.toggleModal('add-item-modal', false);
+            
+            window.renderCategoryTabs();
+            window.updateCategoryDropdown();
             window.renderShopGrid();
         };
 
@@ -780,7 +808,9 @@
                     try {
                         // Check 1: Does the wallet hold the raw component template?
                         if (item.gateTemplateId) {
+                            // THE FIX: Clean the hashtag or empty spaces out of the string before querying the API
                             const cleanTemplateId = String(item.gateTemplateId).replace(/#/g, '').trim();
+                            
                             const templateRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&template_id=${cleanTemplateId}&limit=1`);
                             const templateJson = await templateRes.json();
                             if (templateJson.data && templateJson.data.length > 0) {
