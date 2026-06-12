@@ -780,7 +780,8 @@
                     try {
                         // Check 1: Does the wallet hold the raw component template?
                         if (item.gateTemplateId) {
-                            const templateRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&template_id=${item.gateTemplateId}&limit=1`);
+                            const cleanTemplateId = String(item.gateTemplateId).replace(/#/g, '').trim();
+                            const templateRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&template_id=${cleanTemplateId}&limit=1`);
                             const templateJson = await templateRes.json();
                             if (templateJson.data && templateJson.data.length > 0) {
                                 userHoldsNFT = true;
