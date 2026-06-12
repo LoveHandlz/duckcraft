@@ -890,13 +890,11 @@
     <div id="Industry-products-dashboard" style="max-width: 1100px; margin: 0 auto 40px auto;">
         <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; font-size: 1.8rem; text-align: center; letter-spacing: 2px; margin-bottom: 25px; border-bottom: 1px dashed var(--accent-gold); padding-bottom: 15px;">PHYSICAL PRODUCTS DIRECTORY</h3>
         <div class="brand-grid">
-            
             <div class="brand-card" onclick="openBrandModal('WAX ARTIST COLLABS')">
     <div class="brand-name">WAX ARTIST COLLABS</div>
     <div class="brand-status">Physical Products</div>
     <div style="font-size: 0.6rem; color: #555; margin-top: 10px; font-family: 'Orbitron';">CLICK TO INSPECT</div>
 </div>
-            
             <div class="brand-card" onclick="openBrandModal('DGK')">
                 <div class="brand-name">DGK</div>
                 <div class="brand-status">Physical Products</div>
@@ -1086,7 +1084,7 @@
     </div>
 </footer>
     
-    <!-- ========================================== -->
+   <!-- ========================================== -->
 <!-- 🛑 START OF WAX COLLAB WEB3 SHOP 🛑        -->
 <!-- ========================================== -->
 <div id="master-shop-modal" class="modal-overlay" style="z-index: 1999; overflow-y: auto; padding-top: 20px;">
@@ -1247,7 +1245,7 @@
 </div>
 <!-- ========================================== -->
 <!-- 🛑 END OF WAX COLLAB WEB3 SHOP 🛑          -->
-<!-- ========================================== -->
+<!-- ========================================== --> 
     
 <script type="module">
     import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
@@ -2631,7 +2629,7 @@ if (allActions.length > 0) {
         }).join('');
     };
     
-   // ==========================================
+ // ==========================================
     // 🟢 WAX COLLAB WEB3 SHOP ENGINE 🟢
     // ==========================================
     const GLOBAL_IPFS_CID = "bafkreifmyx4slnwvkrrm6f7v4vwgcm5s2c6xcsgu3aohf5xuuclggzmrgy"; 
@@ -2849,7 +2847,7 @@ if (allActions.length > 0) {
             alert(`🔥 ORDER SECURED 🔥\nYour transaction has been broadcast to the ledger.\nOrder String: ${deterministicMemo}`);
             cart = []; updateCartMetrics(); window.toggleModal('shipping-modal', false);
         } catch(e) { console.error(e); alert("Transaction Cancelled or Failed. Please try again."); }
-    }; 
+    };   
     
 </script>
 </body>
