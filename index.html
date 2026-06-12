@@ -187,22 +187,23 @@
     </div>
 
     <div id="shipping-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 450px; border-color: var(--accent-pink);">
+        <div class="modal-content" style="max-width: 500px; border-color: var(--accent-pink);">
             <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 10px; font-size: 1.5rem; letter-spacing: 2px;">SHIPPING PROTOCOL</h2>
-            <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px; text-align: left;">Secure your logistics off-chain before signing the transaction.</p>
+            <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 20px; text-align: left;">Secure your logistics off-chain before signing the transaction.</p>
             
             <div class="space-y-4 text-sm text-zinc-300 mb-6 text-left">
                 <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px;">
                     <ol class="list-decimal list-inside space-y-2 text-xs text-zinc-400 font-mono">
-                        <li>Open the secure form below.</li>
-                        <li>Log your shipping coordinates.</li>
-                        <li>Return to this interface and execute the $SKATE payment.</li>
+                        <li>Fill out the secure manifest below.</li>
+                        <li>Submit your coordinates.</li>
+                        <li>Click "PAY WITH SKATE" to execute the on-chain transfer.</li>
                     </ol>
                 </div>
 
-                <a href="https://docs.google.com/forms/" target="_blank" class="wallet-btn block text-center" style="background: transparent; border: 1px solid var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); padding: 12px; width: 100%;">
-                    📝 OPEN SECURE SHIPPING FORM
-                </a>
+                <!-- EMBEDDED GOOGLE FORM -->
+                <div style="width: 100%; height: 400px; overflow: hidden; border-radius: 8px; border: 1px solid var(--accent-cyber-yellow); background: #fff;">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeVslg2A5LvTrT_NYUTpN5DBRIrOfCkprRyHDKQagmg60XTsA/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+                </div>
             </div>
 
             <div class="border-t border-zinc-800 pt-4 flex gap-3">
@@ -359,6 +360,7 @@
         // --- GLOBAL STATE ROUTING (IPFS vs LOCAL) ---
         const GLOBAL_IPFS_CID = "bafkreifmyx4slnwvkrrm6f7v4vwgcm5s2c6xcsgu3aohf5xuuclggzmrgy"; 
         const STORAGE_KEY = 'sk8shop_inventory_master'; 
+        const CATEGORY_STORAGE_KEY = 'sk8shop_categories_master'; 
 
         // Default categories list is now dynamically built. 
         window.shopCategories = ['DECKS']; 
