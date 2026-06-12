@@ -773,7 +773,35 @@
             let actionButtonsHtml = "";
             
             if (item.isGated) {
-                const userHoldsNFT = false; 
+                let userHoldsNFT = false; 
+
+                // LIVE DUAL-GATE API CHECK
+                if (currentWallet) {
+                    try {
+                        // Check 1: Does the wallet hold the raw component template?
+                        if (item.gateTemplateId) {
+                            const templateRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&template_id=${item.gateTemplateId}&limit=1`);
+                            const templateJson = await templateRes.json();
+                            if (templateJson.data && templateJson.data.length > 0) {
+                                userHoldsNFT = true;
+                            }
+                        }
+
+                        // Check 2: If no raw template, does the wallet hold a crafted board with the correct deck trait?
+                        if (!userHoldsNFT && item.gateDeckTrait) {
+                            const boardRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${currentWallet}&collection_name=skatecoinwax&schema_name=skateboards`);
+                            const boardJson = await boardRes.json();
+                            if (boardJson.data) {
+                                userHoldsNFT = boardJson.data.some(asset => 
+                                    (asset.data && asset.data.deck === item.gateDeckTrait) || 
+                                    (asset.template && asset.template.immutable_data && asset.template.immutable_data.deck === item.gateDeckTrait)
+                                );
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Token Gate API Check Failed:", e);
+                    }
+                }
 
                 if (currentWallet && userHoldsNFT) {
                     actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`;
