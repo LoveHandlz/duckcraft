@@ -138,6 +138,7 @@
         </section>
 
         <section>
+            <!-- CATEGORY TABS (Dynamically Populated) -->
             <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
             </div>
 
@@ -206,6 +207,7 @@
         </div>
     </div>
 
+    <!-- MODAL: ADD CATEGORY -->
     <div id="add-category-modal" class="modal-overlay" style="z-index: 2020;">
         <div class="modal-content cyber-yellow-frame" style="max-width: 400px; background: #050a1a;">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
@@ -224,6 +226,28 @@
         </div>
     </div>
 
+    <!-- MODAL: REMOVE CATEGORY -->
+    <div id="remove-category-modal" class="modal-overlay" style="z-index: 2020;">
+        <div class="modal-content" style="max-width: 400px; background: #050a1a; border-color: var(--accent-pink);">
+            <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+                <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); font-size: 1.2rem;">REMOVE CATEGORY</h3>
+                <button onclick="window.toggleModal('remove-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
+            </div>
+            <form id="remove-category-form" onsubmit="window.handleRemoveCategory(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-zinc-400 mb-1 font-mono text-xs">SELECT CATEGORY TO DELETE</label>
+                    <select id="remove-category-select" required class="shop-input py-3">
+                        <!-- Dynamically Populated -->
+                    </select>
+                </div>
+                <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; margin-top: 5px;">
+                    DELETE CATEGORY
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD/EDIT ITEM -->
     <div id="add-item-modal" class="modal-overlay">
         <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
             <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
@@ -248,7 +272,8 @@
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">CATEGORY</label>
                         <select id="form-category" class="shop-input py-3" style="padding-top: 15px; padding-bottom: 15px;">
-                            </select>
+                            <!-- Dynamically Populated -->
+                        </select>
                     </div>
                     <div>
                         <label class="block text-zinc-400 mb-1 font-mono text-xs">MEDIA FORMAT</label>
@@ -327,8 +352,8 @@
         let currentShopCategory = 'ALL'; 
 
         // --- LOCAL STORAGE STATE MANAGEMENT ---
-        const STORAGE_KEY = 'sk8shop_inventory_master'; // Permanently locked key
-        const CATEGORY_STORAGE_KEY = 'sk8shop_categories_master'; // Categories locked key
+        const STORAGE_KEY = 'sk8shop_inventory_master'; 
+        const CATEGORY_STORAGE_KEY = 'sk8shop_categories_master'; 
 
         // --- CATEGORIES STATE ---
         const defaultCategories = ['DECKS', 'APPAREL', 'HARDWARE', 'ACCESSORIES'];
@@ -437,9 +462,10 @@
                 container.innerHTML += `<button onclick="window.setShopCategory('${cat}')" class="wallet-btn" style="background: ${isActive ? 'var(--accent-cyan)' : 'transparent'}; border: 1px solid var(--accent-cyan); color: ${isActive ? '#000' : 'var(--accent-cyan)'}; padding: 8px 15px; font-size: 0.8rem;">${cat}</button>`;
             });
 
-            // Admin Add Tab
+            // Admin Add/Remove Tabs
             if (isAdmin) {
-                container.innerHTML += `<button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); padding: 8px 15px; font-size: 0.8rem;">+ CATEGORY</button>`;
+                container.innerHTML += `<button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); padding: 8px 15px; font-size: 0.8rem;">+ CATEGORY</button>`;
+                container.innerHTML += `<button onclick="window.openRemoveCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); padding: 8px 15px; font-size: 0.8rem;">- CATEGORY</button>`;
             }
         };
 
@@ -472,6 +498,46 @@
                 window.updateCategoryDropdown();
             }
             window.toggleModal("add-category-modal", false);
+        };
+
+        window.openRemoveCategoryModal = () => {
+            const select = document.getElementById("remove-category-select");
+            select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            window.toggleModal("remove-category-modal", true);
+        };
+
+        window.handleRemoveCategory = (event) => {
+            event.preventDefault();
+            const catToRemove = document.getElementById("remove-category-select").value;
+            
+            if (catToRemove) {
+                if(!confirm(`⚠️ WARNING: Are you sure you want to delete the "${catToRemove}" category? Any existing items in this category will be safely reassigned to "DECKS".`)) return;
+
+                // Remove from state
+                window.shopCategories = window.shopCategories.filter(c => c !== catToRemove);
+                saveCategoriesState();
+                
+                // Safe reassignment of orphaned products
+                let inventoryChanged = false;
+                window.mockInventory.forEach(item => {
+                    if (item.category === catToRemove) {
+                        item.category = "DECKS";
+                        inventoryChanged = true;
+                    }
+                });
+                
+                if (inventoryChanged) saveInventoryState();
+
+                // Reset view if we were currently looking at the deleted category
+                if (currentShopCategory === catToRemove) currentShopCategory = 'ALL';
+
+                // Rerender UI
+                window.renderCategoryTabs();
+                window.updateCategoryDropdown();
+                window.renderShopGrid();
+            }
+            
+            window.toggleModal("remove-category-modal", false);
         };
 
         // --- GRID RENDERING & INVENTORY MANAGEMENT ---
