@@ -359,8 +359,7 @@
     </div>
 </div>
 
-    <!-- TRICK BAG MODAL -->
-<div id="trickbag-modal" class="modal-overlay">
+    <div id="trickbag-modal" class="modal-overlay">
     <div class="modal-content" style="border-color: #00ffaa; max-width: 450px; box-shadow: 0 0 30px rgba(0,255,170,0.15);">
         <h2 style="font-family:'Orbitron'; font-weight: 900; color:#00ffaa; margin-bottom: 10px; font-size: clamp(1.5rem, 5vw, 2rem); letter-spacing: 2px;">THE TRICK BAG</h2>
         <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 25px;">Your personal stash of raw footy. Enter the vault to filter and review your crypto.clips.</p>
@@ -369,11 +368,9 @@
     </div>
 </div>
 
-<!-- TRICK BAG DASHBOARD WRAPPER -->
 <div class="dashboard-wrapper" id="trickbag-wrapper" style="display: none;">
     <h2 style="text-align: center; color: #00ffaa; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.5rem, 6vw, 3.5rem); letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,255,170,0.3);">THE TRICK BAG</h2>
     
-    <!-- Filter HUD -->
     <div style="background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
         <select id="filter-trick" onchange="renderTrickbagGrid()" style="background: #000; color: #fff; border: 1px solid #555; padding: 10px; font-family: 'Orbitron'; font-size: 0.8rem; outline: none; flex: 1; min-width: 120px;"><option value="ALL">ALL TRICKS</option></select>
         <select id="filter-skater" onchange="renderTrickbagGrid()" style="background: #000; color: #fff; border: 1px solid #555; padding: 10px; font-family: 'Orbitron'; font-size: 0.8rem; outline: none; flex: 1; min-width: 120px;"><option value="ALL">ALL SKATERS</option></select>
@@ -381,12 +378,10 @@
         <select id="filter-rarity" onchange="renderTrickbagGrid()" style="background: #000; color: #fff; border: 1px solid #555; padding: 10px; font-family: 'Orbitron'; font-size: 0.8rem; outline: none; flex: 1; min-width: 120px;"><option value="ALL">ALL RARITIES</option></select>
     </div>
 
-    <!-- Clip Grid -->
     <div class="dashboard-grid" id="trickbag-grid">
         <h3 style="grid-column: 1/-1; text-align: center; color: #00ffaa; font-family: 'Orbitron'; font-weight: 900;">SCANNING VAULT...</h3>
     </div>
     
-    <!-- Load More -->
     <div id="trickbag-load-more" style="display: none; text-align: center; margin-top: 40px;">
         <button class="wallet-btn" onclick="loadMoreTrickbag()" style="background: transparent; border: 1px solid #00ffaa; color: #00ffaa;">▼ LOAD MORE CLIPS ▼</button>
     </div>
@@ -1086,18 +1081,16 @@
     </div>
 </footer>
     
-    <!-- ========================================== -->
-<!-- 🛑 START OF WAX COLLAB WEB3 SHOP 🛑        -->
-<!-- ========================================== -->
 <div id="master-shop-modal" class="modal-overlay" style="z-index: 1999; overflow-y: auto; padding-top: 20px;">
     <div class="modal-content" style="max-width: 1200px; width: 95%; border-color: var(--accent-cyan); background: var(--bg-deep); padding: 0;">
         
-        <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0;">
+        <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0; flex-wrap: wrap; gap: 10px;">
             <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px;">sk8shop<span>.</span></h1>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000; display: flex; gap: 8px;">
                     🛒 CART (<span id="cart-count">0</span>)
                 </button>
+                <button id="shop-connect-btn" class="wallet-btn" onclick="toggleAuthModal()" style="background: var(--accent-cyber-yellow); color: #000;">CONNECT</button>
                 <button onclick="window.toggleModal('master-shop-modal', false)" class="wallet-btn" style="background: transparent; color: #888; border: 1px solid #888;">
                     [ BACK TO BRANDS ]
                 </button>
@@ -1246,10 +1239,6 @@
         </form>
     </div>
 </div>
-<!-- ========================================== -->
-<!-- 🛑 END OF WAX COLLAB WEB3 SHOP 🛑          -->
-<!-- ========================================== -->
-    
 <script type="module">
     import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
     import { WebRenderer } from 'https://esm.sh/@wharfkit/web-renderer?bundle';
@@ -2156,7 +2145,7 @@ if (allActions.length > 0) {
                 };
                 mapSel('craft-deck-select', json.data.filter(a => a.schema.schema_name === 'decks'));
                 const trk = json.data.filter(a => a.schema.schema_name === 'trucks');
-                mapSel('craft-truck1-select', trk); mapSel('craft-truck2-select', trk);
+                mapSel('craft-truck2-select', trk);
                 const whl = json.data.filter(a => a.schema.schema_name === 'wheels');
                 mapSel('craft-wheel1-select', whl); mapSel('craft-wheel2-select', whl); mapSel('craft-wheel3-select', whl); mapSel('craft-wheel4-select', whl);
             }
@@ -2450,45 +2439,38 @@ if (allActions.length > 0) {
             loadCraftingData(currentSession.actor.toString()); updateBalances(currentSession.actor.toString());
         } catch (e) { console.error(e); showErrorModal("Transaction Cancelled or Failed."); }
     };
+
     // --- GLOBAL UI HOVER SOUNDS ---
-    // 1. Define the audio source using your specific Pinata IPFS link
     const hoverSound = new Audio('https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreienqhf75gqfwmg2m4ypapazo3szcq6lijpy7jgz4qjj35xwkzb3pi'); 
-    hoverSound.volume = 0.3; // Volume set to 30% to keep it clean and subtle
+    hoverSound.volume = 0.3; 
 
     function attachHoverSounds() {
-        // Select every button in the dApp
         const allButtons = document.querySelectorAll('button');
-        
         allButtons.forEach(btn => {
-            // Prevent attaching the same listener twice if the DOM updates
             if (!btn.dataset.soundAttached) {
                 btn.addEventListener('mouseenter', () => {
-                    hoverSound.currentTime = 0; // Rewind for rapid-fire hovering
-                    // The .catch prevents console errors if the browser's autoplay policy blocks it before the user's first click
+                    hoverSound.currentTime = 0; 
                     hoverSound.play().catch(e => {}); 
                 });
-                btn.dataset.soundAttached = "true"; // Mark it as attached
+                btn.dataset.soundAttached = "true";
             }
         });
     }
-
-    // Run the function after a slight delay to ensure all DOM elements are fully loaded
     setTimeout(attachHoverSounds, 1000);
 
-   // --- TRICK BAG SYSTEM ---
+    // --- TRICK BAG SYSTEM ---
     let currentTrickbagPage = 1;
-    let trickbagAssets = []; // Stores loaded clips for instant filtering
+    let trickbagAssets = []; 
 
-    // Safe injection into your existing router without changing old code
     const originalSwitchCategoryForTrickBag = window.switchCategory;
     window.switchCategory = (schema, fromBack = false) => {
         const tbWrapper = document.getElementById('trickbag-wrapper');
-        if(tbWrapper) tbWrapper.style.display = 'none'; // Hide it initially
+        if(tbWrapper) tbWrapper.style.display = 'none'; 
         
-        originalSwitchCategoryForTrickBag(schema, fromBack); // Run your exact original code safely
+        originalSwitchCategoryForTrickBag(schema, fromBack); 
         
         if (schema === 'trickbag') {
-            if(tbWrapper) tbWrapper.style.display = 'block'; // Show our new dashboard
+            if(tbWrapper) tbWrapper.style.display = 'block'; 
             if(currentSession) {
                 currentTrickbagPage = 1;
                 trickbagAssets = [];
@@ -2497,29 +2479,21 @@ if (allActions.length > 0) {
         }
     };
 
-    // Fetch Crypto Clips from blockchain
     window.fetchTrickbag = async (user, append = false) => {
         const grid = document.getElementById('trickbag-grid');
         const loadBtn = document.getElementById('trickbag-load-more');
         if (!append) grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #00ffaa; font-family: 'Orbitron'; font-weight: 900;">SCANNING VAULT...</h3>`;
 
         try {
-           
-            // Apply blacklist and pull exactly 12 valid NFTs
             const blacklist = "81874,82474,109884,120569,120614,120626,120638,121256,128399,128465,128477,176471,176507,224612,225741,225742,231577,232865,391737,411514,411742,439353,443345,649641,659833,659852,3240371";
             const res = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?collection_name=skatecoinwax&schema_name=crypto.clips&owner=${user}&page=${currentTrickbagPage}&limit=12&template_blacklist=${blacklist}`);
             const json = await res.json();
             
             if (json.success) {
                 if (!append) trickbagAssets = [];
-                
-                // Add to our local array
                 json.data.forEach(nft => trickbagAssets.push(nft));
-                
                 updateTrickbagFilters();
                 renderTrickbagGrid();
-                
-                // Show Load More if we hit exactly 12
                 if (json.data.length === 12) loadBtn.style.display = 'block';
                 else loadBtn.style.display = 'none';
             }
@@ -2534,32 +2508,27 @@ if (allActions.length > 0) {
         fetchTrickbag(currentSession.actor.toString(), true);
     };
 
-    // Update the Dropdowns automatically based on what we just loaded
     function updateTrickbagFilters() {
         const tricks = new Set(); const skaters = new Set(); const series = new Set(); const rarities = new Set();
-        
         trickbagAssets.forEach(n => {
             tricks.add(MetaParser.getString(n, 'trick', 'UNKNOWN'));
             skaters.add(MetaParser.getString(n, 'skater', 'UNKNOWN'));
             series.add(MetaParser.getString(n, 'series', 'UNKNOWN'));
             rarities.add(MetaParser.getString(n, 'rarity', 'SPECIAL EDITION'));
         });
-
         const populateSelect = (id, set, defaultText) => {
             const sel = document.getElementById(id);
             const currentVal = sel.value;
             sel.innerHTML = `<option value="ALL">${defaultText}</option>` + 
                 Array.from(set).sort().map(item => `<option value="${item}">${item}</option>`).join('');
-            if(set.has(currentVal)) sel.value = currentVal; // Keep their choice if they clicked load more
+            if(set.has(currentVal)) sel.value = currentVal; 
         };
-
         populateSelect('filter-trick', tricks, 'ALL TRICKS');
         populateSelect('filter-skater', skaters, 'ALL SKATERS');
         populateSelect('filter-series', series, 'ALL SERIES');
         populateSelect('filter-rarity', rarities, 'ALL RARITIES');
     }
 
-    // Draw the Grid and apply Color logic
     window.renderTrickbagGrid = () => {
         const grid = document.getElementById('trickbag-grid');
         const fTrick = document.getElementById('filter-trick').value;
@@ -2567,7 +2536,6 @@ if (allActions.length > 0) {
         const fSeries = document.getElementById('filter-series').value;
         const fRarity = document.getElementById('filter-rarity').value;
 
-        // Apply chosen filters
         const filtered = trickbagAssets.filter(n => {
             if (fTrick !== 'ALL' && MetaParser.getString(n, 'trick', 'UNKNOWN') !== fTrick) return false;
             if (fSkater !== 'ALL' && MetaParser.getString(n, 'skater', 'UNKNOWN') !== fSkater) return false;
@@ -2588,18 +2556,16 @@ if (allActions.length > 0) {
             const seriesData = MetaParser.getString(n, 'series', 'UNKNOWN');
             const rarity = MetaParser.getString(n, 'rarity', 'SPECIAL EDITION');
             const img = MetaParser.getImg(n);
-            const videoHash = MetaParser.getRaw(n, 'video'); // Grab the video hash if it exists
+            const videoHash = MetaParser.getRaw(n, 'video'); 
             const mint = n.template_mint || 'N/A';
 
-            // Custom Rarity Color Logic
-            let colorHex = "#ffffff"; // Default (Special Edition / NA)
+            let colorHex = "#ffffff"; 
             const rClean = rarity.toLowerCase();
-            if (rClean === 'common') colorHex = "#ff0000";         // Red
-            else if (rClean === 'sketch') colorHex = "#00ff00";    // Green
-            else if (rClean === 'cartoon') colorHex = "#00bfff";   // Blue (using a bright cyan-blue to match your site)
-            else if (rClean === 'gltch') colorHex = "#ffff00";     // Yellow
+            if (rClean === 'common') colorHex = "#ff0000";         
+            else if (rClean === 'sketch') colorHex = "#00ff00";    
+            else if (rClean === 'cartoon') colorHex = "#00bfff";   
+            else if (rClean === 'gltch') colorHex = "#ffff00";     
 
-            // The Smart Media Router
             let mediaTag = "";
             if (videoHash) {
                 mediaTag = `<video src="https://ipfs.io/ipfs/${videoHash}" autoplay loop muted playsinline style="max-height: 95%; max-width: 95%; object-fit: contain; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.8);"></video>`;
@@ -2628,227 +2594,6 @@ if (allActions.length > 0) {
         }).join('');
     };
     
- // ==========================================
-    // 🟢 WAX COLLAB WEB3 SHOP ENGINE 🟢
-    // ==========================================
-    const GLOBAL_IPFS_CID = "bafkreifmyx4slnwvkrrm6f7v4vwgcm5s2c6xcsgu3aohf5xuuclggzmrgy"; 
-    const STORAGE_KEY = 'sk8shop_inventory_master'; 
-    const shopAdminWallets = ["ufuau.wam", "skatecoinwax"];
-    let cart = [];
-    let itemsLimit = 12; 
-    let editingItemId = null; 
-    let currentShopCategory = 'ALL'; 
-    window.shopCategories = ['DECKS']; 
-
-    const seedInventory = [{ 
-        id: 1, title: "Sovereign Deck v1", desc: "Hard rock maple featuring holographic laser-etched design parameters. *REQUIRES FOUNDER BADGE TO PURCHASE.*", price: 2500, type: "image", category: "DECKS", src: "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80", isGated: true, gateTemplateId: "123456", gateDeckTrait: "Sovereign Deck v1", gateLink: "https://wax.atomichub.io/market?collection_name=skatecoinwax" 
-    }];
-
-    const hydrateInventory = (dataArray) => {
-        return dataArray.map(item => { if (!item.category) item.category = "DECKS"; return item; });
-    };
-
-    window.extractCategories = () => {
-        const uniqueCats = new Set(['DECKS']);
-        window.mockInventory.forEach(item => { if (item.category) uniqueCats.add(item.category.toUpperCase().trim()); });
-        window.shopCategories = Array.from(uniqueCats);
-    };
-
-    window.initShopData = async () => {
-        let finalInventoryData = seedInventory; let loadedFromIPFS = false;
-        if (GLOBAL_IPFS_CID) {
-            try { const res = await fetch(`https://ipfs.io/ipfs/${GLOBAL_IPFS_CID}`); if (res.ok) { finalInventoryData = await res.json(); loadedFromIPFS = true; } } catch(e) {}
-        }
-        if (!loadedFromIPFS) {
-            const savedInvData = localStorage.getItem(STORAGE_KEY); if (savedInvData) finalInventoryData = JSON.parse(savedInvData);
-        }
-        window.mockInventory = hydrateInventory(finalInventoryData);
-        window.extractCategories(); evaluateShopAdminStatus(); window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
-    };
-
-    window.initShopData();
-
-    function saveInventoryState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(window.mockInventory)); }
-
-    window.exportToIPFS = () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.mockInventory, null, 2));
-        const downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr); downloadAnchorNode.setAttribute("download", "sk8shop_inventory.json");
-        document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
-    };
-
-    function evaluateShopAdminStatus() {
-        const actorName = currentSession ? currentSession.actor.toString() : null;
-        const isAdmin = actorName && shopAdminWallets.includes(actorName);
-        const panel = document.getElementById("admin-panel"); const display = document.getElementById("admin-wallet-display");
-        if (isAdmin && panel) { panel.classList.remove("hidden"); if (display) display.innerText = actorName; } else if (panel) { panel.classList.add("hidden"); }
-    }
-
-    // Automatically check for Shop Admin status if the user logs in using your normal site button
-    setInterval(() => { evaluateShopAdminStatus(); }, 2000);
-
-    window.renderCategoryTabs = () => {
-        const container = document.getElementById("category-tabs-container"); if (!container) return; container.innerHTML = "";
-        const actorName = currentSession ? currentSession.actor.toString() : null; const isAdmin = actorName && shopAdminWallets.includes(actorName);
-        container.innerHTML += `<button onclick="window.setShopCategory('ALL')" class="wallet-btn" style="background: ${currentShopCategory === 'ALL' ? 'var(--accent-cyan)' : 'transparent'}; color: ${currentShopCategory === 'ALL' ? '#000' : 'var(--accent-cyan)'}; border: 1px solid var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">ALL</button>`;
-        window.shopCategories.forEach(cat => {
-            const isActive = currentShopCategory === cat;
-            container.innerHTML += `<button onclick="window.setShopCategory('${cat}')" class="wallet-btn" style="background: ${isActive ? 'var(--accent-cyan)' : 'transparent'}; border: 1px solid var(--accent-cyan); color: ${isActive ? '#000' : 'var(--accent-cyan)'}; padding: 8px 15px; font-size: 0.8rem;">${cat}</button>`;
-        });
-        if (isAdmin) {
-            container.innerHTML += `<button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); padding: 8px 15px; font-size: 0.8rem;">+ CATEGORY</button>`;
-            container.innerHTML += `<button onclick="window.openRemoveCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); padding: 8px 15px; font-size: 0.8rem;">- CATEGORY</button>`;
-        }
-    };
-
-    window.updateCategoryDropdown = () => { const select = document.getElementById("form-category"); if (select) { select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join(''); } };
-
-    window.setShopCategory = (cat) => { currentShopCategory = cat; itemsLimit = 12; window.renderCategoryTabs(); window.renderShopGrid(); };
-
-    window.openAddCategoryModal = () => { document.getElementById("add-category-form").reset(); window.toggleModal("add-category-modal", true); };
-
-    window.handleAddCategory = (event) => {
-        event.preventDefault(); const newCat = document.getElementById("new-category-name").value.trim().toUpperCase();
-        if (newCat && !window.shopCategories.includes(newCat)) {
-            window.shopCategories.push(newCat); window.renderCategoryTabs(); window.updateCategoryDropdown();
-            const select = document.getElementById("form-category"); if(select) select.value = newCat;
-        }
-        window.toggleModal("add-category-modal", false); window.openAddModal();
-    };
-
-    window.openRemoveCategoryModal = () => {
-        const select = document.getElementById("remove-category-select"); select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-        window.toggleModal("remove-category-modal", true);
-    };
-
-    window.handleRemoveCategory = (event) => {
-        event.preventDefault(); const catToRemove = document.getElementById("remove-category-select").value;
-        if (catToRemove) {
-            if(!confirm(`⚠️ WARNING: Are you sure you want to delete the "${catToRemove}" category? Any existing items in this category will be safely reassigned to "DECKS".`)) return;
-            let inventoryChanged = false;
-            window.mockInventory.forEach(item => { if (item.category === catToRemove) { item.category = "DECKS"; inventoryChanged = true; } });
-            if (inventoryChanged) saveInventoryState(); window.extractCategories();
-            if (currentShopCategory === catToRemove) currentShopCategory = 'ALL';
-            window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
-        }
-        window.toggleModal("remove-category-modal", false);
-    };
-
-    window.renderShopGrid = () => {
-        const grid = document.getElementById("products-grid"); grid.innerHTML = "";
-        const filteredInventory = currentShopCategory === 'ALL' ? window.mockInventory : window.mockInventory.filter(i => i.category === currentShopCategory);
-        const visibleItems = filteredInventory.slice(0, itemsLimit);
-        const actorName = currentSession ? currentSession.actor.toString() : null; const isAdmin = actorName && shopAdminWallets.includes(actorName);
-        
-        if (visibleItems.length === 0) { grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #888; font-family: 'Orbitron'; font-weight: 900; margin-top: 40px;">NO ITEMS FOUND</h3>`; }
-
-        visibleItems.forEach((item) => {
-            const card = document.createElement("div"); card.className = "skate-card"; card.style.borderColor = "var(--card-border)"; card.style.background = "var(--bg-panel)";
-            const adminActionsHtml = isAdmin ? `<div style="display: flex; gap: 5px; padding: 10px; background: rgba(255,0,85,0.1); border-top: 1px solid var(--accent-pink);"><button onclick="window.openEditModal(${item.id})" class="wallet-btn" style="flex: 1; background: var(--accent-cyan); color: #000; font-size: 0.75rem; padding: 8px;">✏️ EDIT</button><button onclick="window.removeShopItem(${item.id})" class="wallet-btn" style="flex: 1; background: var(--accent-pink); color: #000; font-size: 0.75rem; padding: 8px;">✖ REMOVE</button></div>` : '';
-            const gatedBadgeHtml = item.isGated ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; box-shadow: 2px 2px 0px #000; z-index: 10; transform: rotate(-3deg);">🔒 GATED</div>` : '';
-
-            card.innerHTML = `${gatedBadgeHtml}<div class="img-wrap" style="height: 200px; background: #000; border-bottom: 1px solid rgba(0, 240, 255, 0.2); position: relative;">${item.type === 'video' ? `<video src="${item.src}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>` : `<img src="${item.src}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: contain;">`}</div><div class="card-body" style="padding: 20px; text-align: left;"><h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 10px; line-height: 1.2;">${item.title}</h3><p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-family: 'Inter';">${item.desc}</p><div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-top: 10px;"><span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-gold); white-space: nowrap;">${item.price.toLocaleString()} SKATE</span><button onclick="window.openProductDetail(${item.id})" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; padding: 8px 16px; clip-path: none; flex-shrink: 0;">BUY</button></div></div>${adminActionsHtml}`;
-            grid.appendChild(card);
-        });
-
-        const loadMoreBtn = document.getElementById("load-more-container");
-        if (filteredInventory.length > itemsLimit) loadMoreBtn.classList.remove("hidden"); else loadMoreBtn.classList.add("hidden");
-    };
-
-    window.expandFeed = () => { itemsLimit += 12; window.renderShopGrid(); };
-
-    window.openAddModal = () => {
-        editingItemId = null; document.getElementById("add-item-form").reset(); document.getElementById("add-edit-modal-title").innerText = "INJECT INVENTORY"; document.getElementById("add-edit-submit-btn").innerText = "DEPLOY TO LEDGER"; document.getElementById("add-edit-submit-btn").style.background = "var(--accent-cyber-yellow)"; document.getElementById('gate-fields-container').style.display = 'none'; window.toggleModal('add-item-modal', true);
-    };
-
-    window.openEditModal = (id) => {
-        const item = window.mockInventory.find(i => i.id === id); if(!item) return; editingItemId = id; 
-        document.getElementById("form-title").value = item.title; document.getElementById("form-desc").value = item.desc; document.getElementById("form-price").value = item.price; document.getElementById("form-category").value = item.category || "DECKS"; document.getElementById("form-media-type").value = item.type; document.getElementById("form-media-url").value = item.src;
-        const isGatedCheckbox = document.getElementById("form-is-gated"); isGatedCheckbox.checked = !!item.isGated;
-        if (item.isGated) { document.getElementById("form-gate-template").value = item.gateTemplateId || ""; document.getElementById("form-gate-trait").value = item.gateDeckTrait || ""; document.getElementById("form-gate-link").value = item.gateLink || ""; } 
-        else { document.getElementById("form-gate-template").value = ""; document.getElementById("form-gate-trait").value = ""; document.getElementById("form-gate-link").value = ""; }
-        window.toggleGateFields(); document.getElementById("add-edit-modal-title").innerText = "EDIT INVENTORY"; document.getElementById("add-edit-submit-btn").innerText = "SAVE CHANGES"; document.getElementById("add-edit-submit-btn").style.background = "var(--accent-cyan)"; window.toggleModal('add-item-modal', true);
-    };
-
-    window.removeShopItem = (id) => {
-        if(!confirm("⚠️ PROTOCOL WARNING: Are you sure you want to remove this item from the inventory ledger?")) return;
-        window.mockInventory = window.mockInventory.filter(item => item.id !== id); saveInventoryState(); window.extractCategories();
-        if (currentShopCategory !== 'ALL' && !window.shopCategories.includes(currentShopCategory)) { currentShopCategory = 'ALL'; }
-        window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
-    };
-
-    window.toggleGateFields = () => { const isChecked = document.getElementById('form-is-gated').checked; document.getElementById('gate-fields-container').style.display = isChecked ? 'block' : 'none'; };
-
-    window.handleAddItem = (event) => {
-        event.preventDefault(); const isGated = document.getElementById("form-is-gated").checked;
-        const itemData = { title: document.getElementById("form-title").value, desc: document.getElementById("form-desc").value, price: parseFloat(document.getElementById("form-price").value.replace(/,/g, '').replace(/[^0-9.]/g, '')) || 0, category: document.getElementById("form-category").value, type: document.getElementById("form-media-type").value, src: document.getElementById("form-media-url").value || "https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&w=500&q=80", isGated: isGated, gateTemplateId: isGated ? document.getElementById("form-gate-template").value : null, gateDeckTrait: isGated ? document.getElementById("form-gate-trait").value : null, gateLink: isGated ? document.getElementById("form-gate-link").value : null };
-        if (editingItemId !== null) { const index = window.mockInventory.findIndex(i => i.id === editingItemId); if (index !== -1) { window.mockInventory[index] = { ...window.mockInventory[index], ...itemData }; } } 
-        else { itemData.id = window.mockInventory.length > 0 ? Math.max(...window.mockInventory.map(i => i.id)) + 1 : 1; window.mockInventory.unshift(itemData); }
-        saveInventoryState(); window.extractCategories(); document.getElementById("add-item-form").reset(); document.getElementById('gate-fields-container').style.display = 'none'; window.toggleModal('add-item-modal', false); window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
-    };
-
-    window.toggleModal = (modalId, show) => { const modal = document.getElementById(modalId); if (show) { modal.style.display = 'flex'; if(modalId === 'cart-modal') renderCartContents(); } else { modal.style.display = 'none'; } };
-
-    window.openProductDetail = async (id) => {
-        const item = window.mockInventory.find(p => p.id === id); if(!item) return; let actionButtonsHtml = ""; const activeActor = currentSession ? currentSession.actor.toString() : null;
-        if (item.isGated) {
-            let userHoldsNFT = false; 
-            if (activeActor) {
-                try {
-                    if (item.gateTemplateId) {
-                        const cleanTemplateId = String(item.gateTemplateId).replace(/#/g, '').trim();
-                        const templateRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${activeActor}&template_id=${cleanTemplateId}&limit=1`);
-                        const templateJson = await templateRes.json();
-                        if (templateJson.data && templateJson.data.length > 0) { userHoldsNFT = true; }
-                    }
-                    if (!userHoldsNFT && item.gateDeckTrait) {
-                        const boardRes = await fetch(`https://wax.api.atomicassets.io/atomicassets/v1/assets?owner=${activeActor}&collection_name=skatecoinwax&schema_name=skateboards`);
-                        const boardJson = await boardRes.json();
-                        if (boardJson.data) { userHoldsNFT = boardJson.data.some(asset => (asset.data && asset.data.deck === item.gateDeckTrait) || (asset.template && asset.template.immutable_data && asset.template.immutable_data.deck === item.gateDeckTrait)); }
-                    }
-                } catch (e) {}
-            }
-            if (activeActor && userHoldsNFT) { actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`; } 
-            else { actionButtonsHtml = `<div style="display: flex; gap: 10px; width: 100%;"><button disabled class="wallet-btn" style="flex: 1; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">🔒 NFT REQUIRED</button><button onclick="window.open('${item.gateLink}', '_blank')" class="wallet-btn" style="flex: 1; background: var(--accent-pink); color: #000; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">BUY ACCESS NFT</button></div>`; }
-        } else { actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`; }
-
-        const content = document.getElementById("detail-modal-content");
-        content.innerHTML = `<div class="flex justify-between items-start mb-4"><h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyan); text-transform: uppercase;">${item.title}</h3><button onclick="window.toggleModal('product-detail-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button></div><div class="w-full bg-black overflow-hidden mb-4 border border-zinc-800 relative flex items-center justify-center" style="border-color: var(--card-border); height: 300px;">${item.isGated ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; z-index: 10;">🔒 TOKEN GATED</div>` : ''}${item.type === 'video' ? `<video src="${item.src}" autoplay loop muted playsinline style="max-height: 100%; max-width: 100%; object-fit: contain;"></video>` : `<img src="${item.src}" style="max-height: 100%; max-width: 100%; object-fit: contain;">`}</div><p class="text-sm text-zinc-400 mb-6 leading-relaxed font-mono">${item.desc}</p><div class="flex justify-between items-center mt-4 border-t border-zinc-800 pt-4"><span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE</span><div style="flex-grow: 1; max-width: 60%; display: flex; justify-content: flex-end;">${actionButtonsHtml}</div></div>`;
-        window.toggleModal('product-detail-modal', true);
-    };
-
-    window.addToCart = (id) => { const item = window.mockInventory.find(p => p.id === id); if(!item) return; const cartIndex = cart.findIndex(c => c.id === id); if (cartIndex > -1) cart[cartIndex].quantity += 1; else cart.push({ ...item, quantity: 1 }); updateCartMetrics(); window.toggleModal('product-detail-modal', false); window.toggleModal('cart-modal', true); };
-
-    window.removeFromCart = (id) => { cart = cart.filter(c => c.id !== id); updateCartMetrics(); renderCartContents(); };
-
-    function updateCartMetrics() {
-        const count = cart.reduce((t, i) => t + i.quantity, 0); document.getElementById("cart-count").innerText = count;
-        const total = cart.reduce((t, i) => t + (i.price * i.quantity), 0); document.getElementById("cart-total-price").innerText = total.toLocaleString();
-        const nextBtn = document.getElementById("checkout-next-btn"); if(count === 0) { nextBtn.setAttribute("disabled", "true"); } else { nextBtn.removeAttribute("disabled"); }
-    }
-
-    function renderCartContents() {
-        const container = document.getElementById("cart-items-list"); container.innerHTML = "";
-        if(cart.length === 0) { container.innerHTML = `<p class="text-sm text-zinc-500 py-6 font-mono">Your stash is completely empty.</p>`; return; }
-        cart.forEach(item => { container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background: rgba(0,0,0,0.5); padding: 10px; border: 1px dashed #333; border-radius: 6px;"><div><h4 style="font-family: 'Orbitron'; font-weight: bold; font-size: 0.85rem; color: #fff;">${item.title}</h4><p style="font-family: 'Inter'; font-size: 0.75rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE &times; ${item.quantity}</p></div><button onclick="window.removeFromCart(${item.id})" style="font-family: 'Orbitron'; font-size: 0.65rem; color: var(--accent-pink); background: transparent; border: none; cursor: pointer;">[ REMOVE ]</button></div>`; });
-    }
-
-    window.openShippingModal = () => { window.toggleModal('cart-modal', false); window.toggleModal('shipping-modal', true); };
-
-    window.backToCart = () => { window.toggleModal('shipping-modal', false); window.toggleModal('cart-modal', true); };
-
-    window.executeSkatePayment = async () => {
-        if (!currentSession) { alert("Please connect your WAX wallet first!"); window.toggleModal('shipping-modal', false); toggleAuthModal(); return; }
-        const totalCost = cart.reduce((total, item) => total + (item.price * item.quantity), 0); const itemSummaryString = cart.map(i => `${i.title}(x${i.quantity})`).join(', ');
-        const deterministicMemo = `SK8SHOP_ORDER:${itemSummaryString}`.substring(0, 256); const formattedAmt = totalCost.toFixed(4) + " SKATE"; const sender = currentSession.actor.toString();
-        try {
-            const actions = [{ account: 'skatecoinwax', name: 'transfer', authorization: [currentSession.permissionLevel], data: { from: sender, to: 'skatecoinwax', quantity: formattedAmt, memo: deterministicMemo } }];
-            await currentSession.transact({ actions });
-            alert(`🔥 ORDER SECURED 🔥\nYour transaction has been broadcast to the ledger.\nOrder String: ${deterministicMemo}`);
-            cart = []; updateCartMetrics(); window.toggleModal('shipping-modal', false);
-        } catch(e) { console.error(e); alert("Transaction Cancelled or Failed. Please try again."); }
-    };
-    
 </script>
 </body>
 </html>
-    
