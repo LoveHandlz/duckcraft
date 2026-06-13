@@ -1094,10 +1094,11 @@
         
         <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0;">
             <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px;">sk8shop<span>.</span></h1>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000; display: flex; gap: 8px;">
                     🛒 CART (<span id="cart-count">0</span>)
                 </button>
+                <button id="shop-connect-btn" class="wallet-btn" onclick="toggleAuthModal()">CONNECT</button>
                 <button onclick="window.toggleModal('master-shop-modal', false)" class="wallet-btn" style="background: transparent; color: #888; border: 1px solid #888;">
                     [ BACK TO BRANDS ]
                 </button>
