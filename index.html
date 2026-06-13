@@ -1092,7 +1092,6 @@
 <div id="master-shop-modal" class="modal-overlay" style="z-index: 1999; overflow-y: auto; padding-top: 20px;">
     <div class="modal-content" style="max-width: 1200px; width: 95%; border-color: var(--accent-cyan); background: var(--bg-deep); padding: 0;">
         
-        <!-- Header Bar -->
         <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0;">
             <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px;">sk8shop<span>.</span></h1>
             <div style="display: flex; gap: 10px;">
@@ -1124,7 +1123,9 @@
             </section>
             <section>
                 <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;"></div>
-                <div id="products-grid" class="dashboard-grid"></div>
+                
+                <div id="products-grid" class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr);"></div>
+                
                 <div id="load-more-container" class="mt-12 flex justify-center hidden">
                     <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">
                         ▼ LOAD MORE COMPONENTS ▼
@@ -2811,7 +2812,7 @@ if (allActions.length > 0) {
         } else { actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`; }
 
         const content = document.getElementById("detail-modal-content");
-        content.innerHTML = `<div class="flex justify-between items-start mb-4"><h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyan); text-transform: uppercase;">${item.title}</h3><button onclick="window.toggleModal('product-detail-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button></div><div class="w-full aspect-video bg-black overflow-hidden mb-4 border border-zinc-800 relative" style="border-color: var(--card-border);">${item.isGated ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; z-index: 10;">🔒 TOKEN GATED</div>` : ''}${item.type === 'video' ? `<video src="${item.src}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>` : `<img src="${item.src}" style="width: 100%; height: 100%; object-fit: contain;">`}</div><p class="text-sm text-zinc-400 mb-6 leading-relaxed font-mono">${item.desc}</p><div class="flex justify-between items-center mt-4 border-t border-zinc-800 pt-4"><span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE</span><div style="flex-grow: 1; max-width: 60%; display: flex; justify-content: flex-end;">${actionButtonsHtml}</div></div>`;
+        content.innerHTML = `<div class="flex justify-between items-start mb-4"><h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyan); text-transform: uppercase;">${item.title}</h3><button onclick="window.toggleModal('product-detail-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button></div><div class="w-full bg-black overflow-hidden mb-4 border border-zinc-800 relative flex items-center justify-center" style="border-color: var(--card-border); height: 300px;">${item.isGated ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; z-index: 10;">🔒 TOKEN GATED</div>` : ''}${item.type === 'video' ? `<video src="${item.src}" autoplay loop muted playsinline style="max-height: 100%; max-width: 100%; object-fit: contain;"></video>` : `<img src="${item.src}" style="max-height: 100%; max-width: 100%; object-fit: contain;">`}</div><p class="text-sm text-zinc-400 mb-6 leading-relaxed font-mono">${item.desc}</p><div class="flex justify-between items-center mt-4 border-t border-zinc-800 pt-4"><span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE</span><div style="flex-grow: 1; max-width: 60%; display: flex; justify-content: flex-end;">${actionButtonsHtml}</div></div>`;
         window.toggleModal('product-detail-modal', true);
     };
 
