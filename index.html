@@ -1366,7 +1366,25 @@ window.toggleAuthModal = function() {
     window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
     window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
 
-    window.openBrandModal = (brandName) => {
+   window.openBrandModal = (brandName) => {
+    closeModals();
+
+    if (brandName === 'WAX ARTIST COLLABS') {
+        // Open as FULL PAGE instead of modal
+        switchCategory('sk8shop');
+        return;
+    }
+
+    // For all other brands, keep the old behavior
+    document.getElementById('brand-modal-title').innerText = brandName;
+    const desc = document.getElementById('brand-modal-desc');
+    const enterBtn = document.querySelector('#brand-detail-modal .wallet-btn');
+
+    desc.innerText = "Brand transmission locked. Decrypting protocol data...";
+    enterBtn.onclick = openStoreComingSoon;
+
+    document.getElementById('brand-detail-modal').style.display = 'flex';
+};
         closeModals();
         document.getElementById('brand-modal-title').innerText = brandName;
         
