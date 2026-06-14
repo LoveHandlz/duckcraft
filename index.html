@@ -1421,6 +1421,34 @@ window.toggleAuthModal = function() {
     window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
     window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
 
+    window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
+window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
+
+// =============================================
+// === SHOP WALLET BUTTON SYNC (NEW) ===========
+function updateShopWalletButton() {
+    const btn = document.getElementById('shop-wallet-btn');
+    if (!btn) return;
+
+    if (currentSession) {
+        btn.innerText = currentSession.actor.toString().toUpperCase();
+        btn.style.background = '#00ffaa';
+        btn.style.color = '#000';
+    } else {
+        btn.innerText = 'CONNECT WALLET';
+        btn.style.background = 'var(--accent-cyan)';
+        btn.style.color = '#000';
+    }
+}
+
+// Override toggleAuthModal so the shop button updates after login/logout
+const originalToggleAuthModal = window.toggleAuthModal;
+window.toggleAuthModal = function() {
+    if (originalToggleAuthModal) originalToggleAuthModal();
+    setTimeout(updateShopWalletButton, 400);
+};
+// =============================================
+
     // ==================== REPLACE THIS FUNCTION ====================
 window.openBrandModal = (brandName) => {
     closeModals();
