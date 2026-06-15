@@ -2706,11 +2706,18 @@ if (allActions.length > 0) {
         document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
     };
 
-    function evaluateShopAdminStatus() {
+   function evaluateShopAdminStatus() {
         const actorName = currentSession ? currentSession.actor.toString() : null;
         const isAdmin = actorName && shopAdminWallets.includes(actorName);
-        const panel = document.getElementById("admin-panel"); const display = document.getElementById("admin-wallet-display");
-        if (isAdmin && panel) { panel.classList.remove("hidden"); if (display) display.innerText = actorName; } else if (panel) { panel.classList.add("hidden"); }
+        const panel = document.getElementById("admin-panel"); 
+        const display = document.getElementById("admin-wallet-display");
+        
+        if (isAdmin && panel) { 
+            panel.style.display = "block"; 
+            if (display) display.innerText = actorName; 
+        } else if (panel) { 
+            panel.style.display = "none"; 
+        }
     }
 
     // Automatically check for Shop Admin status if the user logs in using your normal site button
