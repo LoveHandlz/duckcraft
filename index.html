@@ -1369,7 +1369,7 @@ window.toggleAuthModal = function() {
  
 // === END OF SHOP WALLET BUTTON ===
 
-   window.openBrandModal = (brandName) => {
+ window.openBrandModal = (brandName) => {
     closeModals();
 
     if (brandName === 'WAX ARTIST COLLABS') {
@@ -1378,6 +1378,7 @@ window.toggleAuthModal = function() {
     }
 
     document.getElementById('brand-modal-title').innerText = brandName;
+
     const desc = document.getElementById('brand-modal-desc');
     const enterBtn = document.querySelector('#brand-detail-modal .wallet-btn');
 
@@ -1385,7 +1386,7 @@ window.toggleAuthModal = function() {
     enterBtn.onclick = openStoreComingSoon;
 
     document.getElementById('brand-detail-modal').style.display = 'flex';
-};
+}; 
 
     window.openStoreComingSoon = () => {
         closeModals();
