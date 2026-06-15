@@ -2758,7 +2758,9 @@ if (allActions.length > 0) {
         document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
     };
 
-   function evaluateShopAdminStatus() {
+ let _lastAdminState = false;
+    
+    function evaluateShopAdminStatus() {
         const actorName = currentSession ? currentSession.actor.toString() : null;
         const isAdmin = actorName && shopAdminWallets.includes(actorName);
         const panel = document.getElementById("admin-panel"); 
@@ -2770,23 +2772,16 @@ if (allActions.length > 0) {
         } else if (panel) { 
             panel.style.display = "none"; 
         }
+
+        // THE FIX: If their admin status changes (like when they log in), 
+        // force the entire shop and categories to rebuild instantly.
+        if (isAdmin !== _lastAdminState) {
+            _lastAdminState = isAdmin;
+            window.renderCategoryTabs();
+            window.updateCategoryDropdown();
+            window.renderShopGrid(); 
+        }
     }
-
-    // Automatically check for Shop Admin status if the user logs in using your normal site button
-    setInterval(() => { evaluateShopAdminStatus(); }, 2000);
-
-   window.renderCategoryTabs = () => {
-        const container = document.getElementById("category-tabs-container"); 
-        if (!container) return; 
-        container.innerHTML = "";
-        
-        container.innerHTML += `<button onclick="window.setShopCategory('ALL')" class="wallet-btn" style="background: ${currentShopCategory === 'ALL' ? 'var(--accent-cyan)' : 'transparent'}; color: ${currentShopCategory === 'ALL' ? '#000' : 'var(--accent-cyan)'}; border: 1px solid var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">ALL</button>`;
-        
-        window.shopCategories.forEach(cat => {
-            const isActive = currentShopCategory === cat;
-            container.innerHTML += `<button onclick="window.setShopCategory('${cat}')" class="wallet-btn" style="background: ${isActive ? 'var(--accent-cyan)' : 'transparent'}; border: 1px solid var(--accent-cyan); color: ${isActive ? '#000' : 'var(--accent-cyan)'}; padding: 8px 15px; font-size: 0.8rem;">${cat}</button>`;
-        });
-    };
 
     window.updateCategoryDropdown = () => { const select = document.getElementById("form-category"); if (select) { select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join(''); } };
 
