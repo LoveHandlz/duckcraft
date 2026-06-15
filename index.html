@@ -1098,12 +1098,27 @@
         
         <div style="padding: 20px;">
            <section id="admin-panel" class="cyber-yellow-frame" style="display: none; background: var(--bg-panel); border-radius: 12px; padding: 25px; margin-bottom: 40px;">
-                <div class="flex justify-between items-center mb-4" style="flex-wrap: wrap; gap: clamp(20px, 4vw, 40px);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
                     <div>
-                        <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow); letter-spacing: 1px;">⚡ SHOP ADMIN TERMINAL</h2>
-                        <p class="text-xs text-zinc-400 mt-1 font-mono">Authenticated as: <span id="admin-wallet-display" class="text-zinc-200"></span></p>
+                        <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow); letter-spacing: 1px; margin: 0 0 5px 0;">⚡ SHOP ADMIN TERMINAL</h2>
+                        <p style="font-size: 0.75rem; color: #888; font-family: 'Inter'; margin: 0;">Authenticated as: <span id="admin-wallet-display" style="color: #fff; font-weight: bold;"></span></p>
                     </div>
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); font-size: 0.75rem; padding: 10px;">
+                            + CATEGORY
+                        </button>
+                        <button onclick="window.openRemoveCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); font-size: 0.75rem; padding: 10px;">
+                            - CATEGORY
+                        </button>
+                        <button onclick="window.exportToIPFS()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; padding: 10px;">
+                            💾 EXPORT JSON
+                        </button>
+                        <button onclick="window.openAddModal()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.75rem; padding: 10px;">
+                            + INJECT NEW INVENTORY
+                        </button>
+                    </div>
+                </div>
+            </section>
                         <button onclick="window.exportToIPFS()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.85rem;">
                             💾 EXPORT JSON
                         </button>
