@@ -1325,7 +1325,7 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
 
-    // === SHOP WALLET BUTTON SYNC ===
+// === SHOP WALLET BUTTON (CLEAN VERSION) ===
 function updateShopWalletButton() {
     const btn = document.getElementById('shop-wallet-btn');
     if (!btn) return;
@@ -1341,12 +1341,12 @@ function updateShopWalletButton() {
     }
 }
 
-// Call this function every time the wallet connects or disconnects
 const originalToggleAuthModal = window.toggleAuthModal;
 window.toggleAuthModal = function() {
-    originalToggleAuthModal();
-    setTimeout(updateShopWalletButton, 300);
+    if (originalToggleAuthModal) originalToggleAuthModal();
+    setTimeout(updateShopWalletButton, 400);
 };
+// === END OF SHOP WALLET BUTTON ===
     
     window.currentUserMaxVotes = 0; 
 
