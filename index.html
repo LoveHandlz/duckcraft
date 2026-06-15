@@ -1387,9 +1387,9 @@ window.syncAllWalletButtons = function(session) {
         if (brandName === 'WAX ARTIST COLLABS') {
             desc.innerText = "Deploy $SKATE liquidity tokens for direct real-world custom deck fulfillment. Token-gated checks active.";
             enterBtn.onclick = () => {
-                closeModals();
-                window.toggleModal('master-shop-modal', true);
-            };
+    closeModals();
+    switchCategory('web3shop'); window.scrollTo(0,0);
+};
         } else {
             desc.innerText = "Brand transmission locked. Decrypting protocol data...";
             enterBtn.onclick = openStoreComingSoon;
