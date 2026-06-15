@@ -2921,7 +2921,17 @@ if (allActions.length > 0) {
         saveInventoryState(); window.extractCategories(); document.getElementById("add-item-form").reset(); document.getElementById('gate-fields-container').style.display = 'none'; window.toggleModal('add-item-modal', false); window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
     };
 
-    window.toggleModal = (modalId, show) => { const modal = document.getElementById(modalId); if (show) { modal.style.display = 'flex'; if(modalId === 'cart-modal') renderCartContents(); } else { modal.style.display = 'none'; } };
+    window.toggleModal = (modalId, show) => { 
+        const modal = document.getElementById(modalId); 
+        if (show) { 
+            modal.style.display = 'flex'; 
+            document.body.style.overflow = 'hidden'; // Locks the background
+            if(modalId === 'cart-modal') renderCartContents(); 
+        } else { 
+            modal.style.display = 'none'; 
+            document.body.style.overflow = ''; // Restores the background
+        } 
+    };
 
     window.openProductDetail = async (id) => {
         const item = window.mockInventory.find(p => p.id === id); if(!item) return; let actionButtonsHtml = ""; const activeActor = currentSession ? currentSession.actor.toString() : null;
