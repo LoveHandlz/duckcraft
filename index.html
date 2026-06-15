@@ -2801,18 +2801,17 @@ if (allActions.length > 0) {
     // Automatically check for Shop Admin status if the user logs in using your normal site button
     setInterval(() => { evaluateShopAdminStatus(); }, 2000);
 
-    window.renderCategoryTabs = () => {
-        const container = document.getElementById("category-tabs-container"); if (!container) return; container.innerHTML = "";
-        const actorName = currentSession ? currentSession.actor.toString() : null; const isAdmin = actorName && shopAdminWallets.includes(actorName);
+   window.renderCategoryTabs = () => {
+        const container = document.getElementById("category-tabs-container"); 
+        if (!container) return; 
+        container.innerHTML = "";
+        
         container.innerHTML += `<button onclick="window.setShopCategory('ALL')" class="wallet-btn" style="background: ${currentShopCategory === 'ALL' ? 'var(--accent-cyan)' : 'transparent'}; color: ${currentShopCategory === 'ALL' ? '#000' : 'var(--accent-cyan)'}; border: 1px solid var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">ALL</button>`;
+        
         window.shopCategories.forEach(cat => {
             const isActive = currentShopCategory === cat;
             container.innerHTML += `<button onclick="window.setShopCategory('${cat}')" class="wallet-btn" style="background: ${isActive ? 'var(--accent-cyan)' : 'transparent'}; border: 1px solid var(--accent-cyan); color: ${isActive ? '#000' : 'var(--accent-cyan)'}; padding: 8px 15px; font-size: 0.8rem;">${cat}</button>`;
         });
-        if (isAdmin) {
-            container.innerHTML += `<button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); padding: 8px 15px; font-size: 0.8rem;">+ CATEGORY</button>`;
-            container.innerHTML += `<button onclick="window.openRemoveCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); padding: 8px 15px; font-size: 0.8rem;">- CATEGORY</button>`;
-        }
     };
 
     window.updateCategoryDropdown = () => { const select = document.getElementById("form-category"); if (select) { select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join(''); } };
