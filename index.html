@@ -2685,15 +2685,31 @@ if (allActions.length > 0) {
     };
 
     window.initShopData = async () => {
-        let finalInventoryData = seedInventory; let loadedFromIPFS = false;
-        if (GLOBAL_IPFS_CID) {
-            try { const res = await fetch(`https://ipfs.io/ipfs/${GLOBAL_IPFS_CID}`); if (res.ok) { finalInventoryData = await res.json(); loadedFromIPFS = true; } } catch(e) {}
+        let finalInventoryData = seedInventory;
+        const savedInvData = localStorage.getItem(STORAGE_KEY);
+        
+        // PRIORITY 1: Local Browser Memory (Protects your active admin edits)
+        if (savedInvData && savedInvData !== "[]") {
+            finalInventoryData = JSON.parse(savedInvData);
+        } 
+        // PRIORITY 2: Master IPFS Ledger (Downloads baseline for new users)
+        else if (GLOBAL_IPFS_CID) {
+            try { 
+                const res = await fetch(`https://jade-rapid-flea-523.mypinata.cloud/ipfs/${GLOBAL_IPFS_CID}`); 
+                if (res.ok) { 
+                    finalInventoryData = await res.json(); 
+                } 
+            } catch(e) {
+                console.error("IPFS Fetch Failed. Booting from Seed Data.");
+            }
         }
-        if (!loadedFromIPFS) {
-            const savedInvData = localStorage.getItem(STORAGE_KEY); if (savedInvData) finalInventoryData = JSON.parse(savedInvData);
-        }
+        
         window.mockInventory = hydrateInventory(finalInventoryData);
-        window.extractCategories(); evaluateShopAdminStatus(); window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
+        window.extractCategories(); 
+        evaluateShopAdminStatus(); 
+        window.renderCategoryTabs(); 
+        window.updateCategoryDropdown(); 
+        window.renderShopGrid();
     };
 
     window.initShopData();
