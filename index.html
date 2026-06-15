@@ -2097,6 +2097,8 @@ if (allActions.length > 0) {
      } else if (schema === 'incinerator') { document.getElementById('incinerator-wrapper').style.display = 'block'; window.fetchBurnableInventory();
         } else if (schema === 'lunchbox') { document.getElementById('lunchbox-wrapper').style.display = 'block'; if (currentSession) fetchLunchbox(currentSession.actor.toString());
         } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
+        } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
+        } else if (schema === 'web3shop') { document.getElementById('web3-shop-wrapper').style.display = 'block';                                  
         } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
     };
 
