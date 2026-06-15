@@ -1096,8 +1096,22 @@
     </div>
 </div>
         
+        <div class="dashboard-wrapper" id="web3-shop-wrapper" style="display: none;">
+    <div style="width: 100%;">
+        
+        <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0; flex-wrap: wrap; gap: 10px;">
+            <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px;">sk8shop<span>.</span></h1>
+            
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
+                    🛒 CART (<span id="cart-count">0</span>)
+                </button>
+            </div>
+        </div>
+        
         <div style="padding: 20px;">
-           <section id="admin-panel" class="cyber-yellow-frame" style="display: none; background: var(--bg-panel); border-radius: 12px; padding: 25px; margin-bottom: 40px;">
+            
+            <section id="admin-panel" class="cyber-yellow-frame" style="display: none; background: var(--bg-panel); border-radius: 12px; padding: 25px; margin-bottom: 40px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
                     <div>
                         <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow); letter-spacing: 1px; margin: 0 0 5px 0;">⚡ SHOP ADMIN TERMINAL</h2>
@@ -1119,15 +1133,22 @@
                     </div>
                 </div>
             </section>
-                        <button onclick="window.exportToIPFS()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.85rem;">
-                            💾 EXPORT JSON
-                        </button>
-                        <button onclick="window.openAddModal()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.85rem;">
-                            + INJECT NEW INVENTORY
-                        </button>
-                    </div>
+            
+            <section>
+                <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;"></div>
+                
+                <div id="products-grid" class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));"></div>
+                
+                <div id="load-more-container" class="mt-12 flex justify-center hidden" style="display: none; text-align: center; margin-top: 30px;">
+                    <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 10px 20px;">
+                        ▼ LOAD MORE COMPONENTS ▼
+                    </button>
                 </div>
             </section>
+            
+        </div>
+    </div>
+</div>
             <section>
                 <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;"></div>
                 
