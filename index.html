@@ -1325,27 +1325,38 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
 
-    // === SHOP WALLET BUTTON SYNC ===
-function updateShopWalletButton() {
-    const btn = document.getElementById('shop-wallet-btn');
-    if (!btn) return;
-
-    if (currentSession) {
-        btn.innerText = currentSession.actor.toString().toUpperCase();
-        btn.style.background = '#00ffaa';
-        btn.style.color = '#000';
+   // === UNIFIED WALLET BUTTON SYNC ===
+window.syncAllWalletButtons = function(session) {
+    const mainBtn = document.getElementById('connect-btn');
+    const shopBtn = document.getElementById('shop-wallet-btn');
+    
+    if (session) {
+        const actorName = session.actor.toString().toUpperCase();
+        
+        // Sync Main Header Button
+        if (mainBtn) {
+            mainBtn.innerText = actorName;
+        }
+        
+        // Sync Shop Button
+        if (shopBtn) {
+            shopBtn.innerText = actorName;
+            shopBtn.style.background = '#00ffaa';
+            shopBtn.style.color = '#000';
+        }
     } else {
-        btn.innerText = 'CONNECT WALLET';
-        btn.style.background = 'var(--accent-cyan)';
-        btn.style.color = '#000';
+        // Revert Main Header Button
+        if (mainBtn) {
+            mainBtn.innerText = 'CONNECT';
+        }
+        
+        // Revert Shop Button
+        if (shopBtn) {
+            shopBtn.innerText = 'CONNECT WALLET';
+            shopBtn.style.background = 'var(--accent-cyan)';
+            shopBtn.style.color = '#000';
+        }
     }
-}
-
-// Call this function every time the wallet connects or disconnects
-const originalToggleAuthModal = window.toggleAuthModal;
-window.toggleAuthModal = function() {
-    originalToggleAuthModal();
-    setTimeout(updateShopWalletButton, 300);
 };
     
     window.currentUserMaxVotes = 0; 
