@@ -856,62 +856,7 @@
     </div>
 </div>
 
-<div class="dashboard-wrapper" id="sk8shop-wrapper" style="display: none; max-width: 1400px; margin: 0 auto; padding-top: 20px;">
-    
-    <!-- Shop Header -->
-    <div style="background: rgba(0, 0, 0, 0.85); padding: 20px 30px; border: 2px solid var(--accent-cyan); border-radius: 12px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-        <div>
-            <h2 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.4rem); color: var(--accent-cyan);">SK8SHOP</h2>
-            <p style="margin: 4px 0 0 0; color: #888; font-size: 0.95rem;">Real-world decks • Token Gated</p>
-        </div>
-        
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-            <!-- Wallet Button -->
-            <button id="shop-wallet-btn" class="wallet-btn" onclick="toggleAuthModal()" 
-                    style="background: var(--accent-cyan); color: #000; font-size: 0.9rem; padding: 12px 24px;">
-                CONNECT WALLET
-            </button>
-
-            <!-- Cart Button -->
-            <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" 
-                    style="background: var(--accent-gold); color: #000; font-size: 0.9rem; padding: 12px 24px;">
-                🛒 CART (<span id="cart-count">0</span>)
-            </button>
-        </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <section id="admin-panel" class="hidden mb-8 p-6 cyber-yellow-frame" style="background: var(--bg-panel); border-radius: 12px;">
-        <div class="flex justify-between items-center mb-4">
-            <div>
-                <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow);">⚡ SHOP ADMIN TERMINAL</h2>
-                <p class="text-xs text-zinc-400 mt-1 font-mono">Authenticated as: <span id="admin-wallet-display" class="text-zinc-200"></span></p>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="window.exportToIPFS()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.85rem;">
-                    💾 EXPORT JSON
-                </button>
-                <button onclick="window.openAddModal()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.85rem;">
-                    + INJECT NEW INVENTORY
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Category Tabs -->
-    <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;"></div>
-
-    <!-- Products Grid -->
-    <div id="products-grid" class="dashboard-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));"></div>
-
-    <!-- Load More -->
-    <div id="load-more-container" class="mt-10 flex justify-center hidden">
-        <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">
-            ▼ LOAD MORE COMPONENTS ▼
-        </button>
-    </div>
-
-</div>
+<div class="dashboard-wrapper" id="sk8shop-wrapper" style="display: none;">
     <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.5rem, 6vw, 3.5rem); letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">SK8SHOP <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-family:'Orbitron'; color:var(--accent-gold);">// THE STABILIZER</span></h2>
     
     <div style="width: 100%; max-width: 1100px; margin: 0 auto 30px auto; overflow: hidden; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); background: #000; position: relative;">
@@ -1421,56 +1366,26 @@ window.toggleAuthModal = function() {
     window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
     window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
 
-    window.closeModals = () => { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); };
-window.toggleAuthModal = () => { if(!currentSession) document.getElementById('vip-ticket-modal').style.display = 'flex'; else document.getElementById('disconnect-modal').style.display = 'flex'; };
+    window.openBrandModal = (brandName) => {
+        closeModals();
+        document.getElementById('brand-modal-title').innerText = brandName;
+        
+        const desc = document.getElementById('brand-modal-desc');
+        const enterBtn = document.querySelector('#brand-detail-modal .wallet-btn');
 
-// =============================================
-// === SHOP WALLET BUTTON SYNC (NEW) ===========
-function updateShopWalletButton() {
-    const btn = document.getElementById('shop-wallet-btn');
-    if (!btn) return;
-
-    if (currentSession) {
-        btn.innerText = currentSession.actor.toString().toUpperCase();
-        btn.style.background = '#00ffaa';
-        btn.style.color = '#000';
-    } else {
-        btn.innerText = 'CONNECT WALLET';
-        btn.style.background = 'var(--accent-cyan)';
-        btn.style.color = '#000';
-    }
-}
-
-// Override toggleAuthModal so the shop button updates after login/logout
-const originalToggleAuthModal = window.toggleAuthModal;
-window.toggleAuthModal = function() {
-    if (originalToggleAuthModal) originalToggleAuthModal();
-    setTimeout(updateShopWalletButton, 400);
-};
-// =============================================
-
-    // ==================== REPLACE THIS FUNCTION ====================
-window.openBrandModal = (brandName) => {
-    closeModals();
-
-    if (brandName === 'WAX ARTIST COLLABS') {
-        // Open shop as a full page instead of modal
-        switchCategory('sk8shop');
-        return;
-    }
-
-    // Original behavior for all other brands
-    document.getElementById('brand-modal-title').innerText = brandName;
-    
-    const desc = document.getElementById('brand-modal-desc');
-    const enterBtn = document.querySelector('#brand-detail-modal .wallet-btn');
-
-    desc.innerText = "Brand transmission locked. Decrypting protocol data...";
-    enterBtn.onclick = openStoreComingSoon;
-
-    document.getElementById('brand-detail-modal').style.display = 'flex';
-};
-// ============================================================
+        if (brandName === 'WAX ARTIST COLLABS') {
+            desc.innerText = "Deploy $SKATE liquidity tokens for direct real-world custom deck fulfillment. Token-gated checks active.";
+            enterBtn.onclick = () => {
+                closeModals();
+                window.toggleModal('master-shop-modal', true);
+            };
+        } else {
+            desc.innerText = "Brand transmission locked. Decrypting protocol data...";
+            enterBtn.onclick = openStoreComingSoon;
+        }
+        
+        document.getElementById('brand-detail-modal').style.display = 'flex';
+    };
 
     window.openStoreComingSoon = () => {
         closeModals();
