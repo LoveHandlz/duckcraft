@@ -1320,34 +1320,12 @@
    // === UNIFIED WALLET BUTTON SYNC ===
 window.syncAllWalletButtons = function(session) {
     const mainBtn = document.getElementById('connect-btn');
-    const shopBtn = document.getElementById('shop-wallet-btn');
     
     if (session) {
         const actorName = session.actor.toString().toUpperCase();
-        
-        // Sync Main Header Button
-        if (mainBtn) {
-            mainBtn.innerText = actorName;
-        }
-        
-        // Sync Shop Button
-        if (shopBtn) {
-            shopBtn.innerText = actorName;
-            shopBtn.style.background = '#00ffaa';
-            shopBtn.style.color = '#000';
-        }
+        if (mainBtn) mainBtn.innerText = actorName;
     } else {
-        // Revert Main Header Button
-        if (mainBtn) {
-            mainBtn.innerText = 'CONNECT';
-        }
-        
-        // Revert Shop Button
-        if (shopBtn) {
-            shopBtn.innerText = 'CONNECT WALLET';
-            shopBtn.style.background = 'var(--accent-cyan)';
-            shopBtn.style.color = '#000';
-        }
+        if (mainBtn) mainBtn.innerText = 'CONNECT';
     }
 };
     
