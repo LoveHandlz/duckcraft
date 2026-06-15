@@ -1209,32 +1209,79 @@
 </div>
 
 <div id="add-item-modal" class="modal-overlay" style="z-index: 2020;">
-    <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
-        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-            <h3 id="add-edit-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem;">INJECT INVENTORY</h3>
-            <button onclick="window.toggleModal('add-item-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
+    <div class="modal-content cyber-yellow-frame" style="max-width: 550px; background: #050a1a;">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
+            <h3 id="add-edit-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem; margin: 0; letter-spacing: 1px;">INJECT INVENTORY</h3>
+            <button onclick="window.toggleModal('add-item-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s;">&times;</button>
         </div>
-        <form id="add-item-form" onsubmit="window.handleAddItem(event)" class="space-y-4 text-left">
-            <div><label class="block text-zinc-400 mb-1 font-mono text-xs">COMPONENT TITLE</label><input type="text" id="form-title" required class="shop-input"></div>
-            <div><label class="block text-zinc-400 mb-1 font-mono text-xs">SPECIFICATIONS</label><textarea id="form-desc" required rows="2" class="shop-input"></textarea></div>
-            <div class="grid grid-cols-3 gap-4">
-                <div><label class="block text-zinc-400 mb-1 font-mono text-xs">$SKATE PRICE</label><input type="text" id="form-price" required placeholder="e.g. 2,500.00" class="shop-input"></div>
-                <div><label class="block text-zinc-400 mb-1 font-mono text-xs">CATEGORY</label><select id="form-category" class="shop-input py-3" style="padding-top: 15px; padding-bottom: 15px;"></select></div>
-                <div><label class="block text-zinc-400 mb-1 font-mono text-xs">MEDIA FORMAT</label><select id="form-media-type" class="shop-input py-3" style="padding-top: 15px; padding-bottom: 15px;"><option value="image">IPFS Image</option><option value="video">IPFS Video</option></select></div>
+        
+        <!-- Refactored Form -->
+        <form id="add-item-form" onsubmit="window.handleAddItem(event)" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+            
+            <!-- Component Title -->
+            <div>
+                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">COMPONENT TITLE</label>
+                <input type="text" id="form-title" required style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
             </div>
-            <div><label class="block text-zinc-400 mb-1 font-mono text-xs">CID / SOURCE URL</label><input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." class="shop-input"></div>
-            <div style="background: rgba(255,0,85,0.05); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 15px; margin-top: 15px;">
-                <div class="flex justify-between items-center">
-                    <div><span style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem;">🔒 TOKEN GATE ITEM</span></div>
-                    <label class="toggle-switch"><input type="checkbox" id="form-is-gated" onchange="window.toggleGateFields()"><span class="slider"></span></label>
+            
+            <!-- Specifications -->
+            <div>
+                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">SPECIFICATIONS</label>
+                <textarea id="form-desc" required rows="2" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';"></textarea>
+            </div>
+            
+            <!-- Grid Row: Price / Category / Format -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 140px;">
+                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">$SKATE PRICE</label>
+                    <input type="text" id="form-price" required placeholder="e.g. 2,500.00" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
                 </div>
-                <div id="gate-fields-container" style="display: none; margin-top: 15px; border-top: 1px dashed var(--accent-pink); padding-top: 15px;">
-                    <div class="mb-3"><label class="block text-zinc-400 mb-1 font-mono text-xs">WAX TEMPLATE ID REQUIRED</label><input type="text" id="form-gate-template" placeholder="e.g. 123456" class="shop-input" style="padding: 10px;"></div>
-                    <div class="mb-3"><label class="block text-zinc-400 mb-1 font-mono text-xs">OR REQUIRED DECK TRAIT</label><input type="text" id="form-gate-trait" placeholder="e.g. Sovereign Deck v1" class="shop-input" style="padding: 10px;"></div>
-                    <div><label class="block text-zinc-400 mb-1 font-mono text-xs">MARKETPLACE PURCHASE LINK</label><input type="text" id="form-gate-link" placeholder="https://wax.atomichub.io/market..." class="shop-input" style="padding: 10px;"></div>
+                <div style="flex: 1; min-width: 140px;">
+                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">CATEGORY</label>
+                    <select id="form-category" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';"></select>
+                </div>
+                <div style="flex: 1; min-width: 140px;">
+                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">MEDIA FORMAT</label>
+                    <select id="form-media-type" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+                        <option value="image">IPFS Image</option>
+                        <option value="video">IPFS Video</option>
+                    </select>
                 </div>
             </div>
-            <button id="add-edit-submit-btn" type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 15px;">DEPLOY TO LEDGER</button>
+            
+            <!-- Media URL -->
+            <div>
+                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">CID / SOURCE URL</label>
+                <input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+            </div>
+            
+            <!-- Token Gate Settings -->
+            <div style="background: rgba(255,0,85,0.05); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 15px; margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem;">🔒 TOKEN GATE ITEM</span>
+                    <input type="checkbox" id="form-is-gated" onchange="window.toggleGateFields()" style="transform: scale(1.5); accent-color: var(--accent-pink); cursor: pointer; margin-right: 5px;">
+                </div>
+                
+                <div id="gate-fields-container" style="display: none; flex-direction: column; gap: 12px; margin-top: 15px; border-top: 1px dashed var(--accent-pink); padding-top: 15px;">
+                    <div>
+                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">WAX TEMPLATE ID REQUIRED</label>
+                        <input type="text" id="form-gate-template" placeholder="e.g. 123456" style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">OR REQUIRED DECK TRAIT</label>
+                        <input type="text" id="form-gate-trait" placeholder="e.g. Sovereign Deck v1" style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+                    </div>
+                    <div>
+                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">MARKETPLACE PURCHASE LINK</label>
+                        <input type="text" id="form-gate-link" placeholder="https://wax.atomichub.io/market..." style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Action -->
+            <button id="add-edit-submit-btn" type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 10px; font-size: 1.1rem; border-radius: 4px;">DEPLOY TO LEDGER</button>
         </form>
     </div>
 </div>
