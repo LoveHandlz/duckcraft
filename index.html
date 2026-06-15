@@ -2044,11 +2044,23 @@ if (allActions.length > 0) {
         }
     };
 
-    // --- INITIALIZATION & STATE RECOVERY ---
+   // --- INITIALIZATION & STATE RECOVERY ---
     sessionKit.restore().then(s => { 
         const initialHash = window.location.hash.replace('#', '') || 'home';
-        if (s) { currentSession = s; document.getElementById('connect-btn').innerText = s.actor.toString().toUpperCase(); updateBalances(s.actor.toString()); switchCategory(initialHash); 
-        } else { document.getElementById('vip-ticket-modal').style.display = 'flex'; }
+        if (s) { 
+            currentSession = s; 
+            
+            // FIRE THE UNIFIED SYNC: Updates Main Nav & Shop instantly
+            window.syncAllWalletButtons(s); 
+            
+            updateBalances(s.actor.toString()); 
+            switchCategory(initialHash); 
+        } else { 
+            // ENSURE DEFAULT STATE: Sets everything back to "Connect"
+            window.syncAllWalletButtons(null);
+            
+            document.getElementById('vip-ticket-modal').style.display = 'flex'; 
+        }
     });
 
     // --- STATE SWITCHING ENGINE ---
