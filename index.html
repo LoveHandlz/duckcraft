@@ -1080,11 +1080,12 @@
 <!-- 🛑 START OF WAX COLLAB WEB3 SHOP 🛑        -->
 <!-- ========================================== -->
 
-      <div class="dashboard-wrapper" id="web3-shop-wrapper" style="display: none;">
+    <div class="dashboard-wrapper" id="web3-shop-wrapper" style="display: none;">
     <div style="width: 100%;">
         
         <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0; flex-wrap: wrap; gap: 10px;">
             <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px;">sk8shop<span>.</span></h1>
+            
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
                     🛒 CART (<span id="cart-count">0</span>)
@@ -1128,7 +1129,6 @@
                     </button>
                 </div>
             </section>
-            
         </div>
     </div>
 </div>
@@ -1141,7 +1141,7 @@
 
 <div id="cart-modal" class="modal-overlay" style="z-index: 2010;">
     <div class="modal-content" style="max-width: 450px; border-color: var(--accent-gold);">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
             <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); font-size: 1.5rem; letter-spacing: 2px; margin:0;">THE TRICK BAG</h3>
             <button onclick="window.toggleModal('cart-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer;">&times;</button>
         </div>
@@ -1273,178 +1273,7 @@
         </form>
     </div>
 </div>
-            <section>
-                <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;"></div>
-                
-                <div id="products-grid" class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr);"></div>
-                
-                <div id="load-more-container" class="mt-12 flex justify-center hidden">
-                    <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">
-                        ▼ LOAD MORE COMPONENTS ▼
-                    </button>
-                </div>
-            </section>
-        </div>
-    </div>
-</div>
-
-<div id="product-detail-modal" class="modal-overlay" style="z-index: 2010;">
-    <div class="modal-content" style="max-width: 500px; border-color: var(--accent-cyan);">
-        <div id="detail-modal-content" class="text-left"></div>
-    </div>
-</div>
-
-<div id="cart-modal" class="modal-overlay" style="z-index: 2010;">
-    <div class="modal-content" style="max-width: 450px; border-color: var(--accent-gold);">
-        <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); font-size: 1.5rem; letter-spacing: 2px;">THE TRICK BAG</h3>
-            <button onclick="window.toggleModal('cart-modal', false)" class="text-zinc-500 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
-        </div>
-        <div id="cart-items-list" class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-2 text-left"></div>
-        <div class="border-t border-zinc-800 pt-4 space-y-4 text-left">
-            <div class="flex justify-between items-center font-bold text-lg font-mono">
-                <span style="color: #ccc;">TOTAL COST:</span>
-                <span style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;"><span id="cart-total-price">0</span> SKATE</span>
-            </div>
-            <button onclick="window.openShippingModal()" id="checkout-next-btn" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px;">
-                PROCEED TO SHIPPING
-            </button>
-        </div>
-    </div>
-</div>
-
-<div id="shipping-modal" class="modal-overlay" style="z-index: 2010;">
-    <div class="modal-content" style="max-width: 500px; border-color: var(--accent-pink);">
-        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 10px; font-size: 1.5rem; letter-spacing: 2px;">SHIPPING PROTOCOL</h2>
-        <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 20px; text-align: left;">Secure your logistics off-chain before signing the transaction.</p>
-        <div class="space-y-4 text-sm text-zinc-300 mb-6 text-left">
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px;">
-                <ol class="list-decimal list-inside space-y-2 text-xs text-zinc-400 font-mono">
-                    <li>Fill out the secure manifest below.</li>
-                    <li>Submit your coordinates.</li>
-                    <li>Click "PAY WITH SKATE" to execute the on-chain transfer.</li>
-                </ol>
-            </div>
-            <div style="width: 100%; height: 400px; overflow: hidden; border-radius: 8px; border: 1px solid var(--accent-cyber-yellow); background: #fff;">
-                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeVslg2A5LvTrT_NYUTpN5DBRIrOfCkprRyHDKQagmg60XTsA/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-            </div>
-        </div>
-        <div class="border-t border-zinc-800 pt-4 flex gap-3">
-            <button onclick="window.backToCart()" class="wallet-btn" style="flex: 1; background: transparent; border: 1px solid #888; color: #888;">BACK</button>
-            <button onclick="window.executeSkatePayment()" class="wallet-btn" style="flex: 2; background: var(--accent-cyan); color: #000;">PAY WITH SKATE</button>
-        </div>
-    </div>
-</div>
-
-<div id="add-category-modal" class="modal-overlay" style="z-index: 2020;">
-    <div class="modal-content cyber-yellow-frame" style="max-width: 400px; background: #050a1a;">
-        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.2rem;">ADD CATEGORY</h3>
-            <button onclick="window.toggleModal('add-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
-        </div>
-        <form id="add-category-form" onsubmit="window.handleAddCategory(event)" class="space-y-4 text-left">
-            <div>
-                <label class="block text-zinc-400 mb-1 font-mono text-xs">NEW CATEGORY NAME</label>
-                <input type="text" id="new-category-name" required placeholder="e.g. COLLECTIBLES" class="shop-input" style="text-transform: uppercase;">
-            </div>
-            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 5px;">CREATE CATEGORY</button>
-        </form>
-    </div>
-</div>
-
-<div id="remove-category-modal" class="modal-overlay" style="z-index: 2020;">
-    <div class="modal-content" style="max-width: 400px; background: #050a1a; border-color: var(--accent-pink);">
-        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); font-size: 1.2rem;">REMOVE CATEGORY</h3>
-            <button onclick="window.toggleModal('remove-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
-        </div>
-        <form id="remove-category-form" onsubmit="window.handleRemoveCategory(event)" class="space-y-4 text-left">
-            <div>
-                <label class="block text-zinc-400 mb-1 font-mono text-xs">SELECT CATEGORY TO DELETE</label>
-                <select id="remove-category-select" required class="shop-input py-3"></select>
-            </div>
-            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; margin-top: 5px;">DELETE CATEGORY</button>
-        </form>
-    </div>
-</div>
-
-<div id="add-item-modal" class="modal-overlay" style="z-index: 2020;">
-    <div class="modal-content cyber-yellow-frame" style="max-width: 550px; background: #050a1a;">
-        
-        <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
-            <h3 id="add-edit-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem; margin: 0; letter-spacing: 1px;">INJECT INVENTORY</h3>
-            <button onclick="window.toggleModal('add-item-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s;">&times;</button>
-        </div>
-        
-        <!-- Refactored Form -->
-        <form id="add-item-form" onsubmit="window.handleAddItem(event)" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
-            
-            <!-- Component Title -->
-            <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">COMPONENT TITLE</label>
-                <input type="text" id="form-title" required style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-            </div>
-            
-            <!-- Specifications -->
-            <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">SPECIFICATIONS</label>
-                <textarea id="form-desc" required rows="2" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';"></textarea>
-            </div>
-            
-            <!-- Grid Row: Price / Category / Format -->
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 140px;">
-                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">$SKATE PRICE</label>
-                    <input type="text" id="form-price" required placeholder="e.g. 2,500.00" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                </div>
-                <div style="flex: 1; min-width: 140px;">
-                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">CATEGORY</label>
-                    <select id="form-category" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';"></select>
-                </div>
-                <div style="flex: 1; min-width: 140px;">
-                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">MEDIA FORMAT</label>
-                    <select id="form-media-type" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                        <option value="image">IPFS Image</option>
-                        <option value="video">IPFS Video</option>
-                    </select>
-                </div>
-            </div>
-            
-            <!-- Media URL -->
-            <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">CID / SOURCE URL</label>
-                <input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-            </div>
-            
-            <!-- Token Gate Settings -->
-            <div style="background: rgba(255,0,85,0.05); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 15px; margin-top: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem;">🔒 TOKEN GATE ITEM</span>
-                    <input type="checkbox" id="form-is-gated" onchange="window.toggleGateFields()" style="transform: scale(1.5); accent-color: var(--accent-pink); cursor: pointer; margin-right: 5px;">
-                </div>
-                
-                <div id="gate-fields-container" style="display: none; flex-direction: column; gap: 12px; margin-top: 15px; border-top: 1px dashed var(--accent-pink); padding-top: 15px;">
-                    <div>
-                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">WAX TEMPLATE ID REQUIRED</label>
-                        <input type="text" id="form-gate-template" placeholder="e.g. 123456" style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                    </div>
-                    <div>
-                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">OR REQUIRED DECK TRAIT</label>
-                        <input type="text" id="form-gate-trait" placeholder="e.g. Sovereign Deck v1" style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                    </div>
-                    <div>
-                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">MARKETPLACE PURCHASE LINK</label>
-                        <input type="text" id="form-gate-link" placeholder="https://wax.atomichub.io/market..." style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Submit Action -->
-            <button id="add-edit-submit-btn" type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 10px; font-size: 1.1rem; border-radius: 4px;">DEPLOY TO LEDGER</button>
-        </form>
-    </div>
-</div>
+      
 <!-- ========================================== -->
 <!-- 🛑 END OF WAX COLLAB WEB3 SHOP 🛑          -->
 <!-- ========================================== -->
