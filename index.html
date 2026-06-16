@@ -1136,15 +1136,19 @@
 
 <div id="cart-modal" class="modal-overlay" style="z-index: 2010;">
     <div class="modal-content" style="max-width: 450px; border-color: var(--accent-gold);">
-        <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); font-size: 1.5rem; letter-spacing: 2px;">THE TRICK BAG</h3>
-            <button onclick="window.toggleModal('cart-modal', false)" class="text-zinc-500 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); font-size: 1.5rem; letter-spacing: 2px; margin: 0;">SHOPPING CART</h3>
+            <button onclick="window.toggleModal('cart-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.8rem; cursor: pointer; line-height: 1; padding: 0;">&times;</button>
         </div>
-        <div id="cart-items-list" class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-2 text-left"></div>
-        <div class="border-t border-zinc-800 pt-4 space-y-4 text-left">
-            <div class="flex justify-between items-center font-bold text-lg font-mono">
+        
+        <div id="cart-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 5px; text-align: left; display: flex; flex-direction: column; gap: 10px;">
+            <!-- Items injected by JS -->
+        </div>
+        
+        <div style="border-top: 1px solid #333; padding-top: 20px; text-align: left; display: flex; flex-direction: column; gap: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-family: 'Orbitron'; font-weight: 900; font-size: 1.1rem;">
                 <span style="color: #ccc;">TOTAL COST:</span>
-                <span style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;"><span id="cart-total-price">0</span> SKATE</span>
+                <span style="color: var(--accent-cyan);"><span id="cart-total-price">0</span> SKATE</span>
             </div>
             <button onclick="window.openShippingModal()" id="checkout-next-btn" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px;">
                 PROCEED TO SHIPPING
@@ -1155,11 +1159,12 @@
 
 <div id="shipping-modal" class="modal-overlay" style="z-index: 2010;">
     <div class="modal-content" style="max-width: 500px; border-color: var(--accent-pink);">
-        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 10px; font-size: 1.5rem; letter-spacing: 2px;">SHIPPING PROTOCOL</h2>
+        <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 10px; font-size: 1.5rem; letter-spacing: 2px; margin-top: 0;">SHIPPING PROTOCOL</h2>
         <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 20px; text-align: left;">Secure your logistics off-chain before signing the transaction.</p>
-        <div class="space-y-4 text-sm text-zinc-300 mb-6 text-left">
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px;">
-                <ol class="list-decimal list-inside space-y-2 text-xs text-zinc-400 font-mono">
+        
+        <div style="margin-bottom: 25px; text-align: left;">
+            <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <ol style="margin: 0; padding-left: 20px; color: #aaa; font-size: 0.85rem; font-family: 'Inter'; line-height: 1.8;">
                     <li>Fill out the secure manifest below.</li>
                     <li>Submit your coordinates.</li>
                     <li>Click "PAY WITH SKATE" to execute the on-chain transfer.</li>
@@ -1169,26 +1174,11 @@
                 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeVslg2A5LvTrT_NYUTpN5DBRIrOfCkprRyHDKQagmg60XTsA/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
             </div>
         </div>
-        <div class="border-t border-zinc-800 pt-4 flex gap-3">
+        
+        <div style="border-top: 1px solid #333; padding-top: 20px; display: flex; gap: 15px;">
             <button onclick="window.backToCart()" class="wallet-btn" style="flex: 1; background: transparent; border: 1px solid #888; color: #888;">BACK</button>
             <button onclick="window.executeSkatePayment()" class="wallet-btn" style="flex: 2; background: var(--accent-cyan); color: #000;">PAY WITH SKATE</button>
         </div>
-    </div>
-</div>
-
-<div id="add-category-modal" class="modal-overlay" style="z-index: 2020;">
-    <div class="modal-content cyber-yellow-frame" style="max-width: 400px; background: #050a1a;">
-        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.2rem;">ADD CATEGORY</h3>
-            <button onclick="window.toggleModal('add-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
-        </div>
-        <form id="add-category-form" onsubmit="window.handleAddCategory(event)" class="space-y-4 text-left">
-            <div>
-                <label class="block text-zinc-400 mb-1 font-mono text-xs">NEW CATEGORY NAME</label>
-                <input type="text" id="new-category-name" required placeholder="e.g. COLLECTIBLES" class="shop-input" style="text-transform: uppercase;">
-            </div>
-            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 5px;">CREATE CATEGORY</button>
-        </form>
     </div>
 </div>
 
