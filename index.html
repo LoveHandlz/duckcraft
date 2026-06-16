@@ -2854,8 +2854,39 @@ if (allActions.length > 0) {
 
     window.toggleModal = (modalId, show) => { const modal = document.getElementById(modalId); if (show) { modal.style.display = 'flex'; if(modalId === 'cart-modal') renderCartContents(); } else { modal.style.display = 'none'; } };
 
-   window.openProductDetail = async (id) => {
-        const item = window.mockInventory.find(p => p.id === id); if(!item) return; let actionButtonsHtml = ""; const activeActor = currentSession ? currentSession.actor.toString() : null;
+  window.openProductDetail = async (id) => {
+        const item = window.mockInventory.find(p => p.id === id); 
+        if(!item) return; 
+
+        // 1. Immediately Draw the Modal with a "Loading" State
+        const content = document.getElementById("detail-modal-content");
+        content.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                <h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyan); text-transform: uppercase; margin: 0;">${item.title}</h3>
+                <button onclick="window.toggleModal('product-detail-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1;">&times;</button>
+            </div>
+            <div style="width: 100%; background: #000; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--card-border); border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; height: 300px;">
+                ${item.isGated ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; z-index: 10; transform: rotate(-3deg);">🔒 TOKEN GATED</div>` : ''}
+                ${item.type === 'video' ? `<video src="${item.src}" autoplay loop muted playsinline style="max-height: 95%; max-width: 95%; object-fit: contain;"></video>` : `<img src="${item.src}" style="max-height: 95%; max-width: 95%; object-fit: contain;">`}
+            </div>
+            <p style="font-size: 0.85rem; color: #ccc; margin-bottom: 25px; line-height: 1.6; font-family: 'Inter'; text-align: left;">${item.desc}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px dashed #333; padding-top: 15px;">
+                <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE</span>
+                <div id="dynamic-action-zone" style="flex-grow: 1; max-width: 60%; display: flex; justify-content: flex-end;">
+                    <button disabled class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-cyan); color: var(--accent-cyan); padding: 12px 20px; font-size: 0.75rem; text-align: center;">
+                        📡 VERIFYING ON-CHAIN CLEARANCE...
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Modal opens instantly. No waiting.
+        window.toggleModal('product-detail-modal', true);
+
+        // 2. Perform the Heavy Blockchain API Checks in the Background
+        const activeActor = currentSession ? currentSession.actor.toString() : null;
+        let actionButtonsHtml = "";
+
         if (item.isGated) {
             let userHoldsNFT = false; 
             if (activeActor) {
@@ -2871,29 +2902,26 @@ if (allActions.length > 0) {
                         const boardJson = await boardRes.json();
                         if (boardJson.data) { userHoldsNFT = boardJson.data.some(asset => (asset.data && asset.data.deck === item.gateDeckTrait) || (asset.template && asset.template.immutable_data && asset.template.immutable_data.deck === item.gateDeckTrait)); }
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.error("Token Gate API Check Failed:", e);
+                }
             }
-            if (activeActor && userHoldsNFT) { actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`; } 
-            else { actionButtonsHtml = `<div style="display: flex; gap: 10px; width: 100%;"><button disabled class="wallet-btn" style="flex: 1; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">🔒 NFT REQUIRED</button><button onclick="window.open('${item.gateLink}', '_blank')" class="wallet-btn" style="flex: 1; background: var(--accent-pink); color: #000; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">BUY ACCESS NFT</button></div>`; }
-        } else { actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`; }
+            
+            // 3. Resolve State and Update UI Dynamically
+            if (activeActor && userHoldsNFT) { 
+                actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`; 
+            } else { 
+                actionButtonsHtml = `<div style="display: flex; gap: 10px; width: 100%;"><button disabled class="wallet-btn" style="flex: 1; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">🔒 NFT REQUIRED</button><button onclick="window.open('${item.gateLink}', '_blank')" class="wallet-btn" style="flex: 1; background: var(--accent-pink); color: #000; padding: 12px 10px; font-size: 0.8rem; text-align: center; white-space: normal;">BUY ACCESS NFT</button></div>`; 
+            }
+        } else { 
+            actionButtonsHtml = `<button onclick="window.addToCart(${item.id})" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 12px 30px;">ADD TO CART</button>`; 
+        }
 
-        const content = document.getElementById("detail-modal-content");
-        content.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
-                <h3 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyan); text-transform: uppercase; margin: 0;">${item.title}</h3>
-                <button onclick="window.toggleModal('product-detail-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1;">&times;</button>
-            </div>
-            <div style="width: 100%; background: #000; overflow: hidden; margin-bottom: 15px; border: 1px solid var(--card-border); border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; height: 300px;">
-                ${item.isGated ? `<div style="position: absolute; top: 10px; right: 10px; background: var(--accent-pink); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 0.65rem; padding: 4px 8px; border: 1px solid #000; z-index: 10; transform: rotate(-3deg);">🔒 TOKEN GATED</div>` : ''}
-                ${item.type === 'video' ? `<video src="${item.src}" autoplay loop muted playsinline style="max-height: 95%; max-width: 95%; object-fit: contain;"></video>` : `<img src="${item.src}" style="max-height: 95%; max-width: 95%; object-fit: contain;">`}
-            </div>
-            <p style="font-size: 0.85rem; color: #ccc; margin-bottom: 25px; line-height: 1.6; font-family: 'Inter'; text-align: left;">${item.desc}</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px dashed #333; padding-top: 15px;">
-                <span style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; color: var(--accent-gold);">${item.price.toLocaleString()} SKATE</span>
-                <div style="flex-grow: 1; max-width: 60%; display: flex; justify-content: flex-end;">${actionButtonsHtml}</div>
-            </div>
-        `;
-        window.toggleModal('product-detail-modal', true);
+        // 4. Inject the final buttons replacing the loader
+        const actionZone = document.getElementById("dynamic-action-zone");
+        if (actionZone) {
+            actionZone.innerHTML = actionButtonsHtml;
+        }
     };
 
     window.addToCart = (id) => { const item = window.mockInventory.find(p => p.id === id); if(!item) return; const cartIndex = cart.findIndex(c => c.id === id); if (cartIndex > -1) cart[cartIndex].quantity += 1; else cart.push({ ...item, quantity: 1 }); updateCartMetrics(); window.toggleModal('product-detail-modal', false); window.toggleModal('cart-modal', true); };
