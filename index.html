@@ -1079,52 +1079,47 @@
         <!-- ========================================== -->
 <!-- 🛑 START OF WAX COLLAB WEB3 SHOP 🛑        -->
 <!-- ========================================== -->
-
-    <div class="dashboard-wrapper" id="web3-shop-wrapper" style="display: none;">
+<div class="dashboard-wrapper" id="web3-shop-wrapper" style="display: none;">
     <div style="width: 100%;">
         
-        <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0; flex-wrap: wrap; gap: 10px;">
-            <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px;">sk8shop<span>.</span></h1>
-            
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
-                    🛒 CART (<span id="cart-count">0</span>)
-                </button>
-            </div>
-        </div>
+       <div style="background: rgba(0, 0, 0, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-cyan); border-radius: 15px 15px 0 0; flex-wrap: wrap; gap: 10px;">
+    <h1 style="margin: 0; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--accent-cyan); text-transform: lowercase; letter-spacing: 2px;">sk8shop<span>.</span></h1>
+    
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        
+        <!-- CART BUTTON -->
+        <button onclick="window.toggleModal('cart-modal', true)" class="wallet-btn" style="background: var(--accent-gold); color: #000;">
+            🛒 CART (<span id="cart-count">0</span>)
+        </button>
+
+       
+    </div>
+</div>
         
         <div style="padding: 20px;">
-            
-            <section id="admin-panel" class="cyber-yellow-frame" style="display: none; background: var(--bg-panel); border-radius: 12px; padding: 25px; margin-bottom: 40px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+           <section id="admin-panel" class="cyber-yellow-frame" style="display: none; background: var(--bg-panel); border-radius: 12px; padding: 25px; margin-bottom: 40px;">
+                <div class="flex justify-between items-center mb-4" style="flex-wrap: wrap; gap: clamp(20px, 4vw, 40px);">
                     <div>
-                        <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow); letter-spacing: 1px; margin: 0 0 5px 0;">⚡ SHOP ADMIN TERMINAL</h2>
-                        <p style="font-size: 0.75rem; color: #888; font-family: 'Inter'; margin: 0;">Authenticated as: <span id="admin-wallet-display" style="color: #fff; font-weight: bold;"></span></p>
+                        <h2 style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: var(--accent-cyber-yellow); letter-spacing: 1px;">⚡ SHOP ADMIN TERMINAL</h2>
+                        <p class="text-xs text-zinc-400 mt-1 font-mono">Authenticated as: <span id="admin-wallet-display" class="text-zinc-200"></span></p>
                     </div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); font-size: 0.75rem; padding: 10px;">
-                            + CATEGORY
-                        </button>
-                        <button onclick="window.openRemoveCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); font-size: 0.75rem; padding: 10px;">
-                            - CATEGORY
-                        </button>
-                        <button onclick="window.exportToIPFS()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; padding: 10px;">
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="window.exportToIPFS()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.85rem;">
                             💾 EXPORT JSON
                         </button>
-                        <button onclick="window.openAddModal()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.75rem; padding: 10px;">
+                        <button onclick="window.openAddModal()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.85rem;">
                             + INJECT NEW INVENTORY
                         </button>
                     </div>
                 </div>
             </section>
-            
             <section>
                 <div id="category-tabs-container" style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;"></div>
                 
-                <div id="products-grid" class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));"></div>
+                <div id="products-grid" class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr);"></div>
                 
-                <div id="load-more-container" class="mt-12 flex justify-center hidden" style="display: none; text-align: center; margin-top: 30px;">
-                    <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 10px 20px;">
+                <div id="load-more-container" class="mt-12 flex justify-center hidden">
+                    <button onclick="window.expandFeed()" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">
                         ▼ LOAD MORE COMPONENTS ▼
                     </button>
                 </div>
@@ -1135,21 +1130,21 @@
 
 <div id="product-detail-modal" class="modal-overlay" style="z-index: 2010;">
     <div class="modal-content" style="max-width: 500px; border-color: var(--accent-cyan);">
-        <div id="detail-modal-content" style="text-align: left;"></div>
+        <div id="detail-modal-content" class="text-left"></div>
     </div>
 </div>
 
 <div id="cart-modal" class="modal-overlay" style="z-index: 2010;">
     <div class="modal-content" style="max-width: 450px; border-color: var(--accent-gold);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); font-size: 1.5rem; letter-spacing: 2px; margin:0;">THE TRICK BAG</h3>
-            <button onclick="window.toggleModal('cart-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
+            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-gold); font-size: 1.5rem; letter-spacing: 2px;">THE TRICK BAG</h3>
+            <button onclick="window.toggleModal('cart-modal', false)" class="text-zinc-500 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
         </div>
-        <div id="cart-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; text-align: left; display: flex; flex-direction: column; gap: 10px;"></div>
-        <div style="border-top: 1px solid #333; padding-top: 15px; text-align: left; display: flex; flex-direction: column; gap: 15px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; font-family: 'Orbitron'; font-weight: 900; font-size: 1.1rem;">
+        <div id="cart-items-list" class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-2 text-left"></div>
+        <div class="border-t border-zinc-800 pt-4 space-y-4 text-left">
+            <div class="flex justify-between items-center font-bold text-lg font-mono">
                 <span style="color: #ccc;">TOTAL COST:</span>
-                <span style="color: var(--accent-cyan);"><span id="cart-total-price">0</span> SKATE</span>
+                <span style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900;"><span id="cart-total-price">0</span> SKATE</span>
             </div>
             <button onclick="window.openShippingModal()" id="checkout-next-btn" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px;">
                 PROCEED TO SHIPPING
@@ -1162,9 +1157,9 @@
     <div class="modal-content" style="max-width: 500px; border-color: var(--accent-pink);">
         <h2 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); margin-bottom: 10px; font-size: 1.5rem; letter-spacing: 2px;">SHIPPING PROTOCOL</h2>
         <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 20px; text-align: left;">Secure your logistics off-chain before signing the transaction.</p>
-        <div style="margin-bottom: 20px; text-align: left;">
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <ol style="margin: 0; padding-left: 20px; color: #888; font-size: 0.85rem; font-family: 'Inter'; display: flex; flex-direction: column; gap: 8px;">
+        <div class="space-y-4 text-sm text-zinc-300 mb-6 text-left">
+            <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px;">
+                <ol class="list-decimal list-inside space-y-2 text-xs text-zinc-400 font-mono">
                     <li>Fill out the secure manifest below.</li>
                     <li>Submit your coordinates.</li>
                     <li>Click "PAY WITH SKATE" to execute the on-chain transfer.</li>
@@ -1174,7 +1169,7 @@
                 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeVslg2A5LvTrT_NYUTpN5DBRIrOfCkprRyHDKQagmg60XTsA/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
             </div>
         </div>
-        <div style="border-top: 1px solid #333; padding-top: 15px; display: flex; gap: 10px;">
+        <div class="border-t border-zinc-800 pt-4 flex gap-3">
             <button onclick="window.backToCart()" class="wallet-btn" style="flex: 1; background: transparent; border: 1px solid #888; color: #888;">BACK</button>
             <button onclick="window.executeSkatePayment()" class="wallet-btn" style="flex: 2; background: var(--accent-cyan); color: #000;">PAY WITH SKATE</button>
         </div>
@@ -1183,97 +1178,66 @@
 
 <div id="add-category-modal" class="modal-overlay" style="z-index: 2020;">
     <div class="modal-content cyber-yellow-frame" style="max-width: 400px; background: #050a1a;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.2rem; margin:0;">ADD CATEGORY</h3>
-            <button onclick="window.toggleModal('add-category-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.2rem;">ADD CATEGORY</h3>
+            <button onclick="window.toggleModal('add-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
         </div>
-        <form id="add-category-form" onsubmit="window.handleAddCategory(event)" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+        <form id="add-category-form" onsubmit="window.handleAddCategory(event)" class="space-y-4 text-left">
             <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px;">NEW CATEGORY NAME</label>
-                <input type="text" id="new-category-name" required placeholder="e.g. COLLECTIBLES" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; text-transform: uppercase;">
+                <label class="block text-zinc-400 mb-1 font-mono text-xs">NEW CATEGORY NAME</label>
+                <input type="text" id="new-category-name" required placeholder="e.g. COLLECTIBLES" class="shop-input" style="text-transform: uppercase;">
             </div>
-            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px;">CREATE CATEGORY</button>
+            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 5px;">CREATE CATEGORY</button>
         </form>
     </div>
 </div>
 
 <div id="remove-category-modal" class="modal-overlay" style="z-index: 2020;">
     <div class="modal-content" style="max-width: 400px; background: #050a1a; border-color: var(--accent-pink);">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); font-size: 1.2rem; margin:0;">REMOVE CATEGORY</h3>
-            <button onclick="window.toggleModal('remove-category-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); font-size: 1.2rem;">REMOVE CATEGORY</h3>
+            <button onclick="window.toggleModal('remove-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
         </div>
-        <form id="remove-category-form" onsubmit="window.handleRemoveCategory(event)" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+        <form id="remove-category-form" onsubmit="window.handleRemoveCategory(event)" class="space-y-4 text-left">
             <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px;">SELECT CATEGORY TO DELETE</label>
-                <select id="remove-category-select" required style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none;"></select>
+                <label class="block text-zinc-400 mb-1 font-mono text-xs">SELECT CATEGORY TO DELETE</label>
+                <select id="remove-category-select" required class="shop-input py-3"></select>
             </div>
-            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px;">DELETE CATEGORY</button>
+            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; margin-top: 5px;">DELETE CATEGORY</button>
         </form>
     </div>
 </div>
 
 <div id="add-item-modal" class="modal-overlay" style="z-index: 2020;">
-    <div class="modal-content cyber-yellow-frame" style="max-width: 550px; background: #050a1a;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
-            <h3 id="add-edit-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem; margin: 0; letter-spacing: 1px;">INJECT INVENTORY</h3>
-            <button onclick="window.toggleModal('add-item-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s;">&times;</button>
+    <div class="modal-content cyber-yellow-frame" style="max-width: 500px; background: #050a1a;">
+        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+            <h3 id="add-edit-modal-title" style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.4rem;">INJECT INVENTORY</h3>
+            <button onclick="window.toggleModal('add-item-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
         </div>
-        <form id="add-item-form" onsubmit="window.handleAddItem(event)" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
-            <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">COMPONENT TITLE</label>
-                <input type="text" id="form-title" required style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+        <form id="add-item-form" onsubmit="window.handleAddItem(event)" class="space-y-4 text-left">
+            <div><label class="block text-zinc-400 mb-1 font-mono text-xs">COMPONENT TITLE</label><input type="text" id="form-title" required class="shop-input"></div>
+            <div><label class="block text-zinc-400 mb-1 font-mono text-xs">SPECIFICATIONS</label><textarea id="form-desc" required rows="2" class="shop-input"></textarea></div>
+            <div class="grid grid-cols-3 gap-4">
+                <div><label class="block text-zinc-400 mb-1 font-mono text-xs">$SKATE PRICE</label><input type="text" id="form-price" required placeholder="e.g. 2,500.00" class="shop-input"></div>
+                <div><label class="block text-zinc-400 mb-1 font-mono text-xs">CATEGORY</label><select id="form-category" class="shop-input py-3" style="padding-top: 15px; padding-bottom: 15px;"></select></div>
+                <div><label class="block text-zinc-400 mb-1 font-mono text-xs">MEDIA FORMAT</label><select id="form-media-type" class="shop-input py-3" style="padding-top: 15px; padding-bottom: 15px;"><option value="image">IPFS Image</option><option value="video">IPFS Video</option></select></div>
             </div>
-            <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">SPECIFICATIONS</label>
-                <textarea id="form-desc" required rows="2" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';"></textarea>
-            </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 140px;">
-                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">$SKATE PRICE</label>
-                    <input type="text" id="form-price" required placeholder="e.g. 2500.00" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+            <div><label class="block text-zinc-400 mb-1 font-mono text-xs">CID / SOURCE URL</label><input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." class="shop-input"></div>
+            <div style="background: rgba(255,0,85,0.05); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 15px; margin-top: 15px;">
+                <div class="flex justify-between items-center">
+                    <div><span style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem;">🔒 TOKEN GATE ITEM</span></div>
+                    <label class="toggle-switch"><input type="checkbox" id="form-is-gated" onchange="window.toggleGateFields()"><span class="slider"></span></label>
                 </div>
-                <div style="flex: 1; min-width: 140px;">
-                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">CATEGORY</label>
-                    <select id="form-category" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';"></select>
-                </div>
-                <div style="flex: 1; min-width: 140px;">
-                    <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">MEDIA FORMAT</label>
-                    <select id="form-media-type" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                        <option value="image">IPFS Image</option>
-                        <option value="video">IPFS Video</option>
-                    </select>
+                <div id="gate-fields-container" style="display: none; margin-top: 15px; border-top: 1px dashed var(--accent-pink); padding-top: 15px;">
+                    <div class="mb-3"><label class="block text-zinc-400 mb-1 font-mono text-xs">WAX TEMPLATE ID REQUIRED</label><input type="text" id="form-gate-template" placeholder="e.g. 123456" class="shop-input" style="padding: 10px;"></div>
+                    <div class="mb-3"><label class="block text-zinc-400 mb-1 font-mono text-xs">OR REQUIRED DECK TRAIT</label><input type="text" id="form-gate-trait" placeholder="e.g. Sovereign Deck v1" class="shop-input" style="padding: 10px;"></div>
+                    <div><label class="block text-zinc-400 mb-1 font-mono text-xs">MARKETPLACE PURCHASE LINK</label><input type="text" id="form-gate-link" placeholder="https://wax.atomichub.io/market..." class="shop-input" style="padding: 10px;"></div>
                 </div>
             </div>
-            <div>
-                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">CID / SOURCE URL</label>
-                <input type="text" id="form-media-url" required placeholder="https://ipfs.io/ipfs/..." style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-            </div>
-            <div style="background: rgba(255,0,85,0.05); border: 1px solid var(--accent-pink); border-radius: 8px; padding: 15px; margin-top: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-family: 'Orbitron'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem;">🔒 TOKEN GATE ITEM</span>
-                    <input type="checkbox" id="form-is-gated" onchange="window.toggleGateFields()" style="transform: scale(1.5); accent-color: var(--accent-pink); cursor: pointer; margin-right: 5px;">
-                </div>
-                <div id="gate-fields-container" style="display: none; flex-direction: column; gap: 12px; margin-top: 15px; border-top: 1px dashed var(--accent-pink); padding-top: 15px;">
-                    <div>
-                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">WAX TEMPLATE ID REQUIRED</label>
-                        <input type="text" id="form-gate-template" placeholder="e.g. 123456" style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                    </div>
-                    <div>
-                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">OR REQUIRED DECK TRAIT</label>
-                        <input type="text" id="form-gate-trait" placeholder="e.g. Sovereign Deck v1" style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                    </div>
-                    <div>
-                        <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">MARKETPLACE PURCHASE LINK</label>
-                        <input type="text" id="form-gate-link" placeholder="https://wax.atomichub.io/market..." style="width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
-                    </div>
-                </div>
-            </div>
-            <button id="add-edit-submit-btn" type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 10px; font-size: 1.1rem; border-radius: 4px;">DEPLOY TO LEDGER</button>
+            <button id="add-edit-submit-btn" type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 15px;">DEPLOY TO LEDGER</button>
         </form>
     </div>
 </div>
-      
 <!-- ========================================== -->
 <!-- 🛑 END OF WAX COLLAB WEB3 SHOP 🛑          -->
 <!-- ========================================== -->
@@ -2721,31 +2685,15 @@ if (allActions.length > 0) {
     };
 
     window.initShopData = async () => {
-        let finalInventoryData = seedInventory;
-        const savedInvData = localStorage.getItem(STORAGE_KEY);
-        
-        // PRIORITY 1: Local Browser Memory (Protects your active admin edits)
-        if (savedInvData && savedInvData !== "[]") {
-            finalInventoryData = JSON.parse(savedInvData);
-        } 
-        // PRIORITY 2: Master IPFS Ledger (Downloads baseline for new users)
-        else if (GLOBAL_IPFS_CID) {
-            try { 
-                const res = await fetch(`https://jade-rapid-flea-523.mypinata.cloud/ipfs/${GLOBAL_IPFS_CID}`); 
-                if (res.ok) { 
-                    finalInventoryData = await res.json(); 
-                } 
-            } catch(e) {
-                console.error("IPFS Fetch Failed. Booting from Seed Data.");
-            }
+        let finalInventoryData = seedInventory; let loadedFromIPFS = false;
+        if (GLOBAL_IPFS_CID) {
+            try { const res = await fetch(`https://ipfs.io/ipfs/${GLOBAL_IPFS_CID}`); if (res.ok) { finalInventoryData = await res.json(); loadedFromIPFS = true; } } catch(e) {}
         }
-        
+        if (!loadedFromIPFS) {
+            const savedInvData = localStorage.getItem(STORAGE_KEY); if (savedInvData) finalInventoryData = JSON.parse(savedInvData);
+        }
         window.mockInventory = hydrateInventory(finalInventoryData);
-        window.extractCategories(); 
-        evaluateShopAdminStatus(); 
-        window.renderCategoryTabs(); 
-        window.updateCategoryDropdown(); 
-        window.renderShopGrid();
+        window.extractCategories(); evaluateShopAdminStatus(); window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
     };
 
     window.initShopData();
@@ -2758,9 +2706,7 @@ if (allActions.length > 0) {
         document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
     };
 
- let _lastAdminState = false;
-    
-    function evaluateShopAdminStatus() {
+   function evaluateShopAdminStatus() {
         const actorName = currentSession ? currentSession.actor.toString() : null;
         const isAdmin = actorName && shopAdminWallets.includes(actorName);
         const panel = document.getElementById("admin-panel"); 
@@ -2772,16 +2718,24 @@ if (allActions.length > 0) {
         } else if (panel) { 
             panel.style.display = "none"; 
         }
-
-        // THE FIX: If their admin status changes (like when they log in), 
-        // force the entire shop and categories to rebuild instantly.
-        if (isAdmin !== _lastAdminState) {
-            _lastAdminState = isAdmin;
-            window.renderCategoryTabs();
-            window.updateCategoryDropdown();
-            window.renderShopGrid(); 
-        }
     }
+
+    // Automatically check for Shop Admin status if the user logs in using your normal site button
+    setInterval(() => { evaluateShopAdminStatus(); }, 2000);
+
+    window.renderCategoryTabs = () => {
+        const container = document.getElementById("category-tabs-container"); if (!container) return; container.innerHTML = "";
+        const actorName = currentSession ? currentSession.actor.toString() : null; const isAdmin = actorName && shopAdminWallets.includes(actorName);
+        container.innerHTML += `<button onclick="window.setShopCategory('ALL')" class="wallet-btn" style="background: ${currentShopCategory === 'ALL' ? 'var(--accent-cyan)' : 'transparent'}; color: ${currentShopCategory === 'ALL' ? '#000' : 'var(--accent-cyan)'}; border: 1px solid var(--accent-cyan); padding: 8px 15px; font-size: 0.8rem;">ALL</button>`;
+        window.shopCategories.forEach(cat => {
+            const isActive = currentShopCategory === cat;
+            container.innerHTML += `<button onclick="window.setShopCategory('${cat}')" class="wallet-btn" style="background: ${isActive ? 'var(--accent-cyan)' : 'transparent'}; border: 1px solid var(--accent-cyan); color: ${isActive ? '#000' : 'var(--accent-cyan)'}; padding: 8px 15px; font-size: 0.8rem;">${cat}</button>`;
+        });
+        if (isAdmin) {
+            container.innerHTML += `<button onclick="window.openAddCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-cyber-yellow); color: var(--accent-cyber-yellow); padding: 8px 15px; font-size: 0.8rem;">+ CATEGORY</button>`;
+            container.innerHTML += `<button onclick="window.openRemoveCategoryModal()" class="wallet-btn" style="background: transparent; border: 1px dashed var(--accent-pink); color: var(--accent-pink); padding: 8px 15px; font-size: 0.8rem;">- CATEGORY</button>`;
+        }
+    };
 
     window.updateCategoryDropdown = () => { const select = document.getElementById("form-category"); if (select) { select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join(''); } };
 
@@ -2869,17 +2823,7 @@ if (allActions.length > 0) {
         saveInventoryState(); window.extractCategories(); document.getElementById("add-item-form").reset(); document.getElementById('gate-fields-container').style.display = 'none'; window.toggleModal('add-item-modal', false); window.renderCategoryTabs(); window.updateCategoryDropdown(); window.renderShopGrid();
     };
 
-    window.toggleModal = (modalId, show) => { 
-        const modal = document.getElementById(modalId); 
-        if (show) { 
-            modal.style.display = 'flex'; 
-            document.body.style.overflow = 'hidden'; // Locks the background
-            if(modalId === 'cart-modal') renderCartContents(); 
-        } else { 
-            modal.style.display = 'none'; 
-            document.body.style.overflow = ''; // Restores the background
-        } 
-    };
+    window.toggleModal = (modalId, show) => { const modal = document.getElementById(modalId); if (show) { modal.style.display = 'flex'; if(modalId === 'cart-modal') renderCartContents(); } else { modal.style.display = 'none'; } };
 
     window.openProductDetail = async (id) => {
         const item = window.mockInventory.find(p => p.id === id); if(!item) return; let actionButtonsHtml = ""; const activeActor = currentSession ? currentSession.actor.toString() : null;
