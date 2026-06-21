@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> sk8coin | sk8dao v3.0.1 </title>
+    <title> sk8coin | sk8dao v3.0.0 </title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -298,10 +298,7 @@
         /* --- PRIVATE FEED & PAYWALL --- */
         .feed-container { margin-top: 40px; position: relative; width: 100%; border-top: 1px dashed rgba(0,240,255,0.3); padding-top: 30px; }
         .post-create-box { background: rgba(0,240,255,0.05); padding: 20px; border-radius: 8px; border: 1px solid var(--accent-cyan); margin-bottom: 30px; display: none; text-align: left; }
-        .feed-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        @media (max-width: 1200px) { .feed-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 900px) { .feed-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .feed-grid { grid-template-columns: 1fr; } }
+        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
         .feed-grid-item { background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid #333; transition: 0.3s; overflow: hidden; display: flex; flex-direction: column; }
         .feed-grid-item:hover { border-color: var(--accent-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.15); transform: translateY(-3px); }
         .feed-grid-media { width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222; }
@@ -1446,59 +1443,42 @@
                     <p id="p-rank-display" style="font-weight:900; font-size: 1.4rem; color: var(--accent-cyan); font-family: 'Orbitron';">GROMMET</p>
                 </div>
 
-               <button id="view-private-feed-btn" class="wallet-btn" 
-        style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); width: 100%; max-width: 300px; padding: 15px;"
-        onclick="window.showPrivateFeed(document.getElementById('p-wallet').innerText)">
-    📹 VIEW PRIVATE FEED
-</button>
-                
-                  <!-- ===================================================== -->
-<!-- PRIVATE FEED - DEDICATED PAGE -->
-<!-- ===================================================== -->
-<div class="dashboard-wrapper" id="private-feed-wrapper" style="display: none; max-width: 1100px; margin: 0 auto;">
+                <button id="view-private-feed-btn" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); width: 100%; max-width: 300px; padding: 15px; font-size: 0.85rem; margin-bottom: 20px;">
+                    📹 VIEW PRIVATE FEED
+                </button>
 
-    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 3px; margin-bottom: 30px;">
-        📹 PRIVATE FEED
-    </h2>
+                <div class="feed-container" id="private-feed-container" style="display: none; margin-top: 10px;">
+                    <h3 style="color:var(--accent-cyan); margin-bottom:20px; font-size: 1.2rem; font-family: 'Orbitron'; font-weight: 900;">📹 ON-CHAIN TIMELINE</h3>
+                    
+                    <div id="post-create-box" class="post-create-box">
+                        <h4 style="color:var(--accent-cyan); font-family: 'Orbitron'; font-size: 0.9rem; margin-bottom: 10px; font-weight: 900;">UPDATE YOUR FEED</h4>
+                        <textarea id="new-post-text" placeholder="What went down today? Land a new trick?" rows="3" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 10px; outline: none;"></textarea>
+                        
+                        <input type="text" id="new-post-link" placeholder="Optional: YouTube or Instagram Reel URL" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 15px; outline: none;">
+                        
+                        <div style="font-size: 0.65rem; color: var(--accent-cyan); font-family: 'Orbitron'; margin-bottom: 10px;">* Broadcast requires a 0.0001 WAX ledger fee.</div>
+                        <button onclick="window.publishToFeed()" id="publish-feed-btn" class="wallet-btn" style="background: var(--accent-cyan); color: #000; border: none; font-size: 0.85rem; padding: 12px 20px;">SIGN & POST TO CHAIN</button>
+                    </div>
 
-    <span id="private-feed-wallet" style="display: none;"></span>
+                    <div id="feed-list-container" style="position: relative; min-height: 300px;">
+                        <div id="feed-paywall-overlay" class="feed-paywall" style="display: none;">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
+                            <h2 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 1px; font-weight: 900; margin-bottom: 10px;">SPONSOR REQUIRED</h2>
+                            <p style="color: #ccc; font-size: 0.85rem; max-width: 400px; margin: 0 auto 20px auto; font-family: 'Inter'; line-height: 1.6;">You must drop a cumulative on-chain blessing of 100 WAX (or 10 $SKATE) to this skater to permanently unlock their private feed.</p>
+                            <button onclick="window.executeOnChainBlessing(document.getElementById('p-wallet').innerText, 100, 'WAX', 'profile-unlock')" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 15px;">UNLOCK FEED (100 WAX)</button>
+                        </div>
 
-    <!-- Post box -->
-    <div id="post-create-box" class="post-create-box" style="display: none; margin-bottom: 30px;">
-        <h4 style="color:var(--accent-cyan); font-family: 'Orbitron'; font-size: 0.9rem; margin-bottom: 10px; font-weight: 900;">UPDATE YOUR FEED</h4>
-        <textarea id="new-post-text" placeholder="What went down today? Land a new trick?" rows="3" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 10px; outline: none;"></textarea>
-        
-        <input type="text" id="new-post-link" placeholder="Optional: YouTube or Instagram Reel URL" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 15px; outline: none;">
-        
-        <div style="font-size: 0.65rem; color: var(--accent-cyan); font-family: 'Orbitron'; margin-bottom: 10px;">* Broadcast requires a 0.0001 WAX ledger fee.</div>
-        <button onclick="window.publishToFeed()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; border: none; font-size: 0.85rem; padding: 12px 20px;">SIGN & POST TO CHAIN</button>
-    </div>
-
-    <!-- Feed area -->
-    <div id="feed-list-container" style="position: relative; min-height: 300px;">
-        
-        <div id="feed-paywall-overlay" class="feed-paywall" style="display: none;">
-            <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
-            <h2 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 1px; font-weight: 900; margin-bottom: 10px;">SPONSOR REQUIRED</h2>
-            <p style="color: #ccc; font-size: 0.85rem; max-width: 400px; margin: 0 auto 20px auto; font-family: 'Inter'; line-height: 1.6;">
-                You must drop a cumulative on-chain blessing of 100 WAX (or 10 $SKATE) to this skater to unlock their private feed.
-            </p>
-            <button onclick="window.executeOnChainBlessing(document.getElementById('private-feed-wallet').innerText, 100, 'WAX', 'profile-unlock')" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 15px;">
-                UNLOCK FEED (100 WAX)
-            </button>
+                        <div id="actual-feed-items" class="feed-grid">
+                            <div style="text-align:center; padding: 40px; color: #888; font-family: 'Orbitron'; grid-column: 1 / -1;">SCANNING BLOCKCHAIN HISTORY...</div>
+                        </div>
+                        
+                        <button id="load-more-feed-btn" class="wallet-btn" style="display:none; margin-top:20px; font-weight:900; padding:15px; width: 100%; background: transparent; border: 1px dashed var(--accent-cyan); color: var(--accent-cyan);" onclick="window.loadMoreFeed()">▼ LOAD MORE POSTS ▼</button>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div id="actual-feed-items" class="feed-grid">
-            <!-- Posts appear here -->
-        </div>
-
-        <button id="load-more-feed-btn" class="wallet-btn" style="display:none; margin-top:30px; font-weight:900; padding:15px; width: 100%; background: transparent; border: 1px dashed var(--accent-cyan); color: var(--accent-cyan);" onclick="window.loadMoreFeed()">
-            ▼ LOAD MORE POSTS ▼
-        </button>
     </div>
-
 </div>
-<!-- ===================================================== -->             
 
 <div id="edit-profile-modal" class="modal-overlay" style="z-index: 2050;">
     <div class="modal-content" style="max-width: 500px; text-align: left; border-color: var(--accent-cyber-yellow); background: #050a1a;">
@@ -1546,54 +1526,6 @@
         </div>
     </div>
 </div>
-                
-                  <!-- ===================================================== -->
-<!-- PRIVATE FEED - DEDICATED PAGE -->
-<!-- ===================================================== -->
-<div class="dashboard-wrapper" id="private-feed-wrapper" style="display: none; max-width: 1100px; margin: 0 auto;">
-
-    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 3px; margin-bottom: 30px;">
-        📹 PRIVATE FEED
-    </h2>
-
-    <span id="private-feed-wallet" style="display: none;"></span>
-
-    <!-- Post box (only shows if it's YOUR feed) -->
-    <div id="post-create-box" class="post-create-box" style="display: none; margin-bottom: 30px;">
-        <h4 style="color:var(--accent-cyan); font-family: 'Orbitron'; font-size: 0.9rem; margin-bottom: 10px; font-weight: 900;">UPDATE YOUR FEED</h4>
-        <textarea id="new-post-text" placeholder="What went down today? Land a new trick?" rows="3" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 10px; outline: none;"></textarea>
-        
-        <input type="text" id="new-post-link" placeholder="Optional: YouTube or Instagram Reel URL" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 15px; outline: none;">
-        
-        <div style="font-size: 0.65rem; color: var(--accent-cyan); font-family: 'Orbitron'; margin-bottom: 10px;">* Broadcast requires a 0.0001 WAX ledger fee.</div>
-        <button onclick="window.publishToFeed()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; border: none; font-size: 0.85rem; padding: 12px 20px;">SIGN & POST TO CHAIN</button>
-    </div>
-
-    <!-- Feed area -->
-    <div id="feed-list-container" style="position: relative; min-height: 300px;">
-        
-        <div id="feed-paywall-overlay" class="feed-paywall" style="display: none;">
-            <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
-            <h2 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 1px; font-weight: 900; margin-bottom: 10px;">SPONSOR REQUIRED</h2>
-            <p style="color: #ccc; font-size: 0.85rem; max-width: 400px; margin: 0 auto 20px auto; font-family: 'Inter'; line-height: 1.6;">
-                You must drop a cumulative on-chain blessing of 100 WAX (or 10 $SKATE) to this skater to unlock their private feed.
-            </p>
-            <button onclick="window.executeOnChainBlessing(document.getElementById('private-feed-wallet').innerText, 100, 'WAX', 'profile-unlock')" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 15px;">
-                UNLOCK FEED (100 WAX)
-            </button>
-        </div>
-
-        <div id="actual-feed-items" class="feed-grid">
-            <!-- Posts appear here -->
-        </div>
-
-        <button id="load-more-feed-btn" class="wallet-btn" style="display:none; margin-top:30px; font-weight:900; padding:15px; width: 100%; background: transparent; border: 1px dashed var(--accent-cyan); color: var(--accent-cyan);" onclick="window.loadMoreFeed()">
-            ▼ LOAD MORE POSTS ▼
-        </button>
-    </div>
-
-</div>
-<!-- ===================================================== -->             
 
 <footer>
     <div class="footer-inner">
@@ -2416,7 +2348,7 @@ if (allActions.length > 0) {
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         if(document.getElementById(`nav-${schema}`)) document.getElementById(`nav-${schema}`).classList.add('active');
         
-       const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper', 'profile-wrapper'];
+        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper'];
         wrappers.forEach(w => { const el = document.getElementById(w); if(el) el.style.display = 'none'; });
 
         if (schema === 'home') { document.getElementById('home-wrapper').style.display = 'block';
@@ -3450,7 +3382,7 @@ if (allActions.length > 0) {
     window.feedRenderLimit = 12;
     window.currentSkaterPosts = [];
 
-   window.renderProfile = async (targetWallet) => {
+    window.renderProfile = async (targetWallet) => {
         document.getElementById('p-name').innerText = "SYNCING LEDGER...";
         document.getElementById('p-wallet').innerText = targetWallet;
         document.getElementById('p-bio').innerText = "Scanning WAX Hyperion nodes...";
@@ -3468,13 +3400,7 @@ if (allActions.length > 0) {
         };
 
         try {
-            // 3 Second Timeout to prevent infinite hang on massive admin wallets
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000);
-            
-            const res = await fetch(`https://api.waxsweden.org/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=150`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            
+            const res = await fetch(`https://api.waxsweden.org/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=150`);
             const json = await res.json();
             
             if (json && json.actions) {
@@ -3490,27 +3416,18 @@ if (allActions.length > 0) {
                     } catch(e) {}
                 }
             }
-        } catch(e) { 
-            console.log("Hyperion Read Timeout - Loading fallback profile to prevent UI freeze.");
-        }
+        } catch(e) { console.error("Profile Sync Error", e); }
 
-        // Write Decrypted Data to UI Safely
-        const nameEl = document.getElementById('p-name');
-        if(nameEl) nameEl.innerText = profileData.name;
+        document.getElementById('p-name').innerText = profileData.name;
+        document.getElementById('p-img').src = profileData.pic;
+        document.getElementById('p-bio').innerText = profileData.bio;
         
-        const imgEl = document.getElementById('p-img');
-        if(imgEl) imgEl.src = profileData.pic;
-        
-        const bioEl = document.getElementById('p-bio');
-        if(bioEl) bioEl.innerText = profileData.bio;
-        
-        const gearEl = document.getElementById('p-gear');
         let gHtml = "";
         if(profileData.stance) gHtml += `<div class="gear-tag"><span>👟</span> ${profileData.stance}</div>`;
         if(profileData.deck) gHtml += `<div class="gear-tag"><span>🛹</span> ${profileData.deck}</div>`;
         if(profileData.trucks) gHtml += `<div class="gear-tag"><span>🔩</span> ${profileData.trucks}</div>`;
         if(profileData.spot) gHtml += `<div class="gear-tag"><span>📍</span> ${profileData.spot}</div>`;
-        if(gearEl) gearEl.innerHTML = gHtml;
+        document.getElementById('p-gear').innerHTML = gHtml;
 
         let rankDisplay = "GROMMET";
         let rankColor = "var(--accent-cyan)";
@@ -3521,15 +3438,11 @@ if (allActions.length > 0) {
         const rankEl = document.getElementById('p-rank-display');
         if(rankEl) { rankEl.innerText = rankDisplay; rankEl.style.color = rankColor; }
 
-        if(gearEl) {
-            gearEl.dataset.stance = profileData.stance || ""; 
-            gearEl.dataset.deck = profileData.deck || "";
-            gearEl.dataset.trucks = profileData.trucks || ""; 
-            gearEl.dataset.spot = profileData.spot || "";
-        }
+        const gearDiv = document.getElementById('p-gear');
+        gearDiv.dataset.stance = profileData.stance || ""; gearDiv.dataset.deck = profileData.deck || "";
+        gearDiv.dataset.trucks = profileData.trucks || ""; gearDiv.dataset.spot = profileData.spot || "";
 
-        const editBtn = document.getElementById('edit-profile-btn');
-        if(editBtn) editBtn.style.display = isOwner ? 'block' : 'none';
+        document.getElementById('edit-profile-btn').style.display = isOwner ? 'block' : 'none';
 
         const existingAdmin = document.getElementById('sk8-admin-panel-wrapper');
         if (existingAdmin) existingAdmin.remove();
@@ -3542,26 +3455,85 @@ if (allActions.length > 0) {
             let btnColor = isBanned ? '#00ffaa' : 'var(--accent-pink)';
             let adminPanelHtml = `<div style="margin-top: 25px; padding: 15px; background: rgba(255, 0, 85, 0.1); border: 1px solid var(--accent-pink); border-radius: 12px; text-align: left;"><h4 style="color: var(--accent-pink); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 10px; font-weight: 900;">⚡ GODMODE: MODERATION</h4><button onclick="window.adminAction('${targetWallet}', '${action}')" class="wallet-btn" style="width:100%; background:${btnColor}; color:#000; padding:10px; font-size: 0.75rem;">${btnText}</button></div>`;
             const wrapper = `<div id="sk8-admin-panel-wrapper">${adminPanelHtml}</div>`;
-            const sidebar = document.querySelector('.profile-sidebar');
-            if(sidebar) sidebar.insertAdjacentHTML('beforeend', wrapper);
+            document.querySelector('.profile-sidebar').insertAdjacentHTML('beforeend', wrapper);
         }
 
-        // Reset and Wire the Private Feed Button
-        const feedBtn = document.getElementById('view-private-feed-btn');
-        const feedContainer = document.getElementById('private-feed-container');
+        // Trigger Feed Load
+        await window.attemptFeedAccess(targetWallet);
+    };
+
+    window.openEditProfileModal = () => {
+        document.getElementById('edit-name').value = document.getElementById('p-name').innerText;
+        document.getElementById('edit-pic').value = document.getElementById('p-img').src;
+        document.getElementById('edit-bio').value = document.getElementById('p-bio').innerText;
         
-        if (feedContainer) feedContainer.style.display = 'none';
+        const d = document.getElementById('p-gear').dataset;
+        document.getElementById('edit-stance').value = d.stance || "";
+        document.getElementById('edit-deck').value = d.deck || "";
+        document.getElementById('edit-trucks').value = d.trucks || ""; 
+        document.getElementById('edit-spot').value = d.spot || "";
         
-        if (feedBtn) {
-            feedBtn.style.display = 'block';
-            feedBtn.innerText = "📹 VIEW PRIVATE FEED";
-            feedBtn.onclick = async () => {
-                feedBtn.innerText = "VERIFYING ON-CHAIN CLEARANCE...";
-                await window.attemptFeedAccess(targetWallet);
-                feedBtn.style.display = 'none';
-                feedContainer.style.display = 'block';
-            };
+        window.toggleModal('edit-profile-modal', true);
+    };
+
+    window.saveProfileWeb3 = async () => {
+        if(!currentSession) return toggleAuthModal();
+        const btn = document.getElementById("save-web3-btn"); 
+        btn.innerText = "AWAITING SIGNATURE...";
+        
+        try {
+            const name = document.getElementById("edit-name").value.trim();
+            const pic = document.getElementById("edit-pic").value.trim();
+            const bio = document.getElementById("edit-bio").value.trim(); 
+            const stance = document.getElementById("edit-stance").value.trim();
+            const deck = document.getElementById("edit-deck").value.trim();
+            const trucks = document.getElementById("edit-trucks").value.trim(); 
+            const spot = document.getElementById("edit-spot").value.trim();
+
+            const pData = JSON.stringify({ sk8: "v1", name, pic, bio, stance, deck, trucks, spot });
+            
+            if (pData.length > 255) { 
+                alert(`Bio or Name too long! Max length is 255 chars.`); 
+                btn.innerText = "SIGN & SAVE TO CHAIN"; 
+                return; 
+            }
+            
+            const sender = currentSession.actor.toString();
+            const actions = [{
+                account: 'eosio.token',
+                name: 'transfer',
+                authorization: [currentSession.permissionLevel],
+                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
+            }];
+
+            await currentSession.transact({ actions });
+            btn.innerText = "IDENTITY SECURED!";
+            setTimeout(() => { 
+                window.toggleModal('edit-profile-modal', false); 
+                window.renderProfile(sender); 
+                btn.innerText = "SIGN & SAVE TO CHAIN"; 
+            }, 2000);
+        } catch (err) { 
+            btn.innerText = "TRANSACTION FAILED";
+            setTimeout(() => btn.innerText = "SIGN & SAVE TO CHAIN", 3000); 
         }
+    };
+
+    window.adminAction = async (targetWallet, action) => {
+        if(!currentSession) return;
+        if(!confirm(`Are you sure you want to execute system action [${action.toUpperCase()}] on skater account ${targetWallet}?`)) return;
+        try {
+            const pData = JSON.stringify({ sk8admin: "v1", action: action, wallet: targetWallet });
+            const actions = [{
+                account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
+                data: { from: currentSession.actor.toString(), to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
+            }];
+            await currentSession.transact({ actions });
+            if(action === 'ban') bannedWallets.push(targetWallet);
+            else bannedWallets = bannedWallets.filter(w => w !== targetWallet);
+            alert(`Account ${action === 'ban' ? 'suspended' : 're-authorized'} successfully.`);
+            window.renderProfile(targetWallet);
+        } catch(e) { alert("Admin action failed. Check resource allocation."); }
     };
 
     // ==========================================
@@ -3765,24 +3737,6 @@ if (allActions.length > 0) {
             alert("Deletion failed."); 
         }
     };
-
-    // === Opens Private Feed on its own dedicated page ===
-window.showPrivateFeed = async function(targetWallet) {
-    // Hide all other pages
-    document.querySelectorAll('.dashboard-wrapper').forEach(function(el) {
-        el.style.display = 'none';
-    });
-    
-    // Show the new Private Feed page
-    document.getElementById('private-feed-wrapper').style.display = 'block';
-    
-    // Save the wallet name for the paywall button
-    document.getElementById('private-feed-wallet').innerText = targetWallet;
-
-    // Load the feed content
-    await window.attemptFeedAccess(targetWallet);
-};
-    
 </script>
 </body>
 </html>
