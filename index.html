@@ -294,6 +294,22 @@
         .profile-pic { width: 100%; max-width: 250px; border-radius: 12px; border: 2px solid var(--accent-cyan); margin-bottom: 20px; object-fit: cover; aspect-ratio: 1/1; background: #000; box-shadow: 0 0 15px rgba(0,240,255,0.2); }
         .gear-tag { display: inline-flex; align-items: center; padding: 6px 12px; background: rgba(255, 234, 0, 0.05); color: #ccc; border-radius: 4px; font-size: 0.7rem; margin: 4px; border: 1px solid rgba(255, 234, 0, 0.3); text-transform: uppercase; font-family: 'Inter'; letter-spacing: 1px; }
         .gear-tag span { font-size: 0.9rem; margin-right: 6px; }
+
+        /* --- PRIVATE FEED & PAYWALL --- */
+        .feed-container { margin-top: 40px; position: relative; width: 100%; border-top: 1px dashed rgba(0,240,255,0.3); padding-top: 30px; }
+        .post-create-box { background: rgba(0,240,255,0.05); padding: 20px; border-radius: 8px; border: 1px solid var(--accent-cyan); margin-bottom: 30px; display: none; text-align: left; }
+        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .feed-grid-item { background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid #333; transition: 0.3s; overflow: hidden; display: flex; flex-direction: column; }
+        .feed-grid-item:hover { border-color: var(--accent-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.15); transform: translateY(-3px); }
+        .feed-grid-media { width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222; }
+        .feed-grid-media iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .feed-platform-icon { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; }
+        .feed-grid-content { padding: 15px; flex: 1; display: flex; flex-direction: column; text-align: left; }
+        .feed-grid-text { font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 10px; flex: 1; word-wrap: break-word; font-family: 'Inter'; }
+        .feed-grid-date { font-size: 0.65rem; color: #888; font-family: 'Orbitron'; margin-bottom: 15px; }
+        
+        .feed-paywall { position: absolute; top: 30px; left: 0; width: 100%; height: calc(100% - 30px); background: rgba(5,10,26,0.85); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 50; text-align: center; border-radius: 8px; border: 2px dashed var(--accent-cyan); padding: 2rem; }
+        .feed-paywall i { font-size: 3rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--accent-cyan)); }
         
         /* EXTREME OVERLAYS PORTED TO SK8DAO PALETTE */
         .viral-fire { border-color: var(--accent-pink) !important; animation: fire-pulse 1s infinite alternate; }
