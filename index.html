@@ -331,7 +331,9 @@
         #dapp-back-btn { display: none; position: fixed; top: 120px; left: 40px; z-index: 999; background: rgba(0,0,0,0.85); color: var(--accent-cyber-yellow); border: 2px solid var(--accent-cyber-yellow); padding: 12px 25px; font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 900; cursor: pointer; backdrop-filter: blur(8px); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: 0.2s; }
         #dapp-back-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 25px var(--accent-cyber-yellow); }
 
-      /* Complete Mobile Optimization Block */
+     /* ========================================== */
+        /* 📱 COMPLETE MOBILE OPTIMIZATION BLOCK 📱 */
+        /* ========================================== */
         @media (max-width: 768px) {
             /* 1. Header & Navigation */
             .hamburger { display: block; }
@@ -434,7 +436,18 @@
             #detail-modal-content .wallet-btn {
                 width: 100% !important;
             }
+            
+            /* 9. Profile Layout Override */
+            .profile-layout { 
+                grid-template-columns: 1fr !important; 
+                text-align: center; 
+                gap: 20px; 
+            }
+            .profile-pic { 
+                margin: 0 auto 20px auto; 
+            }
         }
+        
     </style>
 </head>
 <body>
