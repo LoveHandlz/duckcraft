@@ -3715,6 +3715,24 @@ if (allActions.length > 0) {
             alert("Deletion failed."); 
         }
     };
+
+    // === Opens Private Feed on its own dedicated page ===
+window.showPrivateFeed = async function(targetWallet) {
+    // Hide all other pages
+    document.querySelectorAll('.dashboard-wrapper').forEach(function(el) {
+        el.style.display = 'none';
+    });
+    
+    // Show the new Private Feed page
+    document.getElementById('private-feed-wrapper').style.display = 'block';
+    
+    // Save the wallet name for the paywall button
+    document.getElementById('private-feed-wallet').innerText = targetWallet;
+
+    // Load the feed content
+    await window.attemptFeedAccess(targetWallet);
+};
+    
 </script>
 </body>
 </html>
