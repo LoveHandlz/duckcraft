@@ -299,9 +299,9 @@
         #dapp-back-btn { display: none; position: fixed; top: 120px; left: 40px; z-index: 999; background: rgba(0,0,0,0.85); color: var(--accent-cyber-yellow); border: 2px solid var(--accent-cyber-yellow); padding: 12px 25px; font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 900; cursor: pointer; backdrop-filter: blur(8px); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: 0.2s; }
         #dapp-back-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 25px var(--accent-cyber-yellow); }
 
-        /* Mobile specific overrides */
+      /* Complete Mobile Optimization Block */
         @media (max-width: 768px) {
-            /* Existing Header & DAO Overrides */
+            /* 1. Header & Navigation */
             .hamburger { display: block; }
             nav { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(5, 10, 26, 0.98); padding: 20px 0; border-bottom: 2px solid var(--accent-cyber-yellow); }
             nav.nav-active { display: block; }
@@ -312,16 +312,17 @@
             .motion-data-stat { border-right: none; border-bottom: 1px dashed #333; padding-bottom: 10px; margin-bottom: 10px; }
             .motion-data-stat:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-            /* 🛑 WEB3 SHOP MOBILE OPTIMIZATIONS 🛑 */
-            
-            /* 1. Shrink Modal Padding */
+            /* 2. Modals & Popups */
             .modal-content { 
                 padding: 15px !important; 
                 width: 95% !important; 
                 margin: 10px auto; 
             }
-            
-            /* 2. Fix the "Inject Inventory" Form Grid (Stack instead of Squeeze) */
+            #product-detail-modal .modal-content {
+                max-width: 95% !important;
+            }
+
+            /* 3. Inject Inventory Form */
             #add-item-form > div[style*="display: flex"] { 
                 flex-direction: column !important; 
                 gap: 15px !important; 
@@ -330,7 +331,7 @@
                 min-width: 100% !important; 
             }
 
-            /* 3. Fix the Category Tabs (Keep pill-shaped and horizontally scrollable) */
+            /* 4. Category Tabs */
             #category-tabs-container {
                 flex-wrap: nowrap !important;
                 overflow-x: auto !important;
@@ -341,7 +342,7 @@
                 flex-shrink: 0 !important;
             }
 
-            /* 4. Fix Admin Panel Buttons (Grid format to prevent text crushing) */
+            /* 5. Admin Panel */
             #admin-panel > div {
                 flex-direction: column !important;
                 align-items: stretch !important;
@@ -356,11 +357,9 @@
                 width: 100% !important;
                 text-align: center;
                 padding: 12px 5px !important;
-                white-space: normal !important;
-                line-height: 1.3 !important;
             }
 
-            /* 5. Fix Cart Items (Stack text and wide remove button) */
+            /* 6. Cart & Shipping */
             #cart-items-list > div {
                 flex-direction: column !important;
                 align-items: stretch !important;
@@ -372,18 +371,35 @@
                 padding: 12px !important;
             }
 
-            /* 6. Product Detail Buy Button Zone (Stack price and action buttons) */
+            /* 7. Product Cards (Dashboard Grid) */
+            #products-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+
+            /* 8. Detail Modal Content */
+            #detail-modal-content > div[style*="height: 300px"],
+            #detail-modal-content > div[style*="aspect-video"] {
+                height: 200px !important;
+                margin-bottom: 15px !important;
+            }
             #detail-modal-content > div:last-child {
                 flex-direction: column !important;
-                align-items: stretch !important;
                 gap: 15px !important;
+                align-items: center !important;
+                text-align: center !important;
+                border-top: none !important;
             }
+            #detail-modal-content > div:last-child > span {
+                font-size: 1.2rem !important;
+            }
+            #dynamic-action-zone, 
             #detail-modal-content > div:last-child > div {
+                width: 100% !important;
                 max-width: 100% !important;
                 justify-content: stretch !important;
             }
-            #detail-modal-content > div:last-child > div > button,
-            #dynamic-action-zone > button {
+            #detail-modal-content .wallet-btn {
                 width: 100% !important;
             }
         }
@@ -1184,7 +1200,7 @@
                             💾 EXPORT JSON
                         </button>
                         <button onclick="window.openAddModal()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; font-size: 0.85rem;">
-                            + INJECT NEW INVENTORY
+                            + INVENTORY
                         </button>
                     </div>
                 </div>
@@ -1258,16 +1274,34 @@
     </div>
 </div>
 
+<!-- Add Category Modal -->
+<div id="add-category-modal" class="modal-overlay" style="z-index: 2020;">
+    <div class="modal-content" style="max-width: 400px; background: #050a1a; border-color: var(--accent-cyber-yellow);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px;">
+            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.2rem; margin: 0;">➕ CREATE CATEGORY</h3>
+            <button onclick="window.toggleModal('add-category-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1;">&times;</button>
+        </div>
+        <form id="add-category-form" onsubmit="window.handleAddCategory(event)" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+            <div>
+                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">NEW CATEGORY NAME</label>
+                <input type="text" id="new-category-name" required placeholder="e.g. APPAREL" style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';">
+            </div>
+            <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-cyber-yellow); color: #000; padding: 15px; margin-top: 5px;">ADD CATEGORY</button>
+        </form>
+    </div>
+</div>
+
+<!-- Remove Category Modal -->
 <div id="remove-category-modal" class="modal-overlay" style="z-index: 2020;">
     <div class="modal-content" style="max-width: 400px; background: #050a1a; border-color: var(--accent-pink);">
-        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); font-size: 1.2rem;">REMOVE CATEGORY</h3>
-            <button onclick="window.toggleModal('remove-category-modal', false)" class="text-zinc-500 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px;">
+            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-pink); font-size: 1.2rem; margin: 0;">✖ REMOVE CATEGORY</h3>
+            <button onclick="window.toggleModal('remove-category-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1;">&times;</button>
         </div>
-        <form id="remove-category-form" onsubmit="window.handleRemoveCategory(event)" class="space-y-4 text-left">
+        <form id="remove-category-form" onsubmit="window.handleRemoveCategory(event)" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
             <div>
-                <label class="block text-zinc-400 mb-1 font-mono text-xs">SELECT CATEGORY TO DELETE</label>
-                <select id="remove-category-select" required class="shop-input py-3"></select>
+                <label style="display: block; color: #888; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; letter-spacing: 1px;">SELECT CATEGORY TO DELETE</label>
+                <select id="remove-category-select" required style="width: 100%; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; font-family: 'Inter';"></select>
             </div>
             <button type="submit" class="wallet-btn" style="width: 100%; background: var(--accent-pink); color: #000; padding: 15px; margin-top: 5px;">DELETE CATEGORY</button>
         </form>
@@ -2848,15 +2882,15 @@ if (allActions.length > 0) {
 
     window.openAddCategoryModal = () => { document.getElementById("add-category-form").reset(); window.toggleModal("add-category-modal", true); };
 
-    window.handleAddCategory = (event) => {
+   window.handleAddCategory = (event) => {
         event.preventDefault(); const newCat = document.getElementById("new-category-name").value.trim().toUpperCase();
         if (newCat && !window.shopCategories.includes(newCat)) {
             window.shopCategories.push(newCat); window.renderCategoryTabs(); window.updateCategoryDropdown();
             const select = document.getElementById("form-category"); if(select) select.value = newCat;
         }
-        window.toggleModal("add-category-modal", false); window.openAddModal();
+        // Closes the modal peacefully without firing other menus
+        window.toggleModal("add-category-modal", false); 
     };
-
     window.openRemoveCategoryModal = () => {
         const select = document.getElementById("remove-category-select"); select.innerHTML = window.shopCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
         window.toggleModal("remove-category-modal", true);
