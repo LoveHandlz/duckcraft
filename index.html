@@ -3081,6 +3081,125 @@ if (allActions.length > 0) {
             cart = []; updateCartMetrics(); window.toggleModal('shipping-modal', false);
         } catch(e) { console.error(e); alert("Transaction Cancelled or Failed. Please try again."); }
     };
+
+    // ==========================================
+    // 🟢 CRYPTO CLIPS WAX UPGRADE ENGINE 🟢
+    // ==========================================
+
+    // 1. Immutable Video Database (Mapped to WAX addresses)
+    const clipDatabase = [
+        { id: "vid-1", title: "greg valencia", target: "gregval.wam", yt: "TkiDuln_Q28" },
+        { id: "vid-2", title: "Tre Flip Over the Gap", target: "gapkll.wam", yt: "3JZ_D3ELwOQ" },
+        { id: "vid-3", title: "Manuals in the Rain", target: "manuals.wam", yt: "9bZkp7q19f0" },
+        { id: "vid-4", title: "Big Ollie at the Park", target: "vertvic.wam", yt: "kXYiU_JCYtU" },
+        { id: "vid-5", title: "Epic Skate Clips 2026", target: "shredder.wam", yt: "Wg_jwgmwt-U" },
+        { id: "vid-6", title: "Best Skate Videos Year", target: "prosk8.wam", yt: "MFSx4jWmDfY" }
+    ];
+
+    window.globalClipState = {};
+
+    window.renderCryptoClips = () => {
+        const grid = document.getElementById("crypto-clips-grid");
+        if (!grid) return;
+        
+        const activeActor = currentSession ? currentSession.actor.toString() : null;
+        if (!activeActor) {
+            grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #888; font-family: 'Orbitron'; font-weight: 900; padding: 40px; border: 1px dashed #333; border-radius: 8px;">WALLET CONNECTION REQUIRED TO DECRYPT FEED</h3>`;
+            return;
+        }
+
+        let html = "";
+        clipDatabase.forEach(clip => {
+            let vState = window.globalClipState[clip.id] || { totalDonated: 0, reactions: {'🔥':0, '🤮':0, '⭐':0, '🧈':0, '🥩':0, '💪':0} };
+            let rx = vState.reactions;
+            
+            // Unlock logic: If user is logged in, unlock it. In production, this checks if vState.totalDonated > threshold.
+            let unlocked = (activeActor === clip.target || vState.totalDonated > 0 || activeActor) ? true : false;
+            
+            // Evaluate Gamification Overlays
+            let fxClass = "";
+            if (vState.totalDonated >= 1000) fxClass = "god-tier";
+            else if (rx['💪'] >= 10) fxClass = "flex-god";
+            else if (rx['🥩'] >= 10) fxClass = "hall-of-meat";
+            else if (rx['🧈'] >= 10) fxClass = "butter-smooth";
+            else if (rx['⭐'] >= 10) fxClass = "rising-star";
+            else if (rx['🤮'] >= 10) fxClass = "sketchy";
+            else if (rx['🔥'] >= 10) fxClass = "viral-fire";
+
+            html += `
+            <div class="clip-card ${fxClass}" id="${clip.id}">
+                <div class="video-embed-wrapper" style="border: none; border-radius: 0;">
+                    <div class="clip-mask" style="${unlocked ? 'opacity: 0; pointer-events: none;' : ''}">
+                        <span class="lock-icon">🔒</span>
+                        <p>SPONSOR TO UNLOCK</p>
+                    </div>
+                    ${unlocked ? `<iframe src="https://www.youtube.com/embed/${clip.yt}?showinfo=0&controls=1" allowfullscreen></iframe>` : ''}
+                </div>
+                <div class="clip-info">
+                    <div class="clip-title">${clip.title} <span style="font-family:'Inter'; font-size: 0.65rem; color: #888; font-weight: normal; text-transform: lowercase;">${clip.target}</span></div>
+                    
+                    <div class="reaction-container-clip">
+                        <button onclick="executeOnChainBlessing('${clip.target}', 10, 'WAX', '${clip.id}', '🔥')" class="reaction-btn ${rx['🔥']>0?'has-votes':''}" title="10 WAX">🔥 <span>${rx['🔥']}</span></button>
+                        <button onclick="executeOnChainBlessing('${clip.target}', 25, 'WAX', '${clip.id}', '🤮')" class="reaction-btn ${rx['🤮']>0?'has-votes':''}" title="25 WAX">🤮 <span>${rx['🤮']}</span></button>
+                        <button onclick="executeOnChainBlessing('${clip.target}', 50, 'WAX', '${clip.id}', '⭐')" class="reaction-btn ${rx['⭐']>0?'has-votes':''}" title="50 WAX">⭐ <span>${rx['⭐']}</span></button>
+                        <button onclick="executeOnChainBlessing('${clip.target}', 100, 'WAX', '${clip.id}', '🧈')" class="reaction-btn ${rx['🧈']>0?'has-votes':''}" title="100 WAX">🧈 <span>${rx['🧈']}</span></button>
+                        <button onclick="executeOnChainBlessing('${clip.target}', 500, 'SKATE', '${clip.id}', '🥩')" class="reaction-btn ${rx['🥩']>0?'has-votes':''}" title="500 SKATE">🥩 <span>${rx['🥩']}</span></button>
+                        <button onclick="executeOnChainBlessing('${clip.target}', 1000, 'SKATE', '${clip.id}', '💪')" class="reaction-btn ${rx['💪']>0?'has-votes':''}" title="1000 SKATE">💪 <span>${rx['💪']}</span></button>
+                    </div>
+                    
+                    <button class="bless-clip-btn" onclick="executeOnChainBlessing('${clip.target}', 100, 'WAX', '${clip.id}')">🙏 BLESS (100 WAX)</button>
+                </div>
+            </div>`;
+        });
+        
+        grid.innerHTML = html;
+    };
+
+    window.executeOnChainBlessing = async (skaterWallet, amount, tokenSymbol, videoId, reactionType = null) => {
+        if (!currentSession) return toggleAuthModal();
+        const sender = currentSession.actor.toString();
+        if (sender === skaterWallet) return showErrorModal("Wash trading prohibited. You cannot bless your own clip.");
+
+        let contractAccount = tokenSymbol === "SKATE" ? "skatecoinwax" : "eosio.token";
+        let formattedQuantity = tokenSymbol === "SKATE" ? Number(amount).toFixed(4) + " SKATE" : Number(amount).toFixed(8) + " WAX";
+
+        const memoPayload = { sk8spon: "v2.7", post: videoId, amt: Number(amount) };
+        if (reactionType) { memoPayload.action = "reaction"; memoPayload.react = reactionType; } 
+        else { memoPayload.action = "direct_blessing"; }
+
+        try {
+            const actions = [{
+                account: contractAccount,
+                name: "transfer",
+                authorization: [currentSession.permissionLevel],
+                data: { from: sender, to: skaterWallet, quantity: formattedQuantity, memo: JSON.stringify(memoPayload) }
+            }];
+
+            await currentSession.transact({ actions });
+            showSuccessModal("🔥 GLORY SECURED 🔥", `Successfully dropped ${formattedQuantity} to ${skaterWallet}.`);
+            
+            // Optimistic UI Rendering Gamification Data
+            if (!window.globalClipState[videoId]) window.globalClipState[videoId] = { totalDonated: 0, reactions: {'🔥':0, '🤮':0, '⭐':0, '🧈':0, '🥩':0, '💪':0} };
+            if (reactionType) window.globalClipState[videoId].reactions[reactionType]++;
+            window.globalClipState[videoId].totalDonated += Number(amount);
+            
+            updateBalances(sender);
+            renderCryptoClips();
+            
+        } catch (error) {
+            console.error("Transact Error:", error);
+            showErrorModal("Transaction failed or rejected by wallet.");
+        }
+    };
+
+    // Hijack the main routing function to trigger the video render automatically
+    const originalSwitchForClips = window.switchCategory;
+    window.switchCategory = (schema, fromBack = false) => {
+        originalSwitchForClips(schema, fromBack);
+        if (schema === 'clips') {
+            renderCryptoClips();
+        }
+    };
     
 </script>
 </body>
