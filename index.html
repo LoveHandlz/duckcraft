@@ -1446,10 +1446,11 @@
                     <p id="p-rank-display" style="font-weight:900; font-size: 1.4rem; color: var(--accent-cyan); font-family: 'Orbitron';">GROMMET</p>
                 </div>
 
-                <button id="view-private-feed-btn" class="wallet-btn" style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); width: 100%; max-width: 300px; padding: 15px; font-size: 0.85rem; margin-bottom: 20px;">
-                    📹 VIEW PRIVATE FEED
-                </button>
-
+               <button id="view-private-feed-btn" class="wallet-btn" 
+        style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); width: 100%; max-width: 300px; padding: 15px;"
+        onclick="window.showPrivateFeed(document.getElementById('p-wallet').innerText)">
+    📹 VIEW PRIVATE FEED
+</button>
                <!-- ===================================================== -->
 <!-- PRIVATE FEED - DEDICATED PAGE (REPLACED OLD ONE) -->
 <!-- ===================================================== -->
