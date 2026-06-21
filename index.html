@@ -3454,8 +3454,22 @@ if (allActions.length > 0) {
             document.querySelector('.profile-sidebar').insertAdjacentHTML('beforeend', wrapper);
         }
 
-        // Trigger Feed Load
-        await window.attemptFeedAccess(targetWallet);
+        // Reset and Wire the Private Feed Button
+        const feedBtn = document.getElementById('view-private-feed-btn');
+        const feedContainer = document.getElementById('private-feed-container');
+        
+        if (feedContainer) feedContainer.style.display = 'none';
+        
+        if (feedBtn) {
+            feedBtn.style.display = 'block';
+            feedBtn.innerText = "📹 VIEW PRIVATE FEED";
+            feedBtn.onclick = async () => {
+                feedBtn.innerText = "VERIFYING ON-CHAIN CLEARANCE...";
+                await window.attemptFeedAccess(targetWallet);
+                feedBtn.style.display = 'none';
+                feedContainer.style.display = 'block';
+            };
+        }
     };
 
     window.openEditProfileModal = () => {
