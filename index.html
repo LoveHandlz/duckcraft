@@ -1553,17 +1553,35 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
 
-   // === UNIFIED WALLET BUTTON SYNC ===
-window.syncAllWalletButtons = function(session) {
-    const mainBtn = document.getElementById('connect-btn');
-    
-    if (session) {
-        const actorName = session.actor.toString().toUpperCase();
-        if (mainBtn) mainBtn.innerText = actorName;
-    } else {
-        if (mainBtn) mainBtn.innerText = 'CONNECT';
-    }
-};
+ // === UNIFIED WALLET BUTTON SYNC & PROFILE NAV ===
+    window.syncAllWalletButtons = function(session) {
+        const mainBtn = document.getElementById('connect-btn');
+        let profileBtn = document.getElementById('nav-profile-btn');
+        
+        if (session) {
+            const actorName = session.actor.toString().toUpperCase();
+            if (mainBtn) mainBtn.innerText = actorName;
+            
+            // Inject Profile Button dynamically next to connect button
+            if (!profileBtn) {
+                const controls = document.querySelector('.header-controls');
+                const btn = document.createElement('button');
+                btn.id = 'nav-profile-btn';
+                btn.className = 'wallet-btn';
+                btn.style.marginLeft = '10px';
+                btn.style.background = 'var(--accent-cyan)';
+                btn.style.color = '#000';
+                btn.innerText = 'PROFILE';
+                btn.onclick = () => window.navigateToProfile(session.actor.toString());
+                controls.appendChild(btn);
+            } else {
+                profileBtn.style.display = 'inline-block';
+            }
+        } else {
+            if (mainBtn) mainBtn.innerText = 'CONNECT';
+            if (profileBtn) profileBtn.style.display = 'none';
+        }
+    };
     
     window.currentUserMaxVotes = 0; 
 
@@ -3183,10 +3201,10 @@ if (allActions.length > 0) {
     // 🟢 CRYPTO CLIPS WAX UPGRADE ENGINE 🟢
     // ==========================================
 
-    // 1. Immutable Video Database (Mapped to WAX addresses)
+// 1. Immutable Video Database (Mapped to WAX addresses)
     const clipDatabase = [
         { id: "vid-1", title: "greg valencia", target: "gregval.wam", yt: "TkiDuln_Q28" },
-        { id: "vid-2", title: "Tre Flip Over the Gap", target: "gapkll.wam", yt: "3JZ_D3ELwOQ" },
+        { id: "vid-2", title: "Tre Flip Over the Gap", target: "ufuau.wam", yt: "3JZ_D3ELwOQ" }, // <-- Swapped to Admin Wallet
         { id: "vid-3", title: "Manuals in the Rain", target: "manuals.wam", yt: "9bZkp7q19f0" },
         { id: "vid-4", title: "Big Ollie at the Park", target: "vertvic.wam", yt: "kXYiU_JCYtU" },
         { id: "vid-5", title: "Epic Skate Clips 2026", target: "shredder.wam", yt: "Wg_jwgmwt-U" },
@@ -3295,6 +3313,154 @@ if (allActions.length > 0) {
         originalSwitchForClips(schema, fromBack);
         if (schema === 'clips') {
             renderCryptoClips();
+        }
+    };
+
+    // ==========================================
+    // 🟢 DECENTRALIZED IDENTITY ENGINE (WAX) 🟢
+    // ==========================================
+
+    // Dynamic Router for Profile Viewing
+    window.navigateToProfile = (walletAddress) => {
+        // Hide standard categories
+        document.querySelectorAll('.dashboard-wrapper').forEach(w => w.style.display = 'none');
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        
+        // Show Profile
+        document.getElementById('profile-wrapper').style.display = 'block';
+        window.scrollTo(0,0);
+        
+        // Trigger Hyperion Read
+        window.renderProfile(walletAddress);
+    };
+
+    window.renderProfile = async (targetWallet) => {
+        document.getElementById('p-name').innerText = "SYNCING LEDGER...";
+        document.getElementById('p-wallet').innerText = targetWallet;
+        document.getElementById('p-bio').innerText = "Scanning WAX Hyperion nodes...";
+        document.getElementById('p-gear').innerHTML = "";
+        
+        // Setup Base Default Data
+        let profileData = { 
+            name: targetWallet, 
+            pic: "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", 
+            bio: "Decentralized skater running on the SK8 Protocol.", 
+            stance: "", deck: "", trucks: "", spot: "" 
+        };
+
+        try {
+            // Hyperion Scanner: Find all recent transactions by this wallet
+            const res = await fetch(`https://api.waxsweden.org/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=150`);
+            const json = await res.json();
+            
+            if (json && json.actions) {
+                // Find the newest transaction sent BY the user TO skatecoinwax containing the profile JSON
+                const profileUpdate = json.actions.find(a => {
+                    const data = a.act.data;
+                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
+                });
+                
+                if (profileUpdate) {
+                    try {
+                        const parsed = JSON.parse(profileUpdate.act.data.memo);
+                        profileData = { ...profileData, ...parsed };
+                    } catch(e) { console.error("JSON Parsing Error on Memo:", e); }
+                }
+            }
+        } catch(e) { 
+            console.error("Profile Sync Error", e); 
+        }
+
+        // Write Decrypted Data to the UI
+        document.getElementById('p-name').innerText = profileData.name;
+        document.getElementById('p-img').src = profileData.pic;
+        document.getElementById('p-bio').innerText = profileData.bio;
+        
+        let gHtml = "";
+        if(profileData.stance) gHtml += `<div class="gear-tag"><span>👟</span> ${profileData.stance}</div>`;
+        if(profileData.deck) gHtml += `<div class="gear-tag"><span>🛹</span> ${profileData.deck}</div>`;
+        if(profileData.trucks) gHtml += `<div class="gear-tag"><span>🔩</span> ${profileData.trucks}</div>`;
+        if(profileData.spot) gHtml += `<div class="gear-tag"><span>📍</span> ${profileData.spot}</div>`;
+        document.getElementById('p-gear').innerHTML = gHtml;
+
+        // Persist data locally for the Edit Modal
+        const gearDiv = document.getElementById('p-gear');
+        gearDiv.dataset.stance = profileData.stance || "";
+        gearDiv.dataset.deck = profileData.deck || "";
+        gearDiv.dataset.trucks = profileData.trucks || "";
+        gearDiv.dataset.spot = profileData.spot || "";
+
+        // Check if the viewer is the owner
+        const isOwner = currentSession && currentSession.actor.toString() === targetWallet;
+        document.getElementById('edit-profile-btn').style.display = isOwner ? 'block' : 'none';
+    };
+
+    window.openEditProfileModal = () => {
+        document.getElementById('edit-name').value = document.getElementById('p-name').innerText;
+        document.getElementById('edit-pic').value = document.getElementById('p-img').src;
+        document.getElementById('edit-bio').value = document.getElementById('p-bio').innerText;
+        
+        const d = document.getElementById('p-gear').dataset;
+        document.getElementById('edit-stance').value = d.stance || "";
+        document.getElementById('edit-deck').value = d.deck || "";
+        document.getElementById('edit-trucks').value = d.trucks || ""; 
+        document.getElementById('edit-spot').value = d.spot || "";
+        
+        window.toggleModal('edit-profile-modal', true);
+    };
+
+    window.saveProfileWeb3 = async () => {
+        if(!currentSession) return toggleAuthModal();
+        
+        const btn = document.getElementById("save-web3-btn"); 
+        btn.innerText = "AWAITING SIGNATURE...";
+        
+        try {
+            const name = document.getElementById("edit-name").value.trim();
+            const pic = document.getElementById("edit-pic").value.trim();
+            const bio = document.getElementById("edit-bio").value.trim(); 
+            const stance = document.getElementById("edit-stance").value.trim();
+            const deck = document.getElementById("edit-deck").value.trim();
+            const trucks = document.getElementById("edit-trucks").value.trim(); 
+            const spot = document.getElementById("edit-spot").value.trim();
+
+            const pData = JSON.stringify({ sk8: "v1", name, pic, bio, stance, deck, trucks, spot });
+            
+            // WAX limits memos to 256 bytes natively
+            if (pData.length > 255) { 
+                alert(`Bio or Name too long! Please shorten your text to fit the cryptographic ledger. Max length is 255 chars.`); 
+                btn.innerText = "SIGN & SAVE TO CHAIN"; 
+                return; 
+            }
+            
+            const sender = currentSession.actor.toString();
+
+            // We charge a micro-fee to prevent network spam and write the data permanently
+            const actions = [{
+                account: 'eosio.token',
+                name: 'transfer',
+                authorization: [currentSession.permissionLevel],
+                data: { 
+                    from: sender, 
+                    to: 'skatecoinwax', 
+                    quantity: "0.00010000 WAX", 
+                    memo: pData 
+                }
+            }];
+
+            await currentSession.transact({ actions });
+            
+            btn.innerText = "IDENTITY SECURED!";
+            setTimeout(() => { 
+                window.toggleModal('edit-profile-modal', false); 
+                window.renderProfile(sender); 
+                btn.innerText = "SIGN & SAVE TO CHAIN"; 
+            }, 2000);
+            
+        } catch (err) { 
+            console.error(err);
+            btn.innerText = "TRANSACTION FAILED";
+            setTimeout(() => btn.innerText = "SIGN & SAVE TO CHAIN", 3000); 
         }
     };
     
