@@ -273,6 +273,31 @@
         .video-embed-wrapper iframe, .video-embed-wrapper video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .video-embed-wrapper:hover { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2); }
 
+        /* --- CRYPTO CLIPS GAMIFICATION --- */
+        .clip-card { background: var(--bg-panel); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; transition: 0.3s; position: relative; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
+        .clip-card:hover { border-color: var(--accent-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.15); transform: translateY(-3px); }
+        .clip-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, rgba(5,10,26,0.98), rgba(15,26,71,0.95)); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; transition: 0.4s ease; }
+        .clip-mask span.lock-icon { font-size: 2.5rem; margin-bottom: 8px; filter: drop-shadow(0 0 10px var(--accent-pink)); }
+        .clip-mask p { font-size: 0.75rem; letter-spacing: 2px; color: #fff; font-family: 'Orbitron'; font-weight: 900; text-transform: uppercase; margin: 0; }
+        .clip-info { padding: 15px; flex: 1; display: flex; flex-direction: column; text-align: left; }
+        .clip-title { font-family: 'Orbitron'; font-size: 1rem; font-weight: 900; color: var(--accent-cyan); margin-bottom: 10px; border-bottom: 1px dashed rgba(0, 240, 255, 0.2); padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
+        .reaction-container-clip { display: flex; justify-content: space-between; background: rgba(0,0,0,0.6); border-radius: 6px; padding: 8px; margin-bottom: 10px; border: 1px solid #222; }
+        .reaction-btn { background: none; border: none; cursor: pointer; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 2px; filter: grayscale(1) opacity(0.5); transition: 0.2s; }
+        .reaction-btn:hover { filter: none; transform: scale(1.1); }
+        .reaction-btn.has-votes { filter: none; opacity: 1; color: var(--accent-gold); }
+        .bless-clip-btn { background: var(--accent-gold); color: #000; border: none; padding: 12px; border-radius: 6px; font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; cursor: pointer; width: 100%; margin-top: auto; transition: 0.3s; clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%); }
+        .bless-clip-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        
+        /* EXTREME OVERLAYS PORTED TO SK8DAO PALETTE */
+        .viral-fire { border-color: var(--accent-pink) !important; animation: fire-pulse 1s infinite alternate; }
+        @keyframes fire-pulse { 0% { box-shadow: 0 0 10px rgba(255,0,85,0.5), inset 0 0 10px rgba(255,0,85,0.2); } 100% { box-shadow: 0 0 25px rgba(255,0,85,1), inset 0 0 20px rgba(255,0,85,0.6); } }
+        .sketchy { border-color: #00ffaa !important; box-shadow: 0 0 15px rgba(0,255,170,0.5); }
+        .rising-star { border-color: var(--accent-gold) !important; box-shadow: 0 0 20px rgba(255,215,0,0.8); }
+        .butter-smooth { border-color: #fffacd !important; box-shadow: 0 0 20px rgba(255,250,205,0.6); }
+        .hall-of-meat { border-color: #ff3300 !important; box-shadow: 0 0 20px rgba(255,51,0,0.8); }
+        .flex-god { border-color: var(--accent-cyan) !important; box-shadow: 0 0 25px rgba(0,240,255,0.8); }
+        .god-tier { border: 2px solid transparent !important; background-clip: padding-box, border-box !important; background-origin: padding-box, border-box !important; background-image: linear-gradient(var(--bg-panel), var(--bg-panel)), linear-gradient(45deg, var(--accent-gold), #fff, var(--accent-gold), var(--accent-cyan), var(--accent-gold)) !important; background-size: 300% 300% !important; animation: god-shimmer 3s infinite linear; }
+
         /* --- FOOTER & MODALS --- */
         footer { background: rgba(0, 0, 0, 0.95); padding: clamp(20px, 4vw, 40px); margin-top: auto; border-top: 2px solid var(--accent-cyber-yellow); display: flex; justify-content: center; backdrop-filter: blur(10px); }
         .footer-inner { width: 100%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
@@ -792,35 +817,10 @@
 
 <div class="dashboard-wrapper" id="clips-wrapper" style="display: none;">
     <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">CRYPTO CLIPS <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-family:'Orbitron'; color:var(--accent-gold);">// RAW FOOTY</span></h2>
-    <div style="background: rgba(0,0,0,0.7); border: 2px solid var(--accent-gold); border-radius: 8px; position: relative; overflow: hidden; max-width: 900px; margin: 30px auto 0 auto; box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);">
-        <div class="caution-tape"></div>
-        <div style="padding: clamp(25px, 5vw, 50px) clamp(20px, 4vw, 40px); text-align: center;">
-            <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.5rem, 4vw, 2.2rem); letter-spacing: 2px; margin-top: 0;">🚧 UNDER CONSTRUCTION 🚧</h3>
-            <h4 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; margin-bottom: 25px; font-size: clamp(1rem, 3vw, 1.2rem);">THE FUTURE OF TOKENIZED SKATEBOARDING</h4>
-            <p style="color: #ccc; font-size: 1rem; line-height: 1.8; text-align: left; margin-bottom: 20px;">
-                The traditional skate industry is gatekept by corporate sponsors. The <strong>CRYPTO CLIPS</strong> feed is being engineered to shatter that model. We are building the first true peer-to-peer decentralized sponsorship network. 
-            </p>
-            <p style="color: #ccc; font-size: 1rem; line-height: 1.8; text-align: left; margin-bottom: 30px;">
-                Soon, you will be scouting raw, tokenized clips from global skaters and backing them directly. Skaters earn for their bangers, and sponsors earn yield by discovering and fueling the culture. No middlemen. Just the community funding the community.
-            </p>
-
-            <div style="margin: 0 auto 30px auto; max-width: 100%; text-align: center;">
-                <video autoplay loop muted playsinline style="width: 100%; max-height: 400px; object-fit: cover; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.3); margin-bottom: 15px;">
-                    <source src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeia5r4na5xd625seekm3srgl4ccghsoctwubh3qpwkrir52pjnqtpm" type="video/mp4">
-                </video>
-                <button class="wallet-btn" onclick="showErrorModal('Blessing logic connecting in Stage 5.')" style="background: var(--accent-gold); color: #000; font-size: 1.1rem; padding: 12px 30px;">🙏 BLESS THIS CLIP</button>
-            </div>
-
-            <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin-top: 40px; padding-top: 30px; border-top: 1px dashed rgba(255,255,255,0.2);">
-                <div style="color: #888; font-family: 'Orbitron'; font-size: 0.85rem; font-weight: 900; letter-spacing: 2px;">POWERED BY CROSS-CHAIN ARCHITECTURE</div>
-            </div>
-            <div style="display: flex; justify-content: center; align-items: center; gap: 30px; margin-top: 25px;">
-                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana" style="height: 55px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));">
-                <span style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 1.8rem;">X</span>
-                <img src="https://cryptologos.cc/logos/wax-waxp-logo.png" alt="WAX" style="height: 55px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));">
-            </div>
-        </div>
-        <div class="caution-tape"></div>
+    <p style="text-align: center; color: #ccc; font-size: 0.9rem; max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; font-family: 'Inter';">Scout raw talent. Drop on-chain WAX or $SKATE blessings directly into skaters' wallets to unlock footage, trigger global gamification overlays, and earn protocol yield.</p>
+    
+    <div class="dashboard-grid" id="crypto-clips-grid">
+        <h3 style="grid-column: 1/-1; text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; padding: 40px;">CONNECT WALLET TO SYNC FEED...</h3>
     </div>
 </div>
 
