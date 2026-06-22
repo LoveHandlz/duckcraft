@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> sk8coin | sk8dao v3.0.1 </title>
+    <title> sk8coin | sk8dao v3.0.0 </title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bangers&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -273,57 +273,6 @@
         .video-embed-wrapper iframe, .video-embed-wrapper video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .video-embed-wrapper:hover { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2); }
 
-        /* --- CRYPTO CLIPS GAMIFICATION --- */
-        .clip-card { background: var(--bg-panel); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; transition: 0.3s; position: relative; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
-        .clip-card:hover { border-color: var(--accent-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.15); transform: translateY(-3px); }
-        .clip-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, rgba(5,10,26,0.98), rgba(15,26,71,0.95)); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; transition: 0.4s ease; }
-        .clip-mask span.lock-icon { font-size: 2.5rem; margin-bottom: 8px; filter: drop-shadow(0 0 10px var(--accent-pink)); }
-        .clip-mask p { font-size: 0.75rem; letter-spacing: 2px; color: #fff; font-family: 'Orbitron'; font-weight: 900; text-transform: uppercase; margin: 0; }
-        .clip-info { padding: 15px; flex: 1; display: flex; flex-direction: column; text-align: left; }
-        .clip-title { font-family: 'Orbitron'; font-size: 1rem; font-weight: 900; color: var(--accent-cyan); margin-bottom: 10px; border-bottom: 1px dashed rgba(0, 240, 255, 0.2); padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
-        .reaction-container-clip { display: flex; justify-content: space-between; background: rgba(0,0,0,0.6); border-radius: 6px; padding: 8px; margin-bottom: 10px; border: 1px solid #222; }
-        .reaction-btn { background: none; border: none; cursor: pointer; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 2px; filter: grayscale(1) opacity(0.5); transition: 0.2s; }
-        .reaction-btn:hover { filter: none; transform: scale(1.1); }
-        .reaction-btn.has-votes { filter: none; opacity: 1; color: var(--accent-gold); }
-        .bless-clip-btn { background: var(--accent-gold); color: #000; border: none; padding: 12px; border-radius: 6px; font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; cursor: pointer; width: 100%; margin-top: auto; transition: 0.3s; clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%); }
-        .bless-clip-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
-
-        /* --- PROTOCOL PROFILE SYSTEM --- */
-        #profile-content { background: linear-gradient(145deg, var(--bg-panel), var(--bg-deep)); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: clamp(20px, 4vw, 40px); max-width: 1000px; margin: auto; box-shadow: 0 0 30px rgba(0, 240, 255, 0.05); }
-        .profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 40px; }
-        .profile-pic { width: 100%; max-width: 250px; border-radius: 12px; border: 2px solid var(--accent-cyan); margin-bottom: 20px; object-fit: cover; aspect-ratio: 1/1; background: #000; box-shadow: 0 0 15px rgba(0,240,255,0.2); }
-        .gear-tag { display: inline-flex; align-items: center; padding: 6px 12px; background: rgba(255, 234, 0, 0.05); color: #ccc; border-radius: 4px; font-size: 0.7rem; margin: 4px; border: 1px solid rgba(255, 234, 0, 0.3); text-transform: uppercase; font-family: 'Inter'; letter-spacing: 1px; }
-        .gear-tag span { font-size: 0.9rem; margin-right: 6px; }
-
-        /* --- PRIVATE FEED & PAYWALL --- */
-        .feed-container { margin-top: 40px; position: relative; width: 100%; border-top: 1px dashed rgba(0,240,255,0.3); padding-top: 30px; }
-        .post-create-box { background: rgba(0,240,255,0.05); padding: 20px; border-radius: 8px; border: 1px solid var(--accent-cyan); margin-bottom: 30px; display: none; text-align: left; }
-        .feed-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        @media (max-width: 1200px) { .feed-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 900px) { .feed-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .feed-grid { grid-template-columns: 1fr; } }
-        .feed-grid-item { background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid #333; transition: 0.3s; overflow: hidden; display: flex; flex-direction: column; }
-        .feed-grid-item:hover { border-color: var(--accent-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.15); transform: translateY(-3px); }
-        .feed-grid-media { width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222; }
-        .feed-grid-media iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .feed-platform-icon { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; }
-        .feed-grid-content { padding: 15px; flex: 1; display: flex; flex-direction: column; text-align: left; }
-        .feed-grid-text { font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 10px; flex: 1; word-wrap: break-word; font-family: 'Inter'; }
-        .feed-grid-date { font-size: 0.65rem; color: #888; font-family: 'Orbitron'; margin-bottom: 15px; }
-        
-        .feed-paywall { position: absolute; top: 30px; left: 0; width: 100%; height: calc(100% - 30px); background: rgba(5,10,26,0.85); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 50; text-align: center; border-radius: 8px; border: 2px dashed var(--accent-cyan); padding: 2rem; }
-        .feed-paywall i { font-size: 3rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        
-        /* EXTREME OVERLAYS PORTED TO SK8DAO PALETTE */
-        .viral-fire { border-color: var(--accent-pink) !important; animation: fire-pulse 1s infinite alternate; }
-        @keyframes fire-pulse { 0% { box-shadow: 0 0 10px rgba(255,0,85,0.5), inset 0 0 10px rgba(255,0,85,0.2); } 100% { box-shadow: 0 0 25px rgba(255,0,85,1), inset 0 0 20px rgba(255,0,85,0.6); } }
-        .sketchy { border-color: #00ffaa !important; box-shadow: 0 0 15px rgba(0,255,170,0.5); }
-        .rising-star { border-color: var(--accent-gold) !important; box-shadow: 0 0 20px rgba(255,215,0,0.8); }
-        .butter-smooth { border-color: #fffacd !important; box-shadow: 0 0 20px rgba(255,250,205,0.6); }
-        .hall-of-meat { border-color: #ff3300 !important; box-shadow: 0 0 20px rgba(255,51,0,0.8); }
-        .flex-god { border-color: var(--accent-cyan) !important; box-shadow: 0 0 25px rgba(0,240,255,0.8); }
-        .god-tier { border: 2px solid transparent !important; background-clip: padding-box, border-box !important; background-origin: padding-box, border-box !important; background-image: linear-gradient(var(--bg-panel), var(--bg-panel)), linear-gradient(45deg, var(--accent-gold), #fff, var(--accent-gold), var(--accent-cyan), var(--accent-gold)) !important; background-size: 300% 300% !important; animation: god-shimmer 3s infinite linear; }
-
         /* --- FOOTER & MODALS --- */
         footer { background: rgba(0, 0, 0, 0.95); padding: clamp(20px, 4vw, 40px); margin-top: auto; border-top: 2px solid var(--accent-cyber-yellow); display: flex; justify-content: center; backdrop-filter: blur(10px); }
         .footer-inner { width: 100%; max-width: 1400px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
@@ -350,9 +299,7 @@
         #dapp-back-btn { display: none; position: fixed; top: 120px; left: 40px; z-index: 999; background: rgba(0,0,0,0.85); color: var(--accent-cyber-yellow); border: 2px solid var(--accent-cyber-yellow); padding: 12px 25px; font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 900; cursor: pointer; backdrop-filter: blur(8px); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: 0.2s; }
         #dapp-back-btn:hover { background: var(--accent-cyber-yellow); color: #000; box-shadow: 0 0 25px var(--accent-cyber-yellow); }
 
-     /* ========================================== */
-        /* 📱 COMPLETE MOBILE OPTIMIZATION BLOCK 📱 */
-        /* ========================================== */
+      /* Complete Mobile Optimization Block */
         @media (max-width: 768px) {
             /* 1. Header & Navigation */
             .hamburger { display: block; }
@@ -455,18 +402,7 @@
             #detail-modal-content .wallet-btn {
                 width: 100% !important;
             }
-            
-            /* 9. Profile Layout Override */
-            .profile-layout { 
-                grid-template-columns: 1fr !important; 
-                text-align: center; 
-                gap: 20px; 
-            }
-            .profile-pic { 
-                margin: 0 auto 20px auto; 
-            }
         }
-        
     </style>
 </head>
 <body>
@@ -856,10 +792,35 @@
 
 <div class="dashboard-wrapper" id="clips-wrapper" style="display: none;">
     <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">CRYPTO CLIPS <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-family:'Orbitron'; color:var(--accent-gold);">// RAW FOOTY</span></h2>
-    <p style="text-align: center; color: #ccc; font-size: 0.9rem; max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; font-family: 'Inter';">Scout raw talent. Drop on-chain WAX or $SKATE blessings directly into skaters' wallets to unlock footage, trigger global gamification overlays, and earn protocol yield.</p>
-    
-    <div class="dashboard-grid" id="crypto-clips-grid">
-        <h3 style="grid-column: 1/-1; text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; padding: 40px;">CONNECT WALLET TO SYNC FEED...</h3>
+    <div style="background: rgba(0,0,0,0.7); border: 2px solid var(--accent-gold); border-radius: 8px; position: relative; overflow: hidden; max-width: 900px; margin: 30px auto 0 auto; box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);">
+        <div class="caution-tape"></div>
+        <div style="padding: clamp(25px, 5vw, 50px) clamp(20px, 4vw, 40px); text-align: center;">
+            <h3 style="color: var(--accent-gold); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(1.5rem, 4vw, 2.2rem); letter-spacing: 2px; margin-top: 0;">🚧 UNDER CONSTRUCTION 🚧</h3>
+            <h4 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; margin-bottom: 25px; font-size: clamp(1rem, 3vw, 1.2rem);">THE FUTURE OF TOKENIZED SKATEBOARDING</h4>
+            <p style="color: #ccc; font-size: 1rem; line-height: 1.8; text-align: left; margin-bottom: 20px;">
+                The traditional skate industry is gatekept by corporate sponsors. The <strong>CRYPTO CLIPS</strong> feed is being engineered to shatter that model. We are building the first true peer-to-peer decentralized sponsorship network. 
+            </p>
+            <p style="color: #ccc; font-size: 1rem; line-height: 1.8; text-align: left; margin-bottom: 30px;">
+                Soon, you will be scouting raw, tokenized clips from global skaters and backing them directly. Skaters earn for their bangers, and sponsors earn yield by discovering and fueling the culture. No middlemen. Just the community funding the community.
+            </p>
+
+            <div style="margin: 0 auto 30px auto; max-width: 100%; text-align: center;">
+                <video autoplay loop muted playsinline style="width: 100%; max-height: 400px; object-fit: cover; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.3); margin-bottom: 15px;">
+                    <source src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeia5r4na5xd625seekm3srgl4ccghsoctwubh3qpwkrir52pjnqtpm" type="video/mp4">
+                </video>
+                <button class="wallet-btn" onclick="showErrorModal('Blessing logic connecting in Stage 5.')" style="background: var(--accent-gold); color: #000; font-size: 1.1rem; padding: 12px 30px;">🙏 BLESS THIS CLIP</button>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin-top: 40px; padding-top: 30px; border-top: 1px dashed rgba(255,255,255,0.2);">
+                <div style="color: #888; font-family: 'Orbitron'; font-size: 0.85rem; font-weight: 900; letter-spacing: 2px;">POWERED BY CROSS-CHAIN ARCHITECTURE</div>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 30px; margin-top: 25px;">
+                <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana" style="height: 55px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));">
+                <span style="color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: 1.8rem;">X</span>
+                <img src="https://cryptologos.cc/logos/wax-waxp-logo.png" alt="WAX" style="height: 55px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));">
+            </div>
+        </div>
+        <div class="caution-tape"></div>
     </div>
 </div>
 
@@ -1420,131 +1381,6 @@
 <!-- 🛑 END OF WAX COLLAB WEB3 SHOP 🛑          -->
 <!-- ========================================== -->
 
-<div class="dashboard-wrapper" id="profile-wrapper" style="display: none;">
-    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 3px; margin-top: 0; text-shadow: 0 0 20px rgba(0,240,255,0.3);">ON-CHAIN ID <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-family:'Orbitron'; color:var(--accent-gold);">// PROFILE</span></h2>
-    
-    <div id="profile-content">
-        <div class="profile-layout">
-            <div class="profile-sidebar" style="text-align: center;">
-                <img id="p-img" src="https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu" class="profile-pic" onerror="this.src='https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu'">
-                <h2 id="p-name" style="font-family:'Orbitron'; font-weight: 900; font-size: clamp(1.5rem, 3vw, 2.5rem); margin-bottom: 10px; color: var(--accent-cyan); text-transform: uppercase;">SYNCING...</h2>
-                <div id="p-gear" style="margin-bottom: 25px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;"></div>
-                
-                <div style="background:rgba(0,0,0,0.6); padding:20px; border-radius:12px; border:1px dashed var(--accent-cyber-yellow);">
-                    <p style="font-size:0.65rem; color: #888; font-family: 'Orbitron'; margin-bottom: 5px; letter-spacing: 1px;">AUTHENTICATED WALLET</p>
-                    <p id="p-wallet" style="font-family:monospace; font-size:0.7rem; word-break:break-all; color: var(--accent-gold); margin-bottom: 15px;">...</p>
-                    <button id="edit-profile-btn" onclick="window.openEditProfileModal()" class="wallet-btn" style="display:none; width:100%; background: var(--accent-cyber-yellow); color: #000; padding: 12px; font-size: 0.85rem;">⚙️ EDIT PROFILE</button>
-                </div>
-            </div>
-            
-            <div class="profile-main">
-                <h3 style="color:var(--accent-gold); margin-bottom:15px; font-size: 1.1rem; border-bottom: 1px dashed rgba(255,215,0,0.3); padding-bottom: 10px; font-family: 'Orbitron'; font-weight: 900;">SKATER BIO</h3>
-                <p id="p-bio" style="color:#ccc; line-height:1.7; margin-bottom:25px; font-size: 0.95rem; font-family: 'Inter';">Intercepting ledger data...</p>
-                
-                <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--accent-cyan); border-radius: 8px; padding: 20px; text-align: center; max-width: 300px; margin-bottom: 20px;">
-                    <p style="font-size:0.65rem; color: #888; font-family: 'Orbitron'; margin-bottom: 5px; letter-spacing: 1px;">DAO RANK STATUS</p>
-                    <p id="p-rank-display" style="font-weight:900; font-size: 1.4rem; color: var(--accent-cyan); font-family: 'Orbitron';">GROMMET</p>
-                </div>
-
-               <button id="view-private-feed-btn" class="wallet-btn" 
-        style="background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); width: 100%; max-width: 300px; padding: 15px;"
-        onclick="window.showPrivateFeed(document.getElementById('p-wallet').innerText)">
-    📹 VIEW PRIVATE FEED
-</button>
-               <!-- ===================================================== -->
-<!-- PRIVATE FEED - DEDICATED PAGE (REPLACED OLD ONE) -->
-<!-- ===================================================== -->
-<div class="dashboard-wrapper" id="private-feed-wrapper" style="display: none; max-width: 1100px; margin: 0 auto;">
-
-    <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 3px; margin-bottom: 30px;">
-        📹 PRIVATE FEED
-    </h2>
-
-    <span id="private-feed-wallet" style="display: none;"></span>
-
-    <!-- Post box -->
-    <div id="post-create-box" class="post-create-box" style="display: none; margin-bottom: 30px;">
-        <h4 style="color:var(--accent-cyan); font-family: 'Orbitron'; font-size: 0.9rem; margin-bottom: 10px; font-weight: 900;">UPDATE YOUR FEED</h4>
-        <textarea id="new-post-text" placeholder="What went down today? Land a new trick?" rows="3" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 10px; outline: none;"></textarea>
-        
-        <input type="text" id="new-post-link" placeholder="Optional: YouTube or Instagram Reel URL" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; font-size: 0.85rem; margin-bottom: 15px; outline: none;">
-        
-        <div style="font-size: 0.65rem; color: var(--accent-cyan); font-family: 'Orbitron'; margin-bottom: 10px;">* Broadcast requires a 0.0001 WAX ledger fee.</div>
-        <button onclick="window.publishToFeed()" class="wallet-btn" style="background: var(--accent-cyan); color: #000; border: none; font-size: 0.85rem; padding: 12px 20px;">SIGN & POST TO CHAIN</button>
-    </div>
-
-    <!-- Feed area -->
-    <div id="feed-list-container" style="position: relative; min-height: 300px;">
-        
-        <div id="feed-paywall-overlay" class="feed-paywall" style="display: none;">
-            <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
-            <h2 style="color: var(--accent-cyan); font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 1px; font-weight: 900; margin-bottom: 10px;">SPONSOR REQUIRED</h2>
-            <p style="color: #ccc; font-size: 0.85rem; max-width: 400px; margin: 0 auto 20px auto; font-family: 'Inter'; line-height: 1.6;">
-                You must drop a cumulative on-chain blessing of 100 WAX (or 10 $SKATE) to this skater to unlock their private feed.
-            </p>
-            <button onclick="window.executeOnChainBlessing(document.getElementById('private-feed-wallet').innerText, 100, 'WAX', 'profile-unlock')" class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 15px;">
-                UNLOCK FEED (100 WAX)
-            </button>
-        </div>
-
-        <div id="actual-feed-items" class="feed-grid">
-            <!-- Posts appear here -->
-        </div>
-
-        <button id="load-more-feed-btn" class="wallet-btn" style="display:none; margin-top:30px; font-weight:900; padding:15px; width: 100%; background: transparent; border: 1px dashed var(--accent-cyan); color: var(--accent-cyan);" onclick="window.loadMoreFeed()">
-            ▼ LOAD MORE POSTS ▼
-        </button>
-    </div>
-
-</div>
-<!-- ===================================================== -->
-<div id="edit-profile-modal" class="modal-overlay" style="z-index: 2050;">
-    <div class="modal-content" style="max-width: 500px; text-align: left; border-color: var(--accent-cyber-yellow); background: #050a1a;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
-            <h3 style="font-family:'Orbitron'; font-weight: 900; color:var(--accent-cyber-yellow); font-size: 1.2rem; margin: 0;">⚙️ UPDATE IDENTITY</h3>
-            <button onclick="window.toggleModal('edit-profile-modal', false)" style="background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1;">&times;</button>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-            <div>
-                <label style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; font-weight: 900;">DISPLAY NAME</label>
-                <input type="text" id="edit-name" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; outline: none;">
-            </div>
-            <div>
-                <label style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; font-weight: 900;">PROFILE PIC URL (IPFS or Direct Link)</label>
-                <input type="text" id="edit-pic" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; outline: none;">
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px;">
-                <div>
-                    <label style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; font-weight: 900;">STANCE</label>
-                    <input type="text" id="edit-stance" placeholder="e.g. Goofy" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; outline: none;">
-                </div>
-                <div>
-                    <label style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; font-weight: 900;">DECK</label>
-                    <input type="text" id="edit-deck" placeholder="e.g. 8.25 Popsicle" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; outline: none;">
-                </div>
-                <div>
-                    <label style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; font-weight: 900;">TRUCKS</label>
-                    <input type="text" id="edit-trucks" placeholder="e.g. Indys 149" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; outline: none;">
-                </div>
-                <div>
-                    <label style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; font-weight: 900;">LOCAL SPOT</label>
-                    <input type="text" id="edit-spot" placeholder="e.g. LA Courthouse" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; outline: none;">
-                </div>
-            </div>
-
-            <div>
-                <label style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; font-weight: 900;">BIO</label>
-                <textarea id="edit-bio" rows="3" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #333; border-radius: 4px; font-family: 'Inter'; outline: none;"></textarea>
-            </div>
-
-            <div style="font-size: 0.65rem; color: var(--accent-pink); font-family: 'Orbitron'; margin-top: 5px;">* Updates require a 0.0001 WAX ledger fee.</div>
-            <button onclick="window.saveProfileWeb3()" id="save-web3-btn" class="wallet-btn" style="width: 100%; background: var(--accent-cyan); color: #000; padding: 15px; font-size: 1rem;">SIGN & SAVE TO CHAIN</button>
-        </div>
-    </div>
-</div>
-
 <footer>
     <div class="footer-inner">
         <div class="footer-brand">POWERED BY DECENTRALIZED PROTOCOLS <br>© 2026 <span>SK8DAO</span> / SK8 PROTOCOL</div>
@@ -1554,6 +1390,8 @@
         </div>
     </div>
 </footer>
+    
+
     
 <script type="module">
     import { SessionKit } from 'https://esm.sh/@wharfkit/session?bundle';
@@ -1618,35 +1456,17 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
 
- // === UNIFIED WALLET BUTTON SYNC & PROFILE NAV ===
-    window.syncAllWalletButtons = function(session) {
-        const mainBtn = document.getElementById('connect-btn');
-        let profileBtn = document.getElementById('nav-profile-btn');
-        
-        if (session) {
-            const actorName = session.actor.toString().toUpperCase();
-            if (mainBtn) mainBtn.innerText = actorName;
-            
-            // Inject Profile Button dynamically next to connect button
-            if (!profileBtn) {
-                const controls = document.querySelector('.header-controls');
-                const btn = document.createElement('button');
-                btn.id = 'nav-profile-btn';
-                btn.className = 'wallet-btn';
-                btn.style.marginLeft = '10px';
-                btn.style.background = 'var(--accent-cyan)';
-                btn.style.color = '#000';
-                btn.innerText = 'PROFILE';
-                btn.onclick = () => window.navigateToProfile(session.actor.toString());
-                controls.appendChild(btn);
-            } else {
-                profileBtn.style.display = 'inline-block';
-            }
-        } else {
-            if (mainBtn) mainBtn.innerText = 'CONNECT';
-            if (profileBtn) profileBtn.style.display = 'none';
-        }
-    };
+   // === UNIFIED WALLET BUTTON SYNC ===
+window.syncAllWalletButtons = function(session) {
+    const mainBtn = document.getElementById('connect-btn');
+    
+    if (session) {
+        const actorName = session.actor.toString().toUpperCase();
+        if (mainBtn) mainBtn.innerText = actorName;
+    } else {
+        if (mainBtn) mainBtn.innerText = 'CONNECT';
+    }
+};
     
     window.currentUserMaxVotes = 0; 
 
@@ -2366,7 +2186,7 @@ if (allActions.length > 0) {
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         if(document.getElementById(`nav-${schema}`)) document.getElementById(`nav-${schema}`).classList.add('active');
         
-       const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper', 'profile-wrapper'];
+        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper'];
         wrappers.forEach(w => { const el = document.getElementById(w); if(el) el.style.display = 'none'; });
 
         if (schema === 'home') { document.getElementById('home-wrapper').style.display = 'block';
@@ -3261,477 +3081,6 @@ if (allActions.length > 0) {
             cart = []; updateCartMetrics(); window.toggleModal('shipping-modal', false);
         } catch(e) { console.error(e); alert("Transaction Cancelled or Failed. Please try again."); }
     };
-
-    // ==========================================
-    // 🟢 CRYPTO CLIPS WAX UPGRADE ENGINE 🟢
-    // ==========================================
-
-// 1. Immutable Video Database (Mapped to WAX addresses)
-    const clipDatabase = [
-        { id: "vid-1", title: "greg valencia", target: "gregval.wam", yt: "TkiDuln_Q28" },
-        { id: "vid-2", title: "Tre Flip Over the Gap", target: "ufuau.wam", yt: "3JZ_D3ELwOQ" }, // <-- Swapped to Admin Wallet
-        { id: "vid-3", title: "Manuals in the Rain", target: "manuals.wam", yt: "9bZkp7q19f0" },
-        { id: "vid-4", title: "Big Ollie at the Park", target: "vertvic.wam", yt: "kXYiU_JCYtU" },
-        { id: "vid-5", title: "Epic Skate Clips 2026", target: "shredder.wam", yt: "Wg_jwgmwt-U" },
-        { id: "vid-6", title: "Best Skate Videos Year", target: "prosk8.wam", yt: "MFSx4jWmDfY" }
-    ];
-
-    window.globalClipState = {};
-
-    window.renderCryptoClips = () => {
-        const grid = document.getElementById("crypto-clips-grid");
-        if (!grid) return;
-        
-        const activeActor = currentSession ? currentSession.actor.toString() : null;
-        if (!activeActor) {
-            grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align: center; color: #888; font-family: 'Orbitron'; font-weight: 900; padding: 40px; border: 1px dashed #333; border-radius: 8px;">WALLET CONNECTION REQUIRED TO DECRYPT FEED</h3>`;
-            return;
-        }
-
-        let html = "";
-        clipDatabase.forEach(clip => {
-            let vState = window.globalClipState[clip.id] || { totalDonated: 0, reactions: {'🔥':0, '🤮':0, '⭐':0, '🧈':0, '🥩':0, '💪':0} };
-            let rx = vState.reactions;
-            
-            // Unlock logic: If user is logged in, unlock it. In production, this checks if vState.totalDonated > threshold.
-            let unlocked = (activeActor === clip.target || vState.totalDonated > 0 || activeActor) ? true : false;
-            
-            // Evaluate Gamification Overlays
-            let fxClass = "";
-            if (vState.totalDonated >= 1000) fxClass = "god-tier";
-            else if (rx['💪'] >= 10) fxClass = "flex-god";
-            else if (rx['🥩'] >= 10) fxClass = "hall-of-meat";
-            else if (rx['🧈'] >= 10) fxClass = "butter-smooth";
-            else if (rx['⭐'] >= 10) fxClass = "rising-star";
-            else if (rx['🤮'] >= 10) fxClass = "sketchy";
-            else if (rx['🔥'] >= 10) fxClass = "viral-fire";
-
-            html += `
-            <div class="clip-card ${fxClass}" id="${clip.id}">
-                <div class="video-embed-wrapper" style="border: none; border-radius: 0;">
-                    <div class="clip-mask" style="${unlocked ? 'opacity: 0; pointer-events: none;' : ''}">
-                        <span class="lock-icon">🔒</span>
-                        <p>SPONSOR TO UNLOCK</p>
-                    </div>
-                    ${unlocked ? `<iframe src="https://www.youtube.com/embed/${clip.yt}?showinfo=0&controls=1" allowfullscreen></iframe>` : ''}
-                </div>
-                <div class="clip-info">
-                    <div class="clip-title">${clip.title} <span style="font-family:'Inter'; font-size: 0.65rem; color: #888; font-weight: normal; text-transform: lowercase;">${clip.target}</span></div>
-                    
-                    <div class="reaction-container-clip">
-                        <button onclick="executeOnChainBlessing('${clip.target}', 10, 'WAX', '${clip.id}', '🔥')" class="reaction-btn ${rx['🔥']>0?'has-votes':''}" title="10 WAX">🔥 <span>${rx['🔥']}</span></button>
-                        <button onclick="executeOnChainBlessing('${clip.target}', 25, 'WAX', '${clip.id}', '🤮')" class="reaction-btn ${rx['🤮']>0?'has-votes':''}" title="25 WAX">🤮 <span>${rx['🤮']}</span></button>
-                        <button onclick="executeOnChainBlessing('${clip.target}', 50, 'WAX', '${clip.id}', '⭐')" class="reaction-btn ${rx['⭐']>0?'has-votes':''}" title="50 WAX">⭐ <span>${rx['⭐']}</span></button>
-                        <button onclick="executeOnChainBlessing('${clip.target}', 100, 'WAX', '${clip.id}', '🧈')" class="reaction-btn ${rx['🧈']>0?'has-votes':''}" title="100 WAX">🧈 <span>${rx['🧈']}</span></button>
-                        <button onclick="executeOnChainBlessing('${clip.target}', 500, 'SKATE', '${clip.id}', '🥩')" class="reaction-btn ${rx['🥩']>0?'has-votes':''}" title="500 SKATE">🥩 <span>${rx['🥩']}</span></button>
-                        <button onclick="executeOnChainBlessing('${clip.target}', 1000, 'SKATE', '${clip.id}', '💪')" class="reaction-btn ${rx['💪']>0?'has-votes':''}" title="1000 SKATE">💪 <span>${rx['💪']}</span></button>
-                    </div>
-                    
-                    <button class="bless-clip-btn" onclick="executeOnChainBlessing('${clip.target}', 100, 'WAX', '${clip.id}')">🙏 BLESS (100 WAX)</button>
-                </div>
-            </div>`;
-        });
-        
-        grid.innerHTML = html;
-    };
-
-    window.executeOnChainBlessing = async (skaterWallet, amount, tokenSymbol, videoId, reactionType = null) => {
-        if (!currentSession) return toggleAuthModal();
-        const sender = currentSession.actor.toString();
-        if (sender === skaterWallet) return showErrorModal("Wash trading prohibited. You cannot bless your own clip.");
-
-        let contractAccount = tokenSymbol === "SKATE" ? "skatecoinwax" : "eosio.token";
-        let formattedQuantity = tokenSymbol === "SKATE" ? Number(amount).toFixed(4) + " SKATE" : Number(amount).toFixed(8) + " WAX";
-
-        const memoPayload = { sk8spon: "v2.7", post: videoId, amt: Number(amount) };
-        if (reactionType) { memoPayload.action = "reaction"; memoPayload.react = reactionType; } 
-        else { memoPayload.action = "direct_blessing"; }
-
-        try {
-            const actions = [{
-                account: contractAccount,
-                name: "transfer",
-                authorization: [currentSession.permissionLevel],
-                data: { from: sender, to: skaterWallet, quantity: formattedQuantity, memo: JSON.stringify(memoPayload) }
-            }];
-
-            await currentSession.transact({ actions });
-            showSuccessModal("🔥 GLORY SECURED 🔥", `Successfully dropped ${formattedQuantity} to ${skaterWallet}.`);
-            
-            // Optimistic UI Rendering Gamification Data
-            if (!window.globalClipState[videoId]) window.globalClipState[videoId] = { totalDonated: 0, reactions: {'🔥':0, '🤮':0, '⭐':0, '🧈':0, '🥩':0, '💪':0} };
-            if (reactionType) window.globalClipState[videoId].reactions[reactionType]++;
-            window.globalClipState[videoId].totalDonated += Number(amount);
-            
-            updateBalances(sender);
-            renderCryptoClips();
-            
-        } catch (error) {
-            console.error("Transact Error:", error);
-            showErrorModal("Transaction failed or rejected by wallet.");
-        }
-    };
-
-    // Hijack the main routing function to trigger the video render automatically
-    const originalSwitchForClips = window.switchCategory;
-    window.switchCategory = (schema, fromBack = false) => {
-        originalSwitchForClips(schema, fromBack);
-        if (schema === 'clips') {
-            renderCryptoClips();
-        }
-    };
-
-   // ==========================================
-    // 🟢 DECENTRALIZED IDENTITY ENGINE (WAX) 🟢
-    // ==========================================
-
-    const ADMIN_WALLETS = ["ufuau.wam", "skatecoinwax"];
-    let bannedWallets = [];
-
-    // Dynamic Router for Profile Viewing
-    window.navigateToProfile = (walletAddress) => {
-        document.querySelectorAll('.dashboard-wrapper').forEach(w => w.style.display = 'none');
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        document.getElementById('profile-wrapper').style.display = 'block';
-        window.scrollTo(0,0);
-        window.renderProfile(walletAddress);
-    };
-
-    window.feedRenderLimit = 12;
-    window.currentSkaterPosts = [];
-
-   window.renderProfile = async (targetWallet) => {
-        document.getElementById('p-name').innerText = "SYNCING LEDGER...";
-        document.getElementById('p-wallet').innerText = targetWallet;
-        document.getElementById('p-bio').innerText = "Scanning WAX Hyperion nodes...";
-        document.getElementById('p-gear').innerHTML = "";
-        
-        const activeActor = currentSession ? currentSession.actor.toString() : null;
-        const isViewerAdmin = activeActor && ADMIN_WALLETS.includes(activeActor);
-        const isOwner = activeActor === targetWallet;
-
-        let profileData = { 
-            name: targetWallet, 
-            pic: "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", 
-            bio: "Decentralized skater running on the SK8 Protocol.", 
-            stance: "", deck: "", trucks: "", spot: "" 
-        };
-
-        try {
-            // 3 Second Timeout to prevent infinite hang on massive admin wallets
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000);
-            
-            const res = await fetch(`https://api.waxsweden.org/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=150`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            
-            const json = await res.json();
-            
-            if (json && json.actions) {
-                const profileUpdate = json.actions.find(a => {
-                    const data = a.act.data;
-                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
-                });
-                
-                if (profileUpdate) {
-                    try {
-                        const parsed = JSON.parse(profileUpdate.act.data.memo);
-                        profileData = { ...profileData, ...parsed };
-                    } catch(e) {}
-                }
-            }
-        } catch(e) { 
-            console.log("Hyperion Read Timeout - Loading fallback profile to prevent UI freeze.");
-        }
-
-        // Write Decrypted Data to UI Safely
-        const nameEl = document.getElementById('p-name');
-        if(nameEl) nameEl.innerText = profileData.name;
-        
-        const imgEl = document.getElementById('p-img');
-        if(imgEl) imgEl.src = profileData.pic;
-        
-        const bioEl = document.getElementById('p-bio');
-        if(bioEl) bioEl.innerText = profileData.bio;
-        
-        const gearEl = document.getElementById('p-gear');
-        let gHtml = "";
-        if(profileData.stance) gHtml += `<div class="gear-tag"><span>👟</span> ${profileData.stance}</div>`;
-        if(profileData.deck) gHtml += `<div class="gear-tag"><span>🛹</span> ${profileData.deck}</div>`;
-        if(profileData.trucks) gHtml += `<div class="gear-tag"><span>🔩</span> ${profileData.trucks}</div>`;
-        if(profileData.spot) gHtml += `<div class="gear-tag"><span>📍</span> ${profileData.spot}</div>`;
-        if(gearEl) gearEl.innerHTML = gHtml;
-
-        let rankDisplay = "GROMMET";
-        let rankColor = "var(--accent-cyan)";
-        if (ADMIN_WALLETS.includes(targetWallet)) {
-            rankDisplay = "⚡ GODMODE";
-            rankColor = "var(--accent-pink)";
-        }
-        const rankEl = document.getElementById('p-rank-display');
-        if(rankEl) { rankEl.innerText = rankDisplay; rankEl.style.color = rankColor; }
-
-        if(gearEl) {
-            gearEl.dataset.stance = profileData.stance || ""; 
-            gearEl.dataset.deck = profileData.deck || "";
-            gearEl.dataset.trucks = profileData.trucks || ""; 
-            gearEl.dataset.spot = profileData.spot || "";
-        }
-
-        const editBtn = document.getElementById('edit-profile-btn');
-        if(editBtn) editBtn.style.display = isOwner ? 'block' : 'none';
-
-        const existingAdmin = document.getElementById('sk8-admin-panel-wrapper');
-        if (existingAdmin) existingAdmin.remove();
-        
-        // Inject Moderation Controls Only on Other Skater Profiles
-        if (isViewerAdmin && !isOwner) {
-            let isBanned = bannedWallets.includes(targetWallet);
-            let action = isBanned ? 'unban' : 'ban';
-            let btnText = isBanned ? 'RESURRECT SKATER' : 'SUSPEND SKATER';
-            let btnColor = isBanned ? '#00ffaa' : 'var(--accent-pink)';
-            let adminPanelHtml = `<div style="margin-top: 25px; padding: 15px; background: rgba(255, 0, 85, 0.1); border: 1px solid var(--accent-pink); border-radius: 12px; text-align: left;"><h4 style="color: var(--accent-pink); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 10px; font-weight: 900;">⚡ GODMODE: MODERATION</h4><button onclick="window.adminAction('${targetWallet}', '${action}')" class="wallet-btn" style="width:100%; background:${btnColor}; color:#000; padding:10px; font-size: 0.75rem;">${btnText}</button></div>`;
-            const wrapper = `<div id="sk8-admin-panel-wrapper">${adminPanelHtml}</div>`;
-            const sidebar = document.querySelector('.profile-sidebar');
-            if(sidebar) sidebar.insertAdjacentHTML('beforeend', wrapper);
-        }
-
-        // Reset and Wire the Private Feed Button
-        const feedBtn = document.getElementById('view-private-feed-btn');
-        const feedContainer = document.getElementById('private-feed-container');
-        
-        if (feedContainer) feedContainer.style.display = 'none';
-        
-        if (feedBtn) {
-            feedBtn.style.display = 'block';
-            feedBtn.innerText = "📹 VIEW PRIVATE FEED";
-            feedBtn.onclick = async () => {
-                feedBtn.innerText = "VERIFYING ON-CHAIN CLEARANCE...";
-                await window.attemptFeedAccess(targetWallet);
-                feedBtn.style.display = 'none';
-                feedContainer.style.display = 'block';
-            };
-        }
-    };
-
-    // ==========================================
-    // 🟢 ON-CHAIN FEED ENGINE 🟢
-    // ==========================================
-    window.attemptFeedAccess = async (targetWallet) => {
-        const activeActor = currentSession ? currentSession.actor.toString() : null;
-        let isOwner = (activeActor === targetWallet);
-        let hasAccess = isOwner || (activeActor && ADMIN_WALLETS.includes(activeActor));
-
-        // Check if viewer has donated past threshold (100 WAX)
-        if (activeActor && !hasAccess) {
-            try {
-                const res = await fetch(`https://api.waxsweden.org/v2/history/get_actions?account=${activeActor}&filter=eosio.token:transfer&limit=500`);
-                const json = await res.json();
-                let totalDonated = 0;
-                if(json && json.actions) {
-                    json.actions.forEach(a => {
-                        const d = a.act.data;
-                        if(d && d.from === activeActor && d.to === targetWallet) {
-                            totalDonated += parseFloat(d.quantity.split(" ")[0] || 0);
-                        }
-                    });
-                }
-                if(totalDonated >= 100) hasAccess = true;
-            } catch(e) { console.error("Access check failed", e); }
-        }
-
-        const paywall = document.getElementById('feed-paywall-overlay');
-        const postBox = document.getElementById('post-create-box');
-        
-        if (hasAccess) {
-            if (paywall) paywall.style.display = 'none';
-            if (isOwner && postBox) postBox.style.display = 'block';
-            window.fetchSkaterFeed(targetWallet, false);
-        } else {
-            if (paywall) paywall.style.display = 'flex';
-            if (postBox) postBox.style.display = 'none';
-            window.fetchSkaterFeed(targetWallet, true); // True = blurred
-        }
-    };
-
-    window.fetchSkaterFeed = async (wallet, isBlurred) => {
-        window.currentSkaterPosts = [];
-        let deletedPosts = [];
-        
-        try {
-            const res = await fetch(`https://api.waxsweden.org/v2/history/get_actions?account=${wallet}&filter=eosio.token:transfer&limit=500`);
-            const json = await res.json();
-            
-            if (json && json.actions) {
-                json.actions.forEach(a => {
-                    const data = a.act.data;
-                    if (data && data.from === wallet && data.to === 'skatecoinwax' && data.memo) {
-                        if (data.memo.includes('"sk8post":"v1"')) {
-                            try {
-                                const parsed = JSON.parse(data.memo);
-                                window.currentSkaterPosts.push({ id: a.trx_id, text: parsed.text, yt: parsed.yt, ig: parsed.ig, time: new Date(a.timestamp).getTime() });
-                            } catch(e) {}
-                        } else if (data.memo.includes('"sk8del":"v1"')) {
-                            try {
-                                const parsed = JSON.parse(data.memo);
-                                deletedPosts.push(parsed.post);
-                            } catch(e) {}
-                        }
-                    }
-                });
-            }
-        } catch(e) { console.error("Feed fetch failed", e); }
-        
-        window.currentSkaterPosts = window.currentSkaterPosts.filter(p => !deletedPosts.includes(p.id));
-        window.currentSkaterPosts.sort((a,b) => b.time - a.time);
-        
-        window.renderFeedGrid(isBlurred, wallet);
-    };
-
-    window.renderFeedGrid = (isBlurred, targetWallet) => {
-        const container = document.getElementById('actual-feed-items');
-        const loadBtn = document.getElementById('load-more-feed-btn');
-        const activeActor = currentSession ? currentSession.actor.toString() : null;
-        let isOwner = (activeActor === targetWallet);
-
-        if (window.currentSkaterPosts.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 40px; color: #888; font-family: 'Orbitron'; grid-column: 1 / -1;">NO TIMELINE ENTRIES FOUND ON-CHAIN.</div>`;
-            if (loadBtn) loadBtn.style.display = 'none';
-            return;
-        }
-
-        let html = "";
-        let toRender = window.currentSkaterPosts.slice(0, window.feedRenderLimit);
-        
-        toRender.forEach(p => {
-            let dateStr = new Date(p.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-            let mediaHtml = ""; 
-            
-            if(p.yt) {
-                mediaHtml = `<div class="feed-grid-media"><div class="feed-platform-icon" style="color:#ff0055;">▶ YOUTUBE</div><iframe src="https://www.youtube.com/embed/${p.yt}?showinfo=0" allowfullscreen></iframe></div>`;
-            } else if (p.ig) {
-                mediaHtml = `<div class="feed-grid-media"><div class="feed-platform-icon" style="color:#d946ef;">📷 INSTAGRAM</div><iframe src="https://www.instagram.com/p/${p.ig}/embed" scrolling="no" allowtransparency="true"></iframe></div>`;
-            } else {
-                mediaHtml = `<div class="feed-grid-media" style="background: linear-gradient(45deg, #050a1a, #0f1a47); display:flex; align-items:center; justify-content:center;"><span style="font-size:3rem; filter: grayscale(1); opacity: 0.2;">🛹</span></div>`;
-            }
-
-            let actionBtn = isOwner 
-                ? `<button class="wallet-btn" style="background: transparent; color: var(--accent-pink); border: 1px solid var(--accent-pink); padding: 10px; font-size: 0.75rem; margin-top: auto;" onclick="window.deleteFeedPost('${p.id}')">✖ DELETE POST</button>` 
-                : `<button class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 10px; font-size: 0.75rem; margin-top: auto;" onclick="window.executeOnChainBlessing('${targetWallet}', 10, 'WAX', '${p.id}')">🙏 BLESS (10 WAX)</button>`;
-
-            html += `
-            <div class="feed-grid-item" style="${isBlurred ? 'filter: blur(10px); opacity: 0.5; pointer-events: none;' : ''}">
-                ${mediaHtml}
-                <div class="feed-grid-content">
-                    <div class="feed-grid-text">${p.text || ""}</div>
-                    <div class="feed-grid-date">${dateStr}</div>
-                    ${actionBtn}
-                </div>
-            </div>`;
-        });
-
-        container.innerHTML = html;
-        if (!isBlurred && window.currentSkaterPosts.length > window.feedRenderLimit) {
-            if (loadBtn) loadBtn.style.display = 'block';
-        } else {
-            if (loadBtn) loadBtn.style.display = 'none';
-        }
-    };
-
-    window.loadMoreFeed = () => { 
-        window.feedRenderLimit += 12; 
-        window.renderFeedGrid(false, document.getElementById('p-wallet').innerText); 
-    };
-
-    window.publishToFeed = async () => {
-        if(!currentSession) return toggleAuthModal();
-        const btn = document.getElementById("publish-feed-btn"); 
-        btn.innerText = "AWAITING SIGNATURE...";
-        
-        try {
-            const text = document.getElementById("new-post-text").value.trim();
-            const rawLink = document.getElementById("new-post-link").value.trim();
-            let yt = ""; let ig = "";
-            
-            if (rawLink) { 
-                const ytMatch = rawLink.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
-                if (ytMatch && ytMatch[2].length === 11) yt = ytMatch[2]; 
-                const igMatch = rawLink.match(/(?:instagram\.com\/)(?:p|reel)\/([a-zA-Z0-9_-]+)/i);
-                if (igMatch) ig = igMatch[1];
-            }
-            
-            if(!text && !yt && !ig) { 
-                alert("Cannot post empty data."); 
-                btn.innerText = "SIGN & POST TO CHAIN"; 
-                return; 
-            }
-
-            const pData = JSON.stringify({ sk8post: "v1", text, yt, ig });
-            if (pData.length > 255) { 
-                alert(`Post too long for WAX Memo! Max 255 chars.`); 
-                btn.innerText = "SIGN & POST TO CHAIN"; 
-                return; 
-            }
-            
-            const sender = currentSession.actor.toString();
-            const actions = [{
-                account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
-                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
-            }];
-            
-            await currentSession.transact({ actions });
-            btn.innerText = "POSTED!"; 
-            document.getElementById("new-post-text").value = ""; 
-            document.getElementById("new-post-link").value = "";
-            
-            setTimeout(() => { 
-                btn.innerText = "SIGN & POST TO CHAIN"; 
-                window.attemptFeedAccess(sender); 
-            }, 2000);
-        } catch (err) { 
-            console.error(err);
-            btn.innerText = "FAILED - CHECK CPU";
-            setTimeout(() => btn.innerText = "SIGN & POST TO CHAIN", 3000);
-        }
-    };
-
-    window.deleteFeedPost = async (postId) => {
-        if(!currentSession) return;
-        if(!confirm("Are you sure you want to permanently tombstone this post?")) return;
-        
-        try {
-            const pData = JSON.stringify({ sk8del: "v1", post: postId });
-            const sender = currentSession.actor.toString();
-            const actions = [{
-                account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
-                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
-            }];
-            
-            await currentSession.transact({ actions });
-            alert("Post successfully removed from ledger."); 
-            window.attemptFeedAccess(sender); 
-        } catch (err) { 
-            console.error(err);
-            alert("Deletion failed."); 
-        }
-    };
-
-    // === Opens Private Feed on its own dedicated page ===
-window.showPrivateFeed = async function(targetWallet) {
-    // Hide all other pages
-    document.querySelectorAll('.dashboard-wrapper').forEach(function(el) {
-        el.style.display = 'none';
-    });
-    
-    // Show the new Private Feed page
-    document.getElementById('private-feed-wrapper').style.display = 'block';
-    
-    // Save the wallet name for the paywall button
-    document.getElementById('private-feed-wallet').innerText = targetWallet;
-
-    // Load the feed content
-    await window.attemptFeedAccess(targetWallet);
-};
     
 </script>
 </body>
