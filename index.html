@@ -1553,35 +1553,17 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
 
- // === UNIFIED WALLET BUTTON SYNC & PROFILE NAV ===
-    window.syncAllWalletButtons = function(session) {
-        const mainBtn = document.getElementById('connect-btn');
-        let profileBtn = document.getElementById('nav-profile-btn');
-        
-        if (session) {
-            const actorName = session.actor.toString().toUpperCase();
-            if (mainBtn) mainBtn.innerText = actorName;
-            
-            // Inject Profile Button dynamically next to connect button
-            if (!profileBtn) {
-                const controls = document.querySelector('.header-controls');
-                const btn = document.createElement('button');
-                btn.id = 'nav-profile-btn';
-                btn.className = 'wallet-btn';
-                btn.style.marginLeft = '10px';
-                btn.style.background = 'var(--accent-cyan)';
-                btn.style.color = '#000';
-                btn.innerText = 'PROFILE';
-                btn.onclick = () => window.navigateToProfile(session.actor.toString());
-                controls.appendChild(btn);
-            } else {
-                profileBtn.style.display = 'inline-block';
-            }
-        } else {
-            if (mainBtn) mainBtn.innerText = 'CONNECT';
-            if (profileBtn) profileBtn.style.display = 'none';
-        }
-    };
+   // === UNIFIED WALLET BUTTON SYNC ===
+window.syncAllWalletButtons = function(session) {
+    const mainBtn = document.getElementById('connect-btn');
+    
+    if (session) {
+        const actorName = session.actor.toString().toUpperCase();
+        if (mainBtn) mainBtn.innerText = actorName;
+    } else {
+        if (mainBtn) mainBtn.innerText = 'CONNECT';
+    }
+};
     
     window.currentUserMaxVotes = 0; 
 
