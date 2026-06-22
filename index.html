@@ -294,6 +294,22 @@
         .profile-pic { width: 100%; max-width: 250px; border-radius: 12px; border: 2px solid var(--accent-cyan); margin-bottom: 20px; object-fit: cover; aspect-ratio: 1/1; background: #000; box-shadow: 0 0 15px rgba(0,240,255,0.2); }
         .gear-tag { display: inline-flex; align-items: center; padding: 6px 12px; background: rgba(255, 234, 0, 0.05); color: #ccc; border-radius: 4px; font-size: 0.7rem; margin: 4px; border: 1px solid rgba(255, 234, 0, 0.3); text-transform: uppercase; font-family: 'Inter'; letter-spacing: 1px; }
         .gear-tag span { font-size: 0.9rem; margin-right: 6px; }
+
+        /* --- PRIVATE FEED & PAYWALL --- */
+        .feed-container { margin-top: 40px; position: relative; width: 100%; border-top: 1px dashed rgba(0,240,255,0.3); padding-top: 30px; }
+        .post-create-box { background: rgba(0,240,255,0.05); padding: 20px; border-radius: 8px; border: 1px solid var(--accent-cyan); margin-bottom: 30px; display: none; text-align: left; }
+        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .feed-grid-item { background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid #333; transition: 0.3s; overflow: hidden; display: flex; flex-direction: column; }
+        .feed-grid-item:hover { border-color: var(--accent-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.15); transform: translateY(-3px); }
+        .feed-grid-media { width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222; }
+        .feed-grid-media iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .feed-platform-icon { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; }
+        .feed-grid-content { padding: 15px; flex: 1; display: flex; flex-direction: column; text-align: left; }
+        .feed-grid-text { font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 10px; flex: 1; word-wrap: break-word; font-family: 'Inter'; }
+        .feed-grid-date { font-size: 0.65rem; color: #888; font-family: 'Orbitron'; margin-bottom: 15px; }
+        
+        .feed-paywall { position: absolute; top: 30px; left: 0; width: 100%; height: calc(100% - 30px); background: rgba(5,10,26,0.85); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 50; text-align: center; border-radius: 8px; border: 2px dashed var(--accent-cyan); padding: 2rem; }
+        .feed-paywall i { font-size: 3rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--accent-cyan)); }
         
         /* EXTREME OVERLAYS PORTED TO SK8DAO PALETTE */
         .viral-fire { border-color: var(--accent-pink) !important; animation: fire-pulse 1s infinite alternate; }
@@ -1553,17 +1569,35 @@
     let skatePerWax = 7.6897; 
     let sWax = 1 / skatePerWax;
 
-   // === UNIFIED WALLET BUTTON SYNC ===
-window.syncAllWalletButtons = function(session) {
-    const mainBtn = document.getElementById('connect-btn');
-    
-    if (session) {
-        const actorName = session.actor.toString().toUpperCase();
-        if (mainBtn) mainBtn.innerText = actorName;
-    } else {
-        if (mainBtn) mainBtn.innerText = 'CONNECT';
-    }
-};
+ // === UNIFIED WALLET BUTTON SYNC & PROFILE NAV ===
+    window.syncAllWalletButtons = function(session) {
+        const mainBtn = document.getElementById('connect-btn');
+        let profileBtn = document.getElementById('nav-profile-btn');
+        
+        if (session) {
+            const actorName = session.actor.toString().toUpperCase();
+            if (mainBtn) mainBtn.innerText = actorName;
+            
+            // Inject Profile Button dynamically next to connect button
+            if (!profileBtn) {
+                const controls = document.querySelector('.header-controls');
+                const btn = document.createElement('button');
+                btn.id = 'nav-profile-btn';
+                btn.className = 'wallet-btn';
+                btn.style.marginLeft = '10px';
+                btn.style.background = 'var(--accent-cyan)';
+                btn.style.color = '#000';
+                btn.innerText = 'PROFILE';
+                btn.onclick = () => window.navigateToProfile(session.actor.toString());
+                controls.appendChild(btn);
+            } else {
+                profileBtn.style.display = 'inline-block';
+            }
+        } else {
+            if (mainBtn) mainBtn.innerText = 'CONNECT';
+            if (profileBtn) profileBtn.style.display = 'none';
+        }
+    };
     
     window.currentUserMaxVotes = 0; 
 
@@ -3298,21 +3332,20 @@ if (allActions.length > 0) {
         }
     };
 
-    // ==========================================
+   // ==========================================
     // 🟢 DECENTRALIZED IDENTITY ENGINE (WAX) 🟢
     // ==========================================
 
+    const ADMIN_WALLETS = ["ufuau.wam", "skatecoinwax"];
+    let globalAdminIncognito = false;
+    let bannedWallets = [];
+
     // Dynamic Router for Profile Viewing
     window.navigateToProfile = (walletAddress) => {
-        // Hide standard categories
         document.querySelectorAll('.dashboard-wrapper').forEach(w => w.style.display = 'none');
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        
-        // Show Profile
         document.getElementById('profile-wrapper').style.display = 'block';
         window.scrollTo(0,0);
-        
-        // Trigger Hyperion Read
         window.renderProfile(walletAddress);
     };
 
@@ -3322,7 +3355,11 @@ if (allActions.length > 0) {
         document.getElementById('p-bio').innerText = "Scanning WAX Hyperion nodes...";
         document.getElementById('p-gear').innerHTML = "";
         
-        // Setup Base Default Data
+        const activeActor = currentSession ? currentSession.actor.toString() : null;
+        const isViewerAdmin = activeActor && ADMIN_WALLETS.includes(activeActor);
+        const isOwner = activeActor === targetWallet;
+
+        // Base Data
         let profileData = { 
             name: targetWallet, 
             pic: "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", 
@@ -3331,12 +3368,10 @@ if (allActions.length > 0) {
         };
 
         try {
-            // Hyperion Scanner: Find all recent transactions by this wallet
             const res = await fetch(`https://api.waxsweden.org/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=150`);
             const json = await res.json();
             
             if (json && json.actions) {
-                // Find the newest transaction sent BY the user TO skatecoinwax containing the profile JSON
                 const profileUpdate = json.actions.find(a => {
                     const data = a.act.data;
                     return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
@@ -3346,14 +3381,12 @@ if (allActions.length > 0) {
                     try {
                         const parsed = JSON.parse(profileUpdate.act.data.memo);
                         profileData = { ...profileData, ...parsed };
-                    } catch(e) { console.error("JSON Parsing Error on Memo:", e); }
+                    } catch(e) {}
                 }
             }
-        } catch(e) { 
-            console.error("Profile Sync Error", e); 
-        }
+        } catch(e) { console.error("Profile Sync Error", e); }
 
-        // Write Decrypted Data to the UI
+        // Write Decrypted Data to UI
         document.getElementById('p-name').innerText = profileData.name;
         document.getElementById('p-img').src = profileData.pic;
         document.getElementById('p-bio').innerText = profileData.bio;
@@ -3365,6 +3398,19 @@ if (allActions.length > 0) {
         if(profileData.spot) gHtml += `<div class="gear-tag"><span>📍</span> ${profileData.spot}</div>`;
         document.getElementById('p-gear').innerHTML = gHtml;
 
+        // Set Rank Display
+        let rankDisplay = "GROMMET";
+        let rankColor = "var(--accent-cyan)";
+        if (ADMIN_WALLETS.includes(targetWallet) && !globalAdminIncognito) {
+            rankDisplay = "⚡ GODMODE";
+            rankColor = "var(--accent-pink)";
+        }
+        const rankEl = document.getElementById('p-rank-display');
+        if(rankEl) {
+            rankEl.innerText = rankDisplay;
+            rankEl.style.color = rankColor;
+        }
+
         // Persist data locally for the Edit Modal
         const gearDiv = document.getElementById('p-gear');
         gearDiv.dataset.stance = profileData.stance || "";
@@ -3372,9 +3418,37 @@ if (allActions.length > 0) {
         gearDiv.dataset.trucks = profileData.trucks || "";
         gearDiv.dataset.spot = profileData.spot || "";
 
-        // Check if the viewer is the owner
-        const isOwner = currentSession && currentSession.actor.toString() === targetWallet;
         document.getElementById('edit-profile-btn').style.display = isOwner ? 'block' : 'none';
+
+        // ==========================
+        // INJECT GODMODE ADMIN PANEL
+        // ==========================
+        const existingAdmin = document.getElementById('sk8-admin-panel-wrapper');
+        if (existingAdmin) existingAdmin.remove();
+        
+        let adminPanelHtml = "";
+        if (isViewerAdmin) {
+            if (isOwner) {
+                let nextState = !globalAdminIncognito;
+                adminPanelHtml = `
+                <div style="margin-top: 25px; padding: 15px; background: rgba(255, 0, 85, 0.1); border: 1px solid var(--accent-pink); border-radius: 12px; text-align: left;">
+                    <h4 style="color: var(--accent-pink); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 10px; font-weight: 900;">⚡ GODMODE: INCOGNITO</h4>
+                    <button onclick="window.setIncognitoWeb3(${nextState})" class="wallet-btn" style="width:100%; background:${globalAdminIncognito ? '#00ffaa' : 'var(--accent-pink)'}; color:#000; padding:10px; font-size: 0.75rem;">${globalAdminIncognito ? 'GO VISIBLE' : 'GO INCOGNITO (HIDE)'}</button>
+                </div>`;
+            } else {
+                let isBanned = bannedWallets.includes(targetWallet);
+                let action = isBanned ? 'unban' : 'ban';
+                let btnText = isBanned ? 'RESURRECT SKATER' : 'SUSPEND SKATER';
+                let btnColor = isBanned ? '#00ffaa' : 'var(--accent-pink)';
+                adminPanelHtml = `
+                <div style="margin-top: 25px; padding: 15px; background: rgba(255, 0, 85, 0.1); border: 1px solid var(--accent-pink); border-radius: 12px; text-align: left;">
+                    <h4 style="color: var(--accent-pink); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 10px; font-weight: 900;">⚡ GODMODE: MODERATION</h4>
+                    <button onclick="window.adminAction('${targetWallet}', '${action}')" class="wallet-btn" style="width:100%; background:${btnColor}; color:#000; padding:10px; font-size: 0.75rem;">${btnText}</button>
+                </div>`;
+            }
+            const wrapper = `<div id="sk8-admin-panel-wrapper">${adminPanelHtml}</div>`;
+            document.querySelector('.profile-sidebar').insertAdjacentHTML('beforeend', wrapper);
+        }
     };
 
     window.openEditProfileModal = () => {
@@ -3393,7 +3467,6 @@ if (allActions.length > 0) {
 
     window.saveProfileWeb3 = async () => {
         if(!currentSession) return toggleAuthModal();
-        
         const btn = document.getElementById("save-web3-btn"); 
         btn.innerText = "AWAITING SIGNATURE...";
         
@@ -3408,44 +3481,66 @@ if (allActions.length > 0) {
 
             const pData = JSON.stringify({ sk8: "v1", name, pic, bio, stance, deck, trucks, spot });
             
-            // WAX limits memos to 256 bytes natively
             if (pData.length > 255) { 
-                alert(`Bio or Name too long! Please shorten your text to fit the cryptographic ledger. Max length is 255 chars.`); 
+                alert(`Bio or Name too long! Max length is 255 chars.`); 
                 btn.innerText = "SIGN & SAVE TO CHAIN"; 
                 return; 
             }
             
             const sender = currentSession.actor.toString();
-
-            // We charge a micro-fee to prevent network spam and write the data permanently
             const actions = [{
                 account: 'eosio.token',
                 name: 'transfer',
                 authorization: [currentSession.permissionLevel],
-                data: { 
-                    from: sender, 
-                    to: 'skatecoinwax', 
-                    quantity: "0.00010000 WAX", 
-                    memo: pData 
-                }
+                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
             }];
 
             await currentSession.transact({ actions });
-            
             btn.innerText = "IDENTITY SECURED!";
             setTimeout(() => { 
                 window.toggleModal('edit-profile-modal', false); 
                 window.renderProfile(sender); 
                 btn.innerText = "SIGN & SAVE TO CHAIN"; 
             }, 2000);
-            
         } catch (err) { 
-            console.error(err);
             btn.innerText = "TRANSACTION FAILED";
             setTimeout(() => btn.innerText = "SIGN & SAVE TO CHAIN", 3000); 
         }
     };
-    
+
+    // GODMODE ON-CHAIN WRITERS
+    window.setIncognitoWeb3 = async (state) => {
+        if(!currentSession) return;
+        if(!confirm(`Are you sure you want to ${state ? 'HIDE' : 'SHOW'} Godmode on public leaderboards?`)) return;
+        try {
+            const pData = JSON.stringify({ sk8admin: "v1", action: "incognito", state: state });
+            const actions = [{
+                account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
+                data: { from: currentSession.actor.toString(), to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
+            }];
+            await currentSession.transact({ actions });
+            globalAdminIncognito = state;
+            alert("Visibility updated! Please wait a moment for the blockchain to sync.");
+            window.renderProfile(currentSession.actor.toString());
+        } catch(e) { alert("Admin action failed. Ensure wallet has sufficient CPU/NET."); }
+    };
+
+    window.adminAction = async (targetWallet, action) => {
+        if(!currentSession) return;
+        if(!confirm(`Are you sure you want to ${action.toUpperCase()} skater ${targetWallet}?`)) return;
+        try {
+            const pData = JSON.stringify({ sk8admin: "v1", action: action, wallet: targetWallet });
+            const actions = [{
+                account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
+                data: { from: currentSession.actor.toString(), to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
+            }];
+            await currentSession.transact({ actions });
+            if(action === 'ban') bannedWallets.push(targetWallet);
+            else bannedWallets = bannedWallets.filter(w => w !== targetWallet);
+            alert(`Skater ${action === 'ban' ? 'suspended' : 'resurrected'}!`);
+            window.renderProfile(targetWallet);
+        } catch(e) { alert("Admin action failed. Ensure wallet has sufficient CPU/NET."); }
+    };
 </script>
 </body>
 </html>
