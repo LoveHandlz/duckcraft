@@ -2357,7 +2357,7 @@ if (allActions.length > 0) {
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         if(document.getElementById(`nav-${schema}`)) document.getElementById(`nav-${schema}`).classList.add('active');
         
-        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper'];
+        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper', 'private-feed-wrapper'];
         wrappers.forEach(w => { const el = document.getElementById(w); if(el) el.style.display = 'none'; });
 
         if (schema === 'home') { document.getElementById('home-wrapper').style.display = 'block';
@@ -2366,7 +2366,7 @@ if (allActions.length > 0) {
         } else if (schema === 'clips') { document.getElementById('clips-wrapper').style.display = 'block';
         } else if (schema === 'defi') { document.getElementById('defi-wrapper').style.display = 'block'; syncPrices(); if(!defiWarningShown) { document.getElementById('defi-warning-modal').style.display = 'flex'; defiWarningShown = true; }
         } else if (schema === 'treasury') { document.getElementById('treasury-wrapper').style.display = 'block'; fetchTreasuryData();
-      } else if (schema === 'dao') { 
+        } else if (schema === 'dao') { 
     document.getElementById('dao-wrapper').style.display = 'block'; 
     
     // THE FIX: Force the UI to wait for the blockchain to return your true $SKATE balance 
@@ -2378,7 +2378,8 @@ if (allActions.length > 0) {
         } else if (schema === 'lunchbox') { document.getElementById('lunchbox-wrapper').style.display = 'block'; if (currentSession) fetchLunchbox(currentSession.actor.toString());
         } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
         } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
-        } else if (schema === 'web3shop') { document.getElementById('web3-shop-wrapper').style.display = 'block';                                  
+        } else if (schema === 'web3shop') { document.getElementById('web3-shop-wrapper').style.display = 'block';
+        } else if (schema === 'private-feed') { document.getElementById('private-feed-wrapper').style.display = 'block';                                   
         } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
     };
 
