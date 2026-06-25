@@ -2360,7 +2360,7 @@ if (allActions.length > 0) {
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         if(document.getElementById(`nav-${schema}`)) document.getElementById(`nav-${schema}`).classList.add('active');
         
-        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper', 'profile-wrapper'];
+        const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper', 'profile-wrapper', 'private-feed-wrapper'];
         wrappers.forEach(w => { const el = document.getElementById(w); if(el) el.style.display = 'none'; });
 
         if (schema === 'home') { document.getElementById('home-wrapper').style.display = 'block';
