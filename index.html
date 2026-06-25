@@ -3474,6 +3474,129 @@ if (allActions.length > 0) {
             btn.disabled = false;
         }
     };
+
+    // ==========================================
+    // 🟢 PHASE 3: PROFILE RENDERING & LEDGER SYNC 🟢
+    // ==========================================
+
+    window.navigateToProfile = (targetWallet) => {
+        // Trigger your vanilla router to show the profile page
+        window.switchCategory('profile');
+        window.scrollTo(0,0);
+        
+        // Fire the ledger sync
+        window.renderProfile(targetWallet);
+    };
+
+    window.renderProfile = async (targetWallet) => {
+        const nameEl = document.getElementById('p-name');
+        const walletEl = document.getElementById('p-wallet');
+        const bioEl = document.getElementById('p-bio');
+        const imgEl = document.getElementById('p-img');
+        const gearEl = document.getElementById('p-gear');
+        const rankDisplayEl = document.getElementById('p-rank-display');
+        const editBtn = document.getElementById('edit-profile-btn');
+
+        // Set initial loading states
+        nameEl.innerText = "SYNCING LEDGER...";
+        walletEl.innerText = targetWallet;
+        bioEl.innerText = "Scanning WAX Hyperion nodes for decentralized identity data...";
+        gearEl.innerHTML = "";
+        rankDisplayEl.innerText = "CALCULATING...";
+        
+        const activeActor = currentSession ? currentSession.actor.toString() : null;
+        const isOwner = activeActor === targetWallet;
+
+        // Show edit button only if the viewer owns the profile
+        editBtn.style.display = isOwner ? 'block' : 'none';
+
+        // Default skeleton profile
+        let profileData = { 
+            name: "ANON SKATER", 
+            pic: "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", 
+            bio: "Decentralized skater running on the SK8 Protocol.", 
+            stance: "", deck: "", trucks: "", spot: "", yt: "", free: false
+        };
+
+        let totalWaxReceived = 0;
+
+        try {
+            // Scrape Hyperion History for this specific wallet
+            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=500`);
+            const json = await res.json();
+            
+            if (json && json.actions) {
+                // 1. Extract the most recent Identity Update Memo
+                const profileUpdate = json.actions.find(a => {
+                    const data = a.act.data;
+                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
+                });
+                
+                if (profileUpdate) {
+                    try {
+                        const parsed = JSON.parse(profileUpdate.act.data.memo);
+                        profileData = { ...profileData, ...parsed };
+                    } catch(e) {
+                        console.warn("Failed to parse profile JSON.");
+                    }
+                }
+
+                // 2. Calculate Total WAX Sponsored (Incoming peer-to-peer blessings)
+                json.actions.forEach(a => {
+                    const data = a.act.data;
+                    if (data && data.to === targetWallet && data.from !== targetWallet) {
+                        const [amtVal, symbol] = data.quantity.split(' ');
+                        if (symbol === 'WAX') {
+                            totalWaxReceived += parseFloat(amtVal);
+                        }
+                    }
+                });
+            }
+        } catch(e) {
+            console.error("Profile Sync Error", e);
+            bioEl.innerText = "Failed to synchronize with the decentralized ledger.";
+        }
+
+        // Apply Decrypted Data to the UI
+        nameEl.innerText = profileData.name;
+        imgEl.src = profileData.pic;
+        bioEl.innerText = profileData.bio;
+
+        // Construct Gear Tags with Inline CSS to match your protocol aesthetics
+        let gHtml = "";
+        const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
+        
+        if(profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
+        if(profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
+        if(profileData.trucks) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${profileData.trucks}</div>`;
+        if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
+        gearEl.innerHTML = gHtml;
+
+        // Cache the data invisibly in the DOM so the Edit Modal can fetch it effortlessly later
+        gearEl.dataset.stance = profileData.stance || "";
+        gearEl.dataset.deck = profileData.deck || "";
+        gearEl.dataset.trucks = profileData.trucks || "";
+        gearEl.dataset.spot = profileData.spot || "";
+        gearEl.dataset.yt = profileData.yt || "";
+        gearEl.dataset.free = profileData.free === true ? 'true' : 'false';
+
+        // Translate the total incoming WAX into their global Status Rank
+        let rankStr = "GROMMET";
+        let rankCol = "var(--accent-cyan)";
+        if (totalWaxReceived >= 50000) { rankStr = "LEGEND"; rankCol = "#a855f7"; }
+        else if (totalWaxReceived >= 10000) { rankStr = "ELITE"; rankCol = "#2196f3"; }
+        else if (totalWaxReceived >= 5000) { rankStr = "PRO"; rankCol = "var(--accent-gold)"; }
+        else if (totalWaxReceived >= 1000) { rankStr = "AMATEUR"; rankCol = "#c0c0c0"; }
+        else if (totalWaxReceived >= 100) { rankStr = "FLOW"; rankCol = "#cd7f32"; }
+
+        rankDisplayEl.innerText = rankStr;
+        rankDisplayEl.style.color = rankCol;
+
+        // Trigger the Sponsor Badge Engine from Phase 2
+        if (typeof window.renderSponsorBadges === 'function') {
+            window.renderSponsorBadges(totalWaxReceived, isOwner);
+        }
+    };
     
 </script>
 </body>
