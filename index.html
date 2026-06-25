@@ -3160,7 +3160,8 @@ if (allActions.length > 0) {
                         <button onclick="executeOnChainBlessing('${clip.target}', 1000, 'SKATE', '${clip.id}', '💪')" class="reaction-btn ${rx['💪']>0?'has-votes':''}" title="1000 SKATE">💪 <span>${rx['💪']}</span></button>
                     </div>
                     
-                    <button class="bless-clip-btn" onclick="executeOnChainBlessing('${clip.target}', 100, 'WAX', '${clip.id}')">🙏 BLESS (100 WAX)</button>
+                   <button class="bless-clip-btn" onclick="executeOnChainBlessing('${clip.target}', 100, 'WAX', '${clip.id}')">🙏 BLESS (100 WAX)</button>
+                    <button class="view-profile-btn" onclick="navigateToProfile('${clip.target}')">VIEW PROFILE</button>
                 </div>
             </div>`;
         });
