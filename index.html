@@ -3425,14 +3425,14 @@ if (allActions.length > 0) {
         document.getElementById('p-sponsor-badges-section').style.display = 'block';
     };
 
-   window.openEditProfileModal = () => {
+    window.openEditProfileModal = () => {
         // Read from current UI to populate fields (if available)
         const currentName = document.getElementById("p-name").innerText;
         document.getElementById("edit-name").value = currentName !== "SYNCING LEDGER..." ? currentName : "";
         document.getElementById("edit-pic").value = document.getElementById("p-img").src;
         
         const currentBio = document.getElementById("p-bio").innerText;
-        document.getElementById("edit-bio").value = currentBio !== "Scanning WAX Hyperion nodes for decentralized identity data..." ? currentBio : "";
+        document.getElementById("edit-bio").value = currentBio !== "Scanning WAX Hyperion nodes..." ? currentBio : "";
         
         const gearDiv = document.getElementById('p-gear');
         document.getElementById("edit-stance").value = gearDiv.dataset.stance || "";
@@ -3443,13 +3443,11 @@ if (allActions.length > 0) {
         document.getElementById("edit-yt").value = gearDiv.dataset.yt || "";
         document.getElementById("edit-free-toggle").checked = gearDiv.dataset.free === 'true';
 
-        // Show the modal
-        window.toggleModal('edit-profile-modal', true);
+        window.toggleModal('edit-modal', true);
     };
 
     window.closeEditModal = () => {
-        // Hide the modal using the correct ID
-        window.toggleModal('edit-profile-modal', false);
+        window.toggleModal('edit-modal', false);
     };
 
     window.saveProfileWeb3 = async () => {
