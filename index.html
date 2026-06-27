@@ -3383,8 +3383,8 @@ if (allActions.length > 0) {
         }
     };
 
-    // ==========================================
-    // 🟢 ON-CHAIN PROFILE & BADGE ENGINE 🟢
+   // ==========================================
+    // 🟢 OPTIMIZED PROFILE & BADGE ENGINE 
     // ==========================================
 
     const BADGE_MILESTONES = [
@@ -3420,16 +3420,13 @@ if (allActions.length > 0) {
             </div>`;
         });
         grid.innerHTML = html;
-        
-        // Show the section if it was hidden
         document.getElementById('p-sponsor-badges-section').style.display = 'block';
     };
 
-   window.openEditProfileModal = () => {
-        // Read from current UI to populate fields (if available)
+    window.openEditProfileModal = () => {
         const currentName = document.getElementById("p-name").innerText;
-        document.getElementById("edit-name").value = currentName !== "SYNCING LEDGER..." ? currentName : "";
-        document.getElementById("edit-pic").value = document.getElementById("p-img").src;
+        document.getElementById("edit-name").value = currentName !== "SYNCING LEDGER..." && currentName !== "ANON SKATER" ? currentName : "";
+        document.getElementById("edit-pic").value = document.getElementById("p-img").src.includes("bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu") ? "" : document.getElementById("p-img").src;
         
         const currentBio = document.getElementById("p-bio").innerText;
         document.getElementById("edit-bio").value = currentBio !== "Scanning WAX Hyperion nodes for decentralized identity data..." ? currentBio : "";
@@ -3439,16 +3436,13 @@ if (allActions.length > 0) {
         document.getElementById("edit-deck").value = gearDiv.dataset.deck || "";
         document.getElementById("edit-trucks").value = gearDiv.dataset.trucks || "";
         document.getElementById("edit-spot").value = gearDiv.dataset.spot || "";
-        
         document.getElementById("edit-yt").value = gearDiv.dataset.yt || "";
         document.getElementById("edit-free-toggle").checked = gearDiv.dataset.free === 'true';
 
-        // Show the modal
         window.toggleModal('edit-profile-modal', true);
     };
 
     window.closeEditModal = () => {
-        // Hide the modal using the correct ID
         window.toggleModal('edit-profile-modal', false);
     };
 
@@ -3457,166 +3451,130 @@ if (allActions.length > 0) {
         
         const btn = document.getElementById("save-web3-btn");
         const originalText = btn.innerText;
-        btn.innerText = "SIGNING...";
+        btn.innerText = "SIGNING PAYLOAD...";
         btn.disabled = true;
 
-        const name = document.getElementById("edit-name").value.trim();
-        const pic = document.getElementById("edit-pic").value.trim();
-        const bio = document.getElementById("edit-bio").value.trim();
-        const stance = document.getElementById("edit-stance").value.trim();
-        const deck = document.getElementById("edit-deck").value.trim();
-        const trucks = document.getElementById("edit-trucks").value.trim();
-        const spot = document.getElementById("edit-spot").value.trim();
-        const yt = document.getElementById("edit-yt").value.trim();
-        const isFree = document.getElementById("edit-free-toggle").checked;
-
-        // Construct exact Solana-clone JSON format
-        const profileData = { 
-            sk8: "v1", 
-            name: name.substring(0, 20), 
-            pic: pic.substring(0, 65), 
-            bio: bio.substring(0, 80), 
-            stance: stance.substring(0, 15), 
-            deck: deck.substring(0, 15), 
-            trucks: trucks.substring(0, 15), 
-            spot: spot.substring(0, 15), 
-            yt: yt.substring(0, 20), 
-            free: isFree 
-        };
-
-        const memoString = JSON.stringify(profileData);
-        
-        // WAX Memo size limit safety check
-        if (memoString.length > 255) {
-            showErrorModal("Profile data too large. Please shorten your bio or image link.");
-            btn.innerText = originalText;
-            btn.disabled = false;
-            return;
+        // 1. Structural Link Minification to protect standard 256-byte WAX memo ceiling
+        let rawPic = document.getElementById("edit-pic").value.trim();
+        if (rawPic.includes("ipfs.io/ipfs/")) {
+            rawPic = rawPic.split("ipfs.io/ipfs/")[1];
+        } else if (rawPic.includes("pinata.cloud/ipfs/")) {
+            rawPic = rawPic.split("pinata.cloud/ipfs/")[1];
         }
 
+        // 2. Dictionary Compression: maps verbose data into single characters to avoid token drops
+        const compressedPayload = {
+            v: "3", 
+            n: document.getElementById("edit-name").value.trim().substring(0, 20),
+            p: rawPic.substring(0, 60),
+            b: document.getElementById("edit-bio").value.trim().substring(0, 75),
+            s: document.getElementById("edit-stance").value.trim().substring(0, 10),
+            d: document.getElementById("edit-deck").value.trim().substring(0, 15),
+            t: document.getElementById("edit-trucks").value.trim().substring(0, 15),
+            l: document.getElementById("edit-spot").value.trim().substring(0, 20),
+            y: document.getElementById("edit-yt").value.trim().substring(0, 40),
+            f: document.getElementById("edit-free-toggle").checked ? 1 : 0
+        };
+
+        const memoData = JSON.stringify(compressedPayload);
+        if (memoData.length > 255) { 
+            btn.innerText = originalText;
+            btn.disabled = false;
+            return showErrorModal(`Payload validation fault: Memo size is ${memoData.length} bytes (Limit: 255). Please shorten your bio text.`);
+        }
+        
+        const sender = currentSession.actor.toString();
         try {
-            const sender = currentSession.actor.toString();
             const actions = [{
-                account: 'eosio.token',
-                name: 'transfer',
+                account: 'eosio.token', 
+                name: 'transfer', 
                 authorization: [currentSession.permissionLevel],
-                data: { 
-                    from: sender, 
-                    to: 'skatecoinwax', 
-                    quantity: "0.00010000 WAX", 
-                    memo: memoString 
-                }
+                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: memoData }
             }];
-
+            
             await currentSession.transact({ actions });
-            
-            showSuccessModal("IDENTITY SECURED", "Your profile updates have been successfully broadcast to the WAX ledger.");
             window.closeEditModal();
+            showSuccessModal("🔥 ID REWRITTEN 🔥", "Identity data synchronized with the WAX ledger. Refreshing viewport profile node.");
             
-            // Optimistic reload of the profile page after 2 seconds to allow ledger index
-            setTimeout(() => {
-                window.navigateToProfile(sender);
-            }, 2000);
-
-        } catch (error) {
-            console.error("Profile Save Error:", error);
-            showErrorModal("Transaction failed or rejected by wallet.");
+            // Front-run indexers for snappy Web2 feel before chain syncs completely
+            setTimeout(() => { window.switchCategory('profile'); window.renderProfile(sender); }, 1500);
+        } catch (err) { 
+            console.error(err);
+            showErrorModal("Broadcast aborted. Check system resources.");
         } finally {
             btn.innerText = originalText;
             btn.disabled = false;
         }
     };
 
-    // ==========================================
-    // 🟢 PHASE 3: PROFILE RENDERING & LEDGER SYNC 🟢
-    // ==========================================
-
-    window.navigateToProfile = (targetWallet) => {
-        // Trigger your vanilla router to show the profile page
-        window.switchCategory('profile');
-        window.scrollTo(0,0);
-        
-        // Fire the ledger sync
-        window.renderProfile(targetWallet);
-    };
-
     window.renderProfile = async (targetWallet) => {
         const nameEl = document.getElementById('p-name');
-        const walletEl = document.getElementById('p-wallet');
-        const bioEl = document.getElementById('p-bio');
         const imgEl = document.getElementById('p-img');
+        const bioEl = document.getElementById('p-bio');
         const gearEl = document.getElementById('p-gear');
         const rankDisplayEl = document.getElementById('p-rank-display');
-        const editBtn = document.getElementById('edit-profile-btn');
+        const walletEl = document.getElementById('p-wallet');
 
-        // Set initial loading states
-        nameEl.innerText = "SYNCING LEDGER...";
-        walletEl.innerText = targetWallet;
-        bioEl.innerText = "Scanning WAX Hyperion nodes for decentralized identity data...";
-        gearEl.innerHTML = "";
-        rankDisplayEl.innerText = "CALCULATING...";
+        if (walletEl) walletEl.innerText = targetWallet;
+        nameEl.innerText = "SYNCING...";
+        bioEl.innerText = "Intercepting ledger data...";
         
-        const activeActor = currentSession ? currentSession.actor.toString() : null;
-        const isOwner = activeActor === targetWallet;
-
-        // Show edit button only if the viewer owns the profile
-        editBtn.style.display = isOwner ? 'block' : 'none';
-
-        // Default skeleton profile
-        let profileData = { 
-            name: "ANON SKATER", 
-            pic: "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", 
-            bio: "Decentralized skater running on the SK8 Protocol.", 
-            stance: "", deck: "", trucks: "", spot: "", yt: "", free: false
-        };
-
+        let profileData = { name: "ANON SKATER", pic: "bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", bio: "This skater has not written onto the ledger yet." };
         let totalWaxReceived = 0;
+        const activeActor = currentSession ? currentSession.actor.toString() : "";
+        const isOwner = (activeActor === targetWallet);
+        
+        document.getElementById('edit-profile-btn').style.display = isOwner ? 'block' : 'none';
 
         try {
-            // Scrape Hyperion History for this specific wallet
-            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=500`);
+            // FIX: Added explicit strict sort direction 'sort=desc' to capture actual updates first
+            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=250&sort=desc`);
             const json = await res.json();
             
             if (json && json.actions) {
-                // 1. Extract the most recent Identity Update Memo
+                // Find latest compressed layout update entry
                 const profileUpdate = json.actions.find(a => {
                     const data = a.act.data;
-                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
+                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"v":"3"');
                 });
                 
                 if (profileUpdate) {
                     try {
                         const parsed = JSON.parse(profileUpdate.act.data.memo);
-                        profileData = { ...profileData, ...parsed };
-                    } catch(e) {
-                        console.warn("Failed to parse profile JSON.");
-                    }
+                        profileData = {
+                            name: parsed.n || "ANON SKATER",
+                            pic: parsed.p ? (parsed.p.startsWith('http') ? parsed.p : `https://ipfs.io/ipfs/${parsed.p}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+                            bio: parsed.b || "No bio established.",
+                            stance: parsed.s || "",
+                            deck: parsed.d || "",
+                            trucks: parsed.t || "",
+                            spot: parsed.l || "",
+                            yt: parsed.y || "",
+                            free: parsed.f === 1
+                        };
+                    } catch(e) { console.warn("Payload recovery corrupted"); }
                 }
 
-                // 2. Calculate Total WAX Sponsored (Incoming peer-to-peer blessings)
+                // Cumulative value parser
                 json.actions.forEach(a => {
                     const data = a.act.data;
-                    if (data && data.to === targetWallet && data.from !== targetWallet) {
+                    if (data && data.to === targetWallet && data.from !== targetWallet && data.quantity) {
                         const [amtVal, symbol] = data.quantity.split(' ');
-                        if (symbol === 'WAX') {
-                            totalWaxReceived += parseFloat(amtVal);
-                        }
+                        if (symbol === 'WAX') totalWaxReceived += parseFloat(amtVal) || 0;
                     }
                 });
             }
         } catch(e) {
-            console.error("Profile Sync Error", e);
-            bioEl.innerText = "Failed to synchronize with the decentralized ledger.";
+            console.error(e);
+            bioEl.innerText = "Network pipeline error. Retrying sync connection.";
         }
 
-        // Apply Decrypted Data to the UI
         nameEl.innerText = profileData.name;
-        imgEl.src = profileData.pic;
+        imgEl.src = profileData.pic.startsWith('http') ? profileData.pic : `https://ipfs.io/ipfs/${profileData.pic}`;
         bioEl.innerText = profileData.bio;
 
-        // Construct Gear Tags with Inline CSS to match your protocol aesthetics
         let gHtml = "";
-        const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
+        const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Orbitron'; font-weight:900; text-transform:uppercase; margin:4px;";
         
         if(profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
         if(profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
@@ -3624,15 +3582,14 @@ if (allActions.length > 0) {
         if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
         gearEl.innerHTML = gHtml;
 
-        // Cache the data invisibly in the DOM so the Edit Modal can fetch it effortlessly later
+        // Populate invisible state fields directly for input field hydration
         gearEl.dataset.stance = profileData.stance || "";
         gearEl.dataset.deck = profileData.deck || "";
         gearEl.dataset.trucks = profileData.trucks || "";
         gearEl.dataset.spot = profileData.spot || "";
         gearEl.dataset.yt = profileData.yt || "";
-        gearEl.dataset.free = profileData.free === true ? 'true' : 'false';
+        gearEl.dataset.free = profileData.free ? 'true' : 'false';
 
-        // Translate the total incoming WAX into their global Status Rank
         let rankStr = "GROMMET";
         let rankCol = "var(--accent-cyan)";
         if (totalWaxReceived >= 50000) { rankStr = "LEGEND"; rankCol = "#a855f7"; }
@@ -3644,20 +3601,15 @@ if (allActions.length > 0) {
         rankDisplayEl.innerText = rankStr;
         rankDisplayEl.style.color = rankCol;
 
-        // Trigger the Sponsor Badge Engine from Phase 2
-        if (typeof window.renderSponsorBadges === 'function') {
-            window.renderSponsorBadges(totalWaxReceived, isOwner);
-        }
+        window.renderSponsorBadges(totalWaxReceived, isOwner);
     };
 
     // ==========================================
-    // 🟢 PRIVATE FEED & WAX LEDGER LOGIC 🟢
+    // 🟢 PRIVATE TIMELINE MODULE ENGINE
     // ==========================================
     window.feedRenderLimit = 12;
     window.currentSkaterPosts = [];
     window.activeFeedWallet = "";
-    
-    // Provided ADMIN_WALLETS array just in case
     const ADMIN_WALLETS = ["ufuau.wam", "skatecoinwax"]; 
 
     window.attemptFeedAccess = async () => {
@@ -3668,30 +3620,29 @@ if (allActions.length > 0) {
         const activeActor = currentSession.actor.toString();
         window.activeFeedWallet = targetWallet;
         
-        // Route to standalone page (Router auto-hides profile)
         window.switchCategory('private-feed');
         window.scrollTo(0,0);
         
         let isOwner = (activeActor === targetWallet);
         let hasAccess = isOwner || ADMIN_WALLETS.includes(activeActor);
 
-        // WAX Amount Check for Amateur Tier (1000 WAX threshold)
         if (!hasAccess) {
             try {
                 let totalDonated = 0;
-                const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${activeActor}&filter=eosio.token:transfer&limit=500`);
+                // FIX: Added descending sorting constraint to history feed calls
+                const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${activeActor}&filter=eosio.token:transfer&limit=500&sort=desc`);
                 const json = await res.json();
                 if(json && json.actions) {
                     json.actions.forEach(a => {
                         const d = a.act.data;
                         if(d && d.from === activeActor && d.to === targetWallet) {
-                            const amt = parseFloat(d.quantity.split(" ")[0]);
-                            if (d.quantity.includes("WAX")) totalDonated += amt;
+                            const [amtVal, symbol] = d.quantity.split(" ");
+                            if (symbol === 'WAX') totalDonated += parseFloat(amtVal) || 0;
                         }
                     });
                 }
                 if(totalDonated >= 1000) hasAccess = true;
-            } catch(e) { console.error("Access check failed", e); }
+            } catch(e) { console.error("Access verification interrupted", e); }
         }
 
         const paywall = document.getElementById('feed-paywall-overlay');
@@ -3709,16 +3660,17 @@ if (allActions.length > 0) {
         } else {
             if (paywall) paywall.style.display = 'flex';
             if (postBox) postBox.style.display = 'none';
-            window.fetchSkaterFeed(targetWallet, true); // True = blurred
+            window.fetchSkaterFeed(targetWallet, true); 
         }
     };
 
-   window.fetchSkaterFeed = async (wallet, isBlurred) => {
+    window.fetchSkaterFeed = async (wallet, isBlurred) => {
         window.currentSkaterPosts = [];
         let deletedPosts = [];
         
         try {
-            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${wallet}&filter=eosio.token:transfer&limit=500`);
+            // FIX: Explicit descending sort parameter optimization added
+            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${wallet}&filter=eosio.token:transfer&limit=500&sort=desc`);
             const json = await res.json();
             
             if (json && json.actions) {
@@ -3728,7 +3680,6 @@ if (allActions.length > 0) {
                         if (data.memo.includes('"sk8post":"v1"')) {
                             try {
                                 const parsed = JSON.parse(data.memo);
-                                // NEW: We are now pulling 'tt' (TikTok) from the payload
                                 window.currentSkaterPosts.push({ id: a.trx_id, text: parsed.text, yt: parsed.yt, ig: parsed.ig, tt: parsed.tt, time: new Date(a.timestamp).getTime() });
                             } catch(e) {}
                         } else if (data.memo.includes('"sk8del":"v1"')) {
@@ -3740,11 +3691,10 @@ if (allActions.length > 0) {
                     }
                 });
             }
-        } catch(e) { console.error("Feed fetch failed", e); }
+        } catch(e) { console.error("History stack fault", e); }
         
         window.currentSkaterPosts = window.currentSkaterPosts.filter(p => !deletedPosts.includes(p.id));
         window.currentSkaterPosts.sort((a,b) => b.time - a.time);
-        
         window.renderFeedGrid(isBlurred, wallet);
     };
 
