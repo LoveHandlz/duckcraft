@@ -3224,179 +3224,218 @@
         }
     };
 
-    const BADGE_MILESTONES = [
-        { id: "flow", title: "FLOW TIER", threshold: 100, icon: "🛹", desc: "First blood. The streets recognize you." },
-        { id: "local", title: "LOCAL HERO", threshold: 500, icon: "🔥", desc: "You're keeping the park alive." },
-        { id: "am", title: "AMATEUR SPONSOR", threshold: 1000, icon: "👊", desc: "Solid backing. You have a squad now." },
-        { id: "pro", title: "PRO BACKER", threshold: 5000, icon: "💎", desc: "Heavy hitter. The industry sees you." },
-        { id: "elite", title: "ELITE PATRON", threshold: 10000, icon: "⚡", desc: "God-tier liquidity provider." },
-        { id: "legend", title: "PROTOCOL LEGEND", threshold: 50000, icon: "👑", desc: "You basically own the streets." }
-    ];
+          const BADGE_MILESTONES = [
+            { id: "flow", title: "FLOW TIER", threshold: 100, icon: "🛹", desc: "First blood. The streets recognize you." },
+            { id: "local", title: "LOCAL HERO", threshold: 500, icon: "🔥", desc: "You're keeping the park alive." },
+            { id: "am", title: "AMATEUR SPONSOR", threshold: 1000, icon: "👊", desc: "Solid backing. You have a squad now." },
+            { id: "pro", title: "PRO BACKER", threshold: 5000, icon: "💎", desc: "Heavy hitter. The industry sees you." },
+            { id: "elite", title: "ELITE PATRON", threshold: 10000, icon: "⚡", desc: "God-tier liquidity provider." },
+            { id: "legend", title: "PROTOCOL LEGEND", threshold: 50000, icon: "👑", desc: "You basically own the streets." }
+        ];
 
-    window.renderSponsorBadges = (waxAmount, isOwner) => {
-        const grid = document.getElementById('sponsor-badge-grid');
-        if (!grid) return;
-        
-        let html = "";
-        BADGE_MILESTONES.forEach(badge => {
-            const isUnlocked = waxAmount >= badge.threshold;
-            const filterStyle = isUnlocked ? "" : "filter: grayscale(1); opacity: 0.4;";
-            const borderStyle = isUnlocked ? "border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2);" : "border-color: #333;";
+        window.renderSponsorBadges = (waxAmount, isOwner) => {
+            const grid = document.getElementById('sponsor-badge-grid');
+            if (!grid) return;
             
-            let claimBtn = "";
-            if (isOwner && isUnlocked) {
-                claimBtn = `<button class="wallet-btn" onclick="showErrorModal('NFT Badge Claiming via AtomicAssets unlocking soon.')" style="margin-top: 10px; width: 100%; padding: 8px; font-size: 0.65rem; background: var(--accent-gold); color: #000;">CLAIM NFT</button>`;
-            }
+            let html = "";
+            BADGE_MILESTONES.forEach(badge => {
+                const isUnlocked = waxAmount >= badge.threshold;
+                const filterStyle = isUnlocked ? "" : "filter: grayscale(1); opacity: 0.4;";
+                const borderStyle = isUnlocked ? "border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2);" : "border-color: #333;";
+                
+                let claimBtn = "";
+                if (isOwner && isUnlocked) {
+                    claimBtn = `<button class="wallet-btn" onclick="showErrorModal('NFT Badge Claiming via AtomicAssets unlocking soon.')" style="margin-top: 10px; width: 100%; padding: 8px; font-size: 0.65rem; background: var(--accent-gold); color: #000;">CLAIM NFT</button>`;
+                }
 
-            html += `
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid transparent; ${borderStyle} border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; ${filterStyle}">
-                <div style="font-size: 2.5rem; margin-bottom: 10px;">${badge.icon}</div>
-                <div style="font-family: 'Orbitron'; font-weight: 900; font-size: 0.75rem; color: ${isUnlocked ? 'var(--accent-gold)' : '#888'}; margin-bottom: 5px;">${badge.title}</div>
-                <div style="font-size: 0.65rem; color: #888; font-family: 'Inter'; line-height: 1.4; margin-bottom: 8px;">${badge.threshold.toLocaleString()} WAX</div>
-                ${claimBtn}
-            </div>`;
-        });
-        grid.innerHTML = html;
-        document.getElementById('p-sponsor-badges-section').style.display = 'block';
-    };
-
-    window.openEditProfileModal = () => {
-        const currentName = document.getElementById("p-name").innerText;
-        document.getElementById("edit-name").value = currentName !== "SYNCING LEDGER..." && currentName !== "ANON SKATER" ? currentName : "";
-        document.getElementById("edit-pic").value = document.getElementById("p-img").src.includes("bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu") ? "" : document.getElementById("p-img").src;
-        
-        const currentBio = document.getElementById("p-bio").innerText;
-        document.getElementById("edit-bio").value = currentBio !== "Scanning WAX Hyperion nodes for decentralized identity data..." ? currentBio : "";
-        
-        const gearDiv = document.getElementById('p-gear');
-        document.getElementById("edit-stance").value = gearDiv.dataset.stance || "";
-        document.getElementById("edit-deck").value = gearDiv.dataset.deck || "";
-        document.getElementById("edit-trucks").value = gearDiv.dataset.trucks || "";
-        document.getElementById("edit-spot").value = gearDiv.dataset.spot || "";
-        document.getElementById("edit-yt").value = gearDiv.dataset.yt || "";
-        document.getElementById("edit-free-toggle").checked = gearDiv.dataset.free === 'true';
-
-        window.toggleModal('edit-profile-modal', true);
-    };
-
-    window.closeEditModal = () => {
-        window.toggleModal('edit-profile-modal', false);
-    };
-
-    window.saveProfileWeb3 = async () => {
-        if (!currentSession) return toggleAuthModal();
-        
-        const btn = document.getElementById("save-web3-btn");
-        const originalText = btn.innerText;
-        btn.innerText = "SIGNING PAYLOAD...";
-        btn.disabled = true;
-
-        let rawPic = document.getElementById("edit-pic").value.trim();
-        if (rawPic.includes("ipfs.io/ipfs/")) {
-            rawPic = rawPic.split("ipfs.io/ipfs/")[1];
-        } else if (rawPic.includes("pinata.cloud/ipfs/")) {
-            rawPic = rawPic.split("pinata.cloud/ipfs/")[1];
-        }
-
-        const compressedPayload = {
-            v: "3", 
-            n: document.getElementById("edit-name").value.trim().substring(0, 20),
-            p: rawPic.substring(0, 60),
-            b: document.getElementById("edit-bio").value.trim().substring(0, 75),
-            s: document.getElementById("edit-stance").value.trim().substring(0, 10),
-            d: document.getElementById("edit-deck").value.trim().substring(0, 15),
-            t: document.getElementById("edit-trucks").value.trim().substring(0, 15),
-            l: document.getElementById("edit-spot").value.trim().substring(0, 20),
-            y: document.getElementById("edit-yt").value.trim().substring(0, 40),
-            f: document.getElementById("edit-free-toggle").checked ? 1 : 0
+                html += `
+                <div style="background: rgba(0,0,0,0.6); border: 1px solid transparent; ${borderStyle} border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; ${filterStyle}">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">${badge.icon}</div>
+                    <div style="font-family: 'Orbitron'; font-weight: 900; font-size: 0.75rem; color: ${isUnlocked ? 'var(--accent-gold)' : '#888'}; margin-bottom: 5px;">${badge.title}</div>
+                    <div style="font-size: 0.65rem; color: #888; font-family: 'Inter'; line-height: 1.4; margin-bottom: 8px;">${badge.threshold.toLocaleString()} WAX</div>
+                    ${claimBtn}
+                </div>`;
+            });
+            grid.innerHTML = html;
+            document.getElementById('p-sponsor-badges-section').style.display = 'block';
         };
 
-        const memoData = JSON.stringify(compressedPayload);
-        if (memoData.length > 255) { 
-            btn.innerText = originalText;
-            btn.disabled = false;
-            return showErrorModal(`Payload validation fault: Memo size is ${memoData.length} bytes (Limit: 255). Shorten bio text.`);
-        }
-        
-        const sender = currentSession.actor.toString();
-        try {
-            const actions = [{
-                account: 'eosio.token', 
-                name: 'transfer', 
-                authorization: [currentSession.permissionLevel],
-                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: memoData }
-            }];
+        window.openEditProfileModal = () => {
+            const currentName = document.getElementById("p-name").innerText;
+            document.getElementById("edit-name").value = currentName !== "SYNCING LEDGER..." && currentName !== "ANON SKATER" ? currentName : "";
+            document.getElementById("edit-pic").value = document.getElementById("p-img").src.includes("bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu") ? "" : document.getElementById("p-img").src;
             
-            await currentSession.transact({ actions });
-            window.closeEditModal();
-            showSuccessModal("🔥 ID REWRITTEN 🔥", "Identity data synchronized. The UI has updated instantly.");
+            const currentBio = document.getElementById("p-bio").innerText;
+            document.getElementById("edit-bio").value = currentBio !== "Scanning WAX Hyperion nodes for decentralized identity data..." ? currentBio : "";
             
-            // OPTIMISTIC UI UPDATE
-            document.getElementById('p-name').innerText = compressedPayload.n || "ANON SKATER";
-            document.getElementById('p-img').src = compressedPayload.p ? (compressedPayload.p.startsWith('http') ? compressedPayload.p : `https://ipfs.io/ipfs/${compressedPayload.p}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu";
-            document.getElementById('p-bio').innerText = compressedPayload.b || "No bio established.";
-            
-            let gHtml = "";
-            const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
-            if(compressedPayload.s) gHtml += `<div style="${tagStyle}"><span>👟</span> ${compressedPayload.s}</div>`;
-            if(compressedPayload.d) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${compressedPayload.d}</div>`;
-            if(compressedPayload.t) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${compressedPayload.t}</div>`;
-            if(compressedPayload.l) gHtml += `<div style="${tagStyle}"><span>📍</span> ${compressedPayload.l}</div>`;
-            
-            const gearEl = document.getElementById('p-gear');
-            gearEl.innerHTML = gHtml;
-            
-            gearEl.dataset.stance = compressedPayload.s || "";
-            gearEl.dataset.deck = compressedPayload.d || "";
-            gearEl.dataset.trucks = compressedPayload.t || "";
-            gearEl.dataset.spot = compressedPayload.l || "";
-            gearEl.dataset.yt = compressedPayload.y || "";
-            gearEl.dataset.free = compressedPayload.f === 1 ? 'true' : 'false';
+            const gearDiv = document.getElementById('p-gear');
+            document.getElementById("edit-stance").value = gearDiv.dataset.stance || "";
+            document.getElementById("edit-deck").value = gearDiv.dataset.deck || "";
+            document.getElementById("edit-trucks").value = gearDiv.dataset.trucks || "";
+            document.getElementById("edit-spot").value = gearDiv.dataset.spot || "";
+            document.getElementById("edit-yt").value = gearDiv.dataset.yt || "";
+            document.getElementById("edit-free-toggle").checked = gearDiv.dataset.free === 'true';
 
-        } catch (err) { 
-            console.error(err);
-            showErrorModal("Broadcast aborted. Check system resources or wallet signature.");
-        } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
-    };
+            window.toggleModal('edit-profile-modal', true);
+        };
 
-    window.navigateToProfile = (targetWallet) => {
-        window.switchCategory('profile');
-        window.scrollTo(0,0);
-        window.renderProfile(targetWallet);
-    };
+        window.closeEditModal = () => {
+            window.toggleModal('edit-profile-modal', false);
+        };
 
-    window.renderProfile = async (targetWallet) => {
-        const nameEl = document.getElementById('p-name');
-        const imgEl = document.getElementById('p-img');
-        const bioEl = document.getElementById('p-bio');
-        const gearEl = document.getElementById('p-gear');
-        const rankDisplayEl = document.getElementById('p-rank-display');
-        const walletEl = document.getElementById('p-wallet');
-
-        if (walletEl) walletEl.innerText = targetWallet;
-        nameEl.innerText = "SYNCING...";
-        bioEl.innerText = "Intercepting ledger data...";
-        
-        let profileData = { name: "ANON SKATER", pic: "bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", bio: "This skater has not written onto the ledger yet." };
-        let totalWaxReceived = 0;
-        const activeActor = currentSession ? currentSession.actor.toString() : "";
-        const isOwner = (activeActor === targetWallet);
-        
-        document.getElementById('edit-profile-btn').style.display = isOwner ? 'block' : 'none';
-
-        try {
-            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=250&sort=desc`);
-            const json = await res.json();
+        // ==================== PERFECT PROFILE SAVE (FIXED) ====================
+        window.saveProfileWeb3 = async () => {
+            if (!currentSession) return toggleAuthModal();
             
-            if (json && json.actions) {
-                const profileUpdate = json.actions.find(a => {
-                    const data = a.act.data;
-                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && (data.memo.includes('"v":"3"') || data.memo.includes('"sk8":"v1"'));
-                });
+            const btn = document.getElementById("save-web3-btn");
+            const originalText = btn.innerText;
+            btn.innerText = "SIGNING PAYLOAD...";
+            btn.disabled = true;
+
+            let rawPic = document.getElementById("edit-pic").value.trim();
+            if (rawPic.includes("ipfs.io/ipfs/")) {
+                rawPic = rawPic.split("ipfs.io/ipfs/")[1];
+            } else if (rawPic.includes("pinata.cloud/ipfs/")) {
+                rawPic = rawPic.split("pinata.cloud/ipfs/")[1];
+            }
+
+            const compressedPayload = {
+                v: "3", 
+                n: document.getElementById("edit-name").value.trim().substring(0, 20),
+                p: rawPic.substring(0, 60),
+                b: document.getElementById("edit-bio").value.trim().substring(0, 75),
+                s: document.getElementById("edit-stance").value.trim().substring(0, 10),
+                d: document.getElementById("edit-deck").value.trim().substring(0, 15),
+                t: document.getElementById("edit-trucks").value.trim().substring(0, 15),
+                l: document.getElementById("edit-spot").value.trim().substring(0, 20),
+                y: document.getElementById("edit-yt").value.trim().substring(0, 40),
+                f: document.getElementById("edit-free-toggle").checked ? 1 : 0
+            };
+
+            const memoData = JSON.stringify(compressedPayload);
+            if (memoData.length > 255) { 
+                btn.innerText = originalText;
+                btn.disabled = false;
+                return showErrorModal(`Payload validation fault: Memo size is ${memoData.length} bytes (Limit: 255). Shorten bio text.`);
+            }
+            
+            const sender = currentSession.actor.toString();
+            try {
+                const actions = [{
+                    account: 'eosio.token', 
+                    name: 'transfer', 
+                    authorization: [currentSession.permissionLevel],
+                    data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: memoData }
+                }];
                 
+                await currentSession.transact({ actions });
+                
+                window.closeEditModal();
+                showSuccessModal("🔥 ID REWRITTEN 🔥", "Identity data synchronized. The UI has updated instantly.");
+                
+                // === SAFE OPTIMISTIC UPDATE (THE FIX) ===
+                const nameEl = document.getElementById('p-name');
+                const imgEl  = document.getElementById('p-img');
+                const bioEl  = document.getElementById('p-bio');
+                const gearEl = document.getElementById('p-gear');
+
+                if (nameEl) nameEl.innerText = compressedPayload.n || "ANON SKATER";
+                if (imgEl) {
+                    imgEl.src = compressedPayload.p 
+                        ? (compressedPayload.p.startsWith('http') ? compressedPayload.p : `https://ipfs.io/ipfs/${compressedPayload.p}`)
+                        : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu";
+                }
+                if (bioEl) bioEl.innerText = compressedPayload.b || "No bio established.";
+
+                if (gearEl) {
+                    let gHtml = "";
+                    const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
+                    if(compressedPayload.s) gHtml += `<div style="${tagStyle}"><span>👟</span> ${compressedPayload.s}</div>`;
+                    if(compressedPayload.d) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${compressedPayload.d}</div>`;
+                    if(compressedPayload.t) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${compressedPayload.t}</div>`;
+                    if(compressedPayload.l) gHtml += `<div style="${tagStyle}"><span>📍</span> ${compressedPayload.l}</div>`;
+                    gearEl.innerHTML = gHtml;
+
+                    gearEl.dataset.stance = compressedPayload.s || "";
+                    gearEl.dataset.deck = compressedPayload.d || "";
+                    gearEl.dataset.trucks = compressedPayload.t || "";
+                    gearEl.dataset.spot = compressedPayload.l || "";
+                    gearEl.dataset.yt = compressedPayload.y || "";
+                    gearEl.dataset.free = compressedPayload.f === 1 ? 'true' : 'false';
+                }
+
+                // Re-render full profile from chain after save (extra safety)
+                setTimeout(() => {
+                    const profileWrapper = document.getElementById('profile-wrapper');
+                    if (profileWrapper && profileWrapper.style.display !== 'none') {
+                        window.renderProfile(sender);
+                    }
+                }, 1200);
+
+            } catch (err) { 
+                console.error(err);
+                showErrorModal("Broadcast aborted. Check system resources or wallet signature.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        window.navigateToProfile = (targetWallet) => {
+            window.switchCategory('profile');
+            window.scrollTo(0,0);
+            window.renderProfile(targetWallet);
+        };
+
+        // ==================== ROBUST PROFILE LOADER (FIXED) ====================
+        window.renderProfile = async (targetWallet) => {
+            const nameEl = document.getElementById('p-name');
+            const imgEl = document.getElementById('p-img');
+            const bioEl = document.getElementById('p-bio');
+            const gearEl = document.getElementById('p-gear');
+            const rankDisplayEl = document.getElementById('p-rank-display');
+            const walletEl = document.getElementById('p-wallet');
+
+            if (walletEl) walletEl.innerText = targetWallet;
+            if (nameEl) nameEl.innerText = "SYNCING...";
+            if (bioEl) bioEl.innerText = "Intercepting ledger data...";
+            
+            let profileData = { name: "ANON SKATER", pic: "bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", bio: "This skater has not written onto the ledger yet." };
+            let totalWaxReceived = 0;
+            const activeActor = currentSession ? currentSession.actor.toString() : "";
+            const isOwner = (activeActor === targetWallet);
+            
+            const editBtn = document.getElementById('edit-profile-btn');
+            if (editBtn) editBtn.style.display = isOwner ? 'block' : 'none';
+
+            try {
+                // === PAGINATED HISTORY FETCH (This is the main fix) ===
+                let profileUpdate = null;
+                let skip = 0;
+                const limit = 500;
+                let pagesChecked = 0;
+                const maxPages = 6; // checks up to 3000 actions
+
+                while (!profileUpdate && pagesChecked < maxPages) {
+                    const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=${limit}&skip=${skip}&sort=desc`);
+                    const json = await res.json();
+
+                    if (json && json.actions && json.actions.length > 0) {
+                        profileUpdate = json.actions.find(a => {
+                            const data = a.act.data;
+                            return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && 
+                                   (data.memo.includes('"v":"3"') || data.memo.includes('"sk8":"v1"'));
+                        });
+
+                        if (!profileUpdate) {
+                            skip += limit;
+                            pagesChecked++;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
                 if (profileUpdate) {
                     try {
                         const parsed = JSON.parse(profileUpdate.act.data.memo);
@@ -3418,302 +3457,306 @@
                     } catch(e) { console.warn("Payload recovery corrupted"); }
                 }
 
-                json.actions.forEach(a => {
-                    const data = a.act.data;
-                    if (data && data.to === targetWallet && data.from !== targetWallet && data.quantity) {
-                        const [amtVal, symbol] = data.quantity.split(' ');
-                        if (symbol === 'WAX') totalWaxReceived += parseFloat(amtVal) || 0;
-                    }
-                });
-            }
-        } catch(e) {
-            console.error(e);
-            bioEl.innerText = "Network pipeline error. Retrying sync connection.";
-        }
-
-        nameEl.innerText = profileData.name;
-        imgEl.src = profileData.pic;
-        bioEl.innerText = profileData.bio;
-
-        let gHtml = "";
-        const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
-        
-        if(profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
-        if(profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
-        if(profileData.trucks) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${profileData.trucks}</div>`;
-        if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
-        gearEl.innerHTML = gHtml;
-
-        gearEl.dataset.stance = profileData.stance || "";
-        gearEl.dataset.deck = profileData.deck || "";
-        gearEl.dataset.trucks = profileData.trucks || "";
-        gearEl.dataset.spot = profileData.spot || "";
-        gearEl.dataset.yt = profileData.yt || "";
-        gearEl.dataset.free = profileData.free ? 'true' : 'false';
-
-        let rankStr = "GROMMET";
-        let rankCol = "var(--accent-cyan)";
-        if (totalWaxReceived >= 50000) { rankStr = "LEGEND"; rankCol = "#a855f7"; }
-        else if (totalWaxReceived >= 10000) { rankStr = "ELITE"; rankCol = "#2196f3"; }
-        else if (totalWaxReceived >= 5000) { rankStr = "PRO"; rankCol = "var(--accent-gold)"; }
-        else if (totalWaxReceived >= 1000) { rankStr = "AMATEUR"; rankCol = "#c0c0c0"; }
-        else if (totalWaxReceived >= 100) { rankStr = "FLOW"; rankCol = "#cd7f32"; }
-
-        rankDisplayEl.innerText = rankStr;
-        rankDisplayEl.style.color = rankCol;
-
-        window.renderSponsorBadges(totalWaxReceived, isOwner);
-    };
-
-    window.feedRenderLimit = 12;
-    window.currentSkaterPosts = [];
-    window.activeFeedWallet = "";
-    const ADMIN_WALLETS = ["ufuau.wam", "skatecoinwax"]; 
-
-    window.attemptFeedAccess = async () => {
-        const targetWallet = document.getElementById('p-wallet').innerText;
-        if (!targetWallet || targetWallet === '...') return;
-        if (!currentSession) return toggleAuthModal();
-        
-        const activeActor = currentSession.actor.toString();
-        window.activeFeedWallet = targetWallet;
-        
-        window.switchCategory('private-feed');
-        window.scrollTo(0,0);
-        
-        let isOwner = (activeActor === targetWallet);
-        let hasAccess = isOwner || ADMIN_WALLETS.includes(activeActor);
-
-        if (!hasAccess) {
-            try {
-                let totalDonated = 0;
-                const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${activeActor}&filter=eosio.token:transfer&limit=500&sort=desc`);
-                const json = await res.json();
-                if(json && json.actions) {
-                    json.actions.forEach(a => {
-                        const d = a.act.data;
-                        if(d && d.from === activeActor && d.to === targetWallet) {
-                            const [amtVal, symbol] = d.quantity.split(" ");
-                            if (symbol === 'WAX') totalDonated += parseFloat(amtVal) || 0;
+                // Calculate total WAX received for badges/rank
+                const waxRes = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=1000&sort=desc`);
+                const waxJson = await waxRes.json();
+                if (waxJson && waxJson.actions) {
+                    waxJson.actions.forEach(a => {
+                        const data = a.act.data;
+                        if (data && data.to === targetWallet && data.from !== targetWallet && data.quantity) {
+                            const [amtVal, symbol] = data.quantity.split(' ');
+                            if (symbol === 'WAX') totalWaxReceived += parseFloat(amtVal) || 0;
                         }
                     });
                 }
-                if(totalDonated >= 1000) hasAccess = true;
-            } catch(e) { console.error("Access verification interrupted", e); }
-        }
 
-        const paywall = document.getElementById('feed-paywall-overlay');
-        const postBox = document.getElementById('post-create-box');
-        const unlockBtn = document.getElementById('paywall-unlock-btn');
-        
-        if (unlockBtn) {
-            unlockBtn.onclick = () => window.executeOnChainBlessing(targetWallet, 1000, 'WAX', 'profile-unlock');
-        }
-        
-        if (hasAccess) {
-            if (paywall) paywall.style.display = 'none';
-            if (isOwner && postBox) postBox.style.display = 'block';
-            window.fetchSkaterFeed(targetWallet, false);
-        } else {
-            if (paywall) paywall.style.display = 'flex';
-            if (postBox) postBox.style.display = 'none';
-            window.fetchSkaterFeed(targetWallet, true); 
-        }
-    };
+            } catch(e) {
+                console.error(e);
+                if (bioEl) bioEl.innerText = "Network pipeline error. Retrying sync connection.";
+            }
 
-    window.fetchSkaterFeed = async (wallet, isBlurred) => {
-        window.currentSkaterPosts = [];
-        let deletedPosts = [];
-        
-        try {
-            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${wallet}&filter=eosio.token:transfer&limit=500&sort=desc`);
-            const json = await res.json();
+            if (nameEl) nameEl.innerText = profileData.name;
+            if (imgEl) imgEl.src = profileData.pic;
+            if (bioEl) bioEl.innerText = profileData.bio;
+
+            let gHtml = "";
+            const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
             
-            if (json && json.actions) {
-                json.actions.forEach(a => {
-                    const data = a.act.data;
-                    if (data && data.from === wallet && data.to === 'skatecoinwax' && data.memo) {
-                        if (data.memo.includes('"sk8post":"v1"')) {
-                            try {
-                                const parsed = JSON.parse(data.memo);
-                                window.currentSkaterPosts.push({ id: a.trx_id, text: parsed.text, yt: parsed.yt, ig: parsed.ig, tt: parsed.tt, time: new Date(a.timestamp).getTime() });
-                            } catch(e) {}
-                        } else if (data.memo.includes('"sk8del":"v1"')) {
-                            try {
-                                const parsed = JSON.parse(data.memo);
-                                deletedPosts.push(parsed.post);
-                            } catch(e) {}
-                        }
+            if(profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
+            if(profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
+            if(profileData.trucks) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${profileData.trucks}</div>`;
+            if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
+            if (gearEl) gearEl.innerHTML = gHtml;
+
+            if (gearEl) {
+                gearEl.dataset.stance = profileData.stance || "";
+                gearEl.dataset.deck = profileData.deck || "";
+                gearEl.dataset.trucks = profileData.trucks || "";
+                gearEl.dataset.spot = profileData.spot || "";
+                gearEl.dataset.yt = profileData.yt || "";
+                gearEl.dataset.free = profileData.free ? 'true' : 'false';
+            }
+
+            let rankStr = "GROMMET";
+            let rankCol = "var(--accent-cyan)";
+            if (totalWaxReceived >= 50000) { rankStr = "LEGEND"; rankCol = "#a855f7"; }
+            else if (totalWaxReceived >= 10000) { rankStr = "ELITE"; rankCol = "#2196f3"; }
+            else if (totalWaxReceived >= 5000) { rankStr = "PRO"; rankCol = "var(--accent-gold)"; }
+            else if (totalWaxReceived >= 1000) { rankStr = "AMATEUR"; rankCol = "#c0c0c0"; }
+            else if (totalWaxReceived >= 100) { rankStr = "FLOW"; rankCol = "#cd7f32"; }
+
+            if (rankDisplayEl) {
+                rankDisplayEl.innerText = rankStr;
+                rankDisplayEl.style.color = rankCol;
+            }
+
+            window.renderSponsorBadges(totalWaxReceived, isOwner);
+        };
+
+        window.attemptFeedAccess = async () => {
+            const targetWallet = document.getElementById('p-wallet').innerText;
+            if (!targetWallet || targetWallet === '...') return;
+            if (!currentSession) return toggleAuthModal();
+            
+            const activeActor = currentSession.actor.toString();
+            window.activeFeedWallet = targetWallet;
+            
+            window.switchCategory('private-feed');
+            window.scrollTo(0,0);
+            
+            let isOwner = (activeActor === targetWallet);
+            let hasAccess = isOwner || ADMIN_WALLETS.includes(activeActor);
+
+            if (!hasAccess) {
+                try {
+                    let totalDonated = 0;
+                    const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${activeActor}&filter=eosio.token:transfer&limit=500&sort=desc`);
+                    const json = await res.json();
+                    if(json && json.actions) {
+                        json.actions.forEach(a => {
+                            const d = a.act.data;
+                            if(d && d.from === activeActor && d.to === targetWallet) {
+                                const [amtVal, symbol] = d.quantity.split(" ");
+                                if (symbol === 'WAX') totalDonated += parseFloat(amtVal) || 0;
+                            }
+                        });
                     }
-                });
+                    if(totalDonated >= 1000) hasAccess = true;
+                } catch(e) { console.error("Access verification interrupted", e); }
             }
-        } catch(e) { console.error("History stack fault", e); }
-        
-        window.currentSkaterPosts = window.currentSkaterPosts.filter(p => !deletedPosts.includes(p.id));
-        window.currentSkaterPosts.sort((a,b) => b.time - a.time);
-        
-        window.renderFeedGrid(isBlurred, wallet);
-    };
 
-    window.renderFeedGrid = (isBlurred, targetWallet) => {
-        const container = document.getElementById('actual-feed-items');
-        const loadBtn = document.getElementById('load-more-feed-btn');
-        const activeActor = currentSession ? currentSession.actor.toString() : null;
-        let isOwner = (activeActor === targetWallet);
-
-        if (window.currentSkaterPosts.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 40px; color: #888; font-family: 'Orbitron'; grid-column: 1 / -1;">NO FEED ENTRIES ON THE LEDGER.</div>`;
-            if (loadBtn) loadBtn.style.display = 'none';
-            return;
-        }
-
-        let html = "";
-        let toRender = window.currentSkaterPosts.slice(0, window.feedRenderLimit);
-        
-        toRender.forEach(p => {
-            let dateStr = new Date(p.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-            let mediaHtml = ""; 
+            const paywall = document.getElementById('feed-paywall-overlay');
+            const postBox = document.getElementById('post-create-box');
+            const unlockBtn = document.getElementById('paywall-unlock-btn');
             
-            if(p.yt) {
-                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#ff0055;">▶ YOUTUBE</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.youtube.com/embed/${p.yt}?showinfo=0" allowfullscreen></iframe></div>`;
-            } else if (p.ig) {
-                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#d946ef;">📷 INSTAGRAM</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.instagram.com/p/${p.ig}/embed" scrolling="no" allowtransparency="true"></iframe></div>`;
-            } else if (p.tt) {
-                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:var(--accent-cyan);">🎵 TIKTOK</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.tiktok.com/embed/v2/${p.tt}" allowfullscreen scrolling="no" allow="encrypted-media;"></iframe></div>`;
+            if (unlockBtn) {
+                unlockBtn.onclick = () => window.executeOnChainBlessing(targetWallet, 1000, 'WAX', 'profile-unlock');
+            }
+            
+            if (hasAccess) {
+                if (paywall) paywall.style.display = 'none';
+                if (isOwner && postBox) postBox.style.display = 'block';
+                window.fetchSkaterFeed(targetWallet, false);
             } else {
-                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222; display:flex; align-items:center; justify-content:center;"><span style="font-size:3rem; filter: grayscale(1); opacity: 0.2; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">🛹</span></div>`;
+                if (paywall) paywall.style.display = 'flex';
+                if (postBox) postBox.style.display = 'none';
+                window.fetchSkaterFeed(targetWallet, true); 
+            }
+        };
+
+        window.fetchSkaterFeed = async (wallet, isBlurred) => {
+            window.currentSkaterPosts = [];
+            let deletedPosts = [];
+            
+            try {
+                const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${wallet}&filter=eosio.token:transfer&limit=500&sort=desc`);
+                const json = await res.json();
+                
+                if (json && json.actions) {
+                    json.actions.forEach(a => {
+                        const data = a.act.data;
+                        if (data && data.from === wallet && data.to === 'skatecoinwax' && data.memo) {
+                            if (data.memo.includes('"sk8post":"v1"')) {
+                                try {
+                                    const parsed = JSON.parse(data.memo);
+                                    window.currentSkaterPosts.push({ id: a.trx_id, text: parsed.text, yt: parsed.yt, ig: parsed.ig, tt: parsed.tt, time: new Date(a.timestamp).getTime() });
+                                } catch(e) {}
+                            } else if (data.memo.includes('"sk8del":"v1"')) {
+                                try {
+                                    const parsed = JSON.parse(data.memo);
+                                    deletedPosts.push(parsed.post);
+                                } catch(e) {}
+                            }
+                        }
+                    });
+                }
+            } catch(e) { console.error("History stack fault", e); }
+            
+            window.currentSkaterPosts = window.currentSkaterPosts.filter(p => !deletedPosts.includes(p.id));
+            window.currentSkaterPosts.sort((a,b) => b.time - a.time);
+            
+            window.renderFeedGrid(isBlurred, wallet);
+        };
+
+        window.renderFeedGrid = (isBlurred, targetWallet) => {
+            const container = document.getElementById('actual-feed-items');
+            const loadBtn = document.getElementById('load-more-feed-btn');
+            const activeActor = currentSession ? currentSession.actor.toString() : null;
+            let isOwner = (activeActor === targetWallet);
+
+            if (window.currentSkaterPosts.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: #888; font-family: 'Orbitron'; grid-column: 1 / -1;">NO FEED ENTRIES ON THE LEDGER.</div>`;
+                if (loadBtn) loadBtn.style.display = 'none';
+                return;
             }
 
-            let vState = window.globalClipState[p.id] || { totalDonated: 0, reactions: {'🔥':0, '🤮':0, '⭐':0, '🧈':0, '🥩':0, '💪':0} };
-            let rx = vState.reactions;
+            let html = "";
+            let toRender = window.currentSkaterPosts.slice(0, window.feedRenderLimit);
             
-            let fxClass = "";
-            if (vState.totalDonated >= 1000) fxClass = "god-tier";
-            else if (rx['💪'] >= 10) fxClass = "flex-god";
-            else if (rx['🥩'] >= 10) fxClass = "hall-of-meat";
-            else if (rx['🧈'] >= 10) fxClass = "butter-smooth";
-            else if (rx['⭐'] >= 10) fxClass = "rising-star";
-            else if (rx['🤮'] >= 10) fxClass = "sketchy";
-            else if (rx['🔥'] >= 10) fxClass = "viral-fire";
+            toRender.forEach(p => {
+                let dateStr = new Date(p.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+                let mediaHtml = ""; 
+                
+                if(p.yt) {
+                    mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#ff0055;">▶ YOUTUBE</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.youtube.com/embed/${p.yt}?showinfo=0" allowfullscreen></iframe></div>`;
+                } else if (p.ig) {
+                    mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#d946ef;">📷 INSTAGRAM</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.instagram.com/p/${p.ig}/embed" scrolling="no" allowtransparency="true"></iframe></div>`;
+                } else if (p.tt) {
+                    mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:var(--accent-cyan);">🎵 TIKTOK</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.tiktok.com/embed/v2/${p.tt}" allowfullscreen scrolling="no" allow="encrypted-media;"></iframe></div>`;
+                } else {
+                    mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222; display:flex; align-items:center; justify-content:center;"><span style="font-size:3rem; filter: grayscale(1); opacity: 0.2; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">🛹</span></div>`;
+                }
 
-            let actionBtn = isOwner 
-                ? `<button class="wallet-btn" style="background: transparent; color: var(--accent-pink); border: 1px solid var(--accent-pink); padding: 10px; font-size: 0.75rem; margin-top: auto; width: 100%;" onclick="window.deleteFeedPost('${p.id}')">✖ DELETE POST</button>` 
-                : `<button class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 10px; font-size: 0.75rem; margin-top: auto; width: 100%;" onclick="window.executeOnChainBlessing('${targetWallet}', 100, 'WAX', '${p.id}')">🙏 BLESS (100 WAX)</button>`;
+                let vState = window.globalClipState[p.id] || { totalDonated: 0, reactions: {'🔥':0, '🤮':0, '⭐':0, '🧈':0, '🥩':0, '💪':0} };
+                let rx = vState.reactions;
+                
+                let fxClass = "";
+                if (vState.totalDonated >= 1000) fxClass = "god-tier";
+                else if (rx['💪'] >= 10) fxClass = "flex-god";
+                else if (rx['🥩'] >= 10) fxClass = "hall-of-meat";
+                else if (rx['🧈'] >= 10) fxClass = "butter-smooth";
+                else if (rx['⭐'] >= 10) fxClass = "rising-star";
+                else if (rx['🤮'] >= 10) fxClass = "sketchy";
+                else if (rx['🔥'] >= 10) fxClass = "viral-fire";
 
-            html += `
-            <div class="feed-grid-item ${fxClass}" style="background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid #333; overflow: hidden; display: flex; flex-direction: column; ${isBlurred ? 'filter: blur(10px); opacity: 0.5; pointer-events: none;' : ''}">
-                ${mediaHtml}
-                <div class="feed-grid-content" style="padding: 15px; flex: 1; display: flex; flex-direction: column; text-align: left;">
-                    <div class="feed-grid-text" style="font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 10px; flex: 1; font-family: 'Inter'; word-wrap: break-word;">${p.text || ""}</div>
-                    <div class="feed-grid-date" style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; margin-bottom: 15px;">${dateStr}</div>
-                    
-                    <div class="reaction-container-clip" style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.6); border-radius: 6px; padding: 8px; margin-bottom: 15px; border: 1px solid #222;">
-                        <button onclick="window.executeOnChainBlessing('${targetWallet}', 10, 'WAX', '${p.id}', '🔥')" class="reaction-btn ${rx['🔥']>0?'has-votes':''}" title="10 WAX">🔥 <span>${rx['🔥'] || 0}</span></button>
-                        <button onclick="window.executeOnChainBlessing('${targetWallet}', 25, 'WAX', '${p.id}', '🤮')" class="reaction-btn ${rx['🤮']>0?'has-votes':''}" title="25 WAX">🤮 <span>${rx['🤮'] || 0}</span></button>
-                        <button onclick="window.executeOnChainBlessing('${targetWallet}', 50, 'WAX', '${p.id}', '⭐')" class="reaction-btn ${rx['⭐']>0?'has-votes':''}" title="50 WAX">⭐ <span>${rx['⭐'] || 0}</span></button>
-                        <button onclick="window.executeOnChainBlessing('${targetWallet}', 100, 'WAX', '${p.id}', '🧈')" class="reaction-btn ${rx['🧈']>0?'has-votes':''}" title="100 WAX">🧈 <span>${rx['🧈'] || 0}</span></button>
-                        <button onclick="window.executeOnChainBlessing('${targetWallet}', 500, 'SKATE', '${p.id}', '🥩')" class="reaction-btn ${rx['🥩']>0?'has-votes':''}" title="500 SKATE">🥩 <span>${rx['🥩'] || 0}</span></button>
-                        <button onclick="window.executeOnChainBlessing('${targetWallet}', 1000, 'SKATE', '${p.id}', '💪')" class="reaction-btn ${rx['💪']>0?'has-votes':''}" title="1000 SKATE">💪 <span>${rx['💪'] || 0}</span></button>
+                let actionBtn = isOwner 
+                    ? `<button class="wallet-btn" style="background: transparent; color: var(--accent-pink); border: 1px solid var(--accent-pink); padding: 10px; font-size: 0.75rem; margin-top: auto; width: 100%;" onclick="window.deleteFeedPost('${p.id}')">✖ DELETE POST</button>` 
+                    : `<button class="wallet-btn" style="background: var(--accent-gold); color: #000; padding: 10px; font-size: 0.75rem; margin-top: auto; width: 100%;" onclick="window.executeOnChainBlessing('${targetWallet}', 100, 'WAX', '${p.id}')">🙏 BLESS (100 WAX)</button>`;
+
+                html += `
+                <div class="feed-grid-item ${fxClass}" style="background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid #333; overflow: hidden; display: flex; flex-direction: column; ${isBlurred ? 'filter: blur(10px); opacity: 0.5; pointer-events: none;' : ''}">
+                    ${mediaHtml}
+                    <div class="feed-grid-content" style="padding: 15px; flex: 1; display: flex; flex-direction: column; text-align: left;">
+                        <div class="feed-grid-text" style="font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 10px; flex: 1; font-family: 'Inter'; word-wrap: break-word;">${p.text || ""}</div>
+                        <div class="feed-grid-date" style="font-size: 0.65rem; color: #888; font-family: 'Orbitron'; margin-bottom: 15px;">${dateStr}</div>
+                        
+                        <div class="reaction-container-clip" style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.6); border-radius: 6px; padding: 8px; margin-bottom: 15px; border: 1px solid #222;">
+                            <button onclick="window.executeOnChainBlessing('${targetWallet}', 10, 'WAX', '${p.id}', '🔥')" class="reaction-btn ${rx['🔥']>0?'has-votes':''}" title="10 WAX">🔥 <span>${rx['🔥'] || 0}</span></button>
+                            <button onclick="window.executeOnChainBlessing('${targetWallet}', 25, 'WAX', '${p.id}', '🤮')" class="reaction-btn ${rx['🤮']>0?'has-votes':''}" title="25 WAX">🤮 <span>${rx['🤮'] || 0}</span></button>
+                            <button onclick="window.executeOnChainBlessing('${targetWallet}', 50, 'WAX', '${p.id}', '⭐')" class="reaction-btn ${rx['⭐']>0?'has-votes':''}" title="50 WAX">⭐ <span>${rx['⭐'] || 0}</span></button>
+                            <button onclick="window.executeOnChainBlessing('${targetWallet}', 100, 'WAX', '${p.id}', '🧈')" class="reaction-btn ${rx['🧈']>0?'has-votes':''}" title="100 WAX">🧈 <span>${rx['🧈'] || 0}</span></button>
+                            <button onclick="window.executeOnChainBlessing('${targetWallet}', 500, 'SKATE', '${p.id}', '🥩')" class="reaction-btn ${rx['🥩']>0?'has-votes':''}" title="500 SKATE">🥩 <span>${rx['🥩'] || 0}</span></button>
+                            <button onclick="window.executeOnChainBlessing('${targetWallet}', 1000, 'SKATE', '${p.id}', '💪')" class="reaction-btn ${rx['💪']>0?'has-votes':''}" title="1000 SKATE">💪 <span>${rx['💪'] || 0}</span></button>
+                        </div>
+                        
+                        ${actionBtn}
                     </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+            if (!isBlurred && window.currentSkaterPosts.length > window.feedRenderLimit) {
+                if (loadBtn) loadBtn.style.display = 'block';
+            } else {
+                if (loadBtn) loadBtn.style.display = 'none';
+            }
+        };
+
+        window.loadMoreFeed = () => { 
+            window.feedRenderLimit += 12; 
+            window.renderFeedGrid(false, window.activeFeedWallet); 
+        };
+
+        window.publishToFeed = async () => {
+            if(!currentSession) return toggleAuthModal();
+            const btn = document.getElementById("publish-feed-btn"); 
+            const origText = btn.innerText;
+            btn.innerText = "AWAITING SIGNATURE...";
+            
+            try {
+                const text = document.getElementById("new-post-text").value.trim();
+                const rawLink = document.getElementById("new-post-link").value.trim();
+                let yt = ""; let ig = ""; let tt = "";
+                
+                if (rawLink) { 
+                    const ytMatch = rawLink.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
+                    if (ytMatch && ytMatch[2].length === 11) yt = ytMatch[2]; 
                     
-                    ${actionBtn}
-                </div>
-            </div>`;
-        });
-
-        container.innerHTML = html;
-        if (!isBlurred && window.currentSkaterPosts.length > window.feedRenderLimit) {
-            if (loadBtn) loadBtn.style.display = 'block';
-        } else {
-            if (loadBtn) loadBtn.style.display = 'none';
-        }
-    };
-
-    window.loadMoreFeed = () => { 
-        window.feedRenderLimit += 12; 
-        window.renderFeedGrid(false, window.activeFeedWallet); 
-    };
-
-    window.publishToFeed = async () => {
-        if(!currentSession) return toggleAuthModal();
-        const btn = document.getElementById("publish-feed-btn"); 
-        const origText = btn.innerText;
-        btn.innerText = "AWAITING SIGNATURE...";
-        
-        try {
-            const text = document.getElementById("new-post-text").value.trim();
-            const rawLink = document.getElementById("new-post-link").value.trim();
-            let yt = ""; let ig = ""; let tt = "";
-            
-            if (rawLink) { 
-                const ytMatch = rawLink.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
-                if (ytMatch && ytMatch[2].length === 11) yt = ytMatch[2]; 
+                    const igMatch = rawLink.match(/(?:instagram\.com\/)(?:p|reel)\/([a-zA-Z0-9_-]+)/i);
+                    if (igMatch) ig = igMatch[1];
+                    
+                    const ttMatch = rawLink.match(/(?:tiktok\.com\/.*video\/)(\d+)/i);
+                    if (ttMatch) tt = ttMatch[1];
+                }
                 
-                const igMatch = rawLink.match(/(?:instagram\.com\/)(?:p|reel)\/([a-zA-Z0-9_-]+)/i);
-                if (igMatch) ig = igMatch[1];
-                
-                const ttMatch = rawLink.match(/(?:tiktok\.com\/.*video\/)(\d+)/i);
-                if (ttMatch) tt = ttMatch[1];
-            }
-            
-            if(!text && !yt && !ig && !tt) { 
-                showErrorModal("Cannot post empty data. Ensure links are standard desktop URLs."); 
-                btn.innerText = origText; 
-                return; 
-            }
+                if(!text && !yt && !ig && !tt) { 
+                    showErrorModal("Cannot post empty data. Ensure links are standard desktop URLs."); 
+                    btn.innerText = origText; 
+                    return; 
+                }
 
-            const pData = JSON.stringify({ sk8post: "v1", text: text.substring(0,100), yt, ig, tt });
-            if (pData.length > 255) { 
-                showErrorModal(`Post too long for WAX Memo! Shorten your text.`); 
-                btn.innerText = origText; 
-                return; 
+                const pData = JSON.stringify({ sk8post: "v1", text: text.substring(0,100), yt, ig, tt });
+                if (pData.length > 255) { 
+                    showErrorModal(`Post too long for WAX Memo! Shorten your text.`); 
+                    btn.innerText = origText; 
+                    return; 
+                }
+                
+                const sender = currentSession.actor.toString();
+                const actions = [{
+                    account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
+                    data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
+                }];
+                
+                await currentSession.transact({ actions });
+                
+                btn.innerText = "POSTED!"; 
+                document.getElementById("new-post-text").value = ""; 
+                document.getElementById("new-post-link").value = "";
+                
+                setTimeout(() => { 
+                    btn.innerText = origText; 
+                    window.attemptFeedAccess(); 
+                }, 2000);
+            } catch (err) { 
+                console.error(err);
+                showErrorModal("Broadcast Failed. Check Wallet CPU.");
+                setTimeout(() => btn.innerText = origText, 3000);
             }
+        };
+
+        window.deleteFeedPost = async (postId) => {
+            if(!currentSession) return toggleAuthModal();
+            if(!confirm("Are you sure you want to permanently tombstone this post?")) return;
             
-            const sender = currentSession.actor.toString();
-            const actions = [{
-                account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
-                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
-            }];
-            
-            await currentSession.transact({ actions });
-            
-            btn.innerText = "POSTED!"; 
-            document.getElementById("new-post-text").value = ""; 
-            document.getElementById("new-post-link").value = "";
-            
-            setTimeout(() => { 
-                btn.innerText = origText; 
+            try {
+                const pData = JSON.stringify({ sk8del: "v1", post: postId });
+                const sender = currentSession.actor.toString();
+                const actions = [{
+                    account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
+                    data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
+                }];
+                
+                await currentSession.transact({ actions });
+                showSuccessModal("POST REMOVED", "Post successfully removed from ledger."); 
                 window.attemptFeedAccess(); 
-            }, 2000);
-        } catch (err) { 
-            console.error(err);
-            showErrorModal("Broadcast Failed. Check Wallet CPU.");
-            setTimeout(() => btn.innerText = origText, 3000);
-        }
-    };
-
-    window.deleteFeedPost = async (postId) => {
-        if(!currentSession) return toggleAuthModal();
-        if(!confirm("Are you sure you want to permanently tombstone this post?")) return;
+            } catch (err) { 
+                console.error(err);
+                showErrorModal("Deletion failed. Check CPU."); 
+            }
+        };
         
-        try {
-            const pData = JSON.stringify({ sk8del: "v1", post: postId });
-            const sender = currentSession.actor.toString();
-            const actions = [{
-                account: 'eosio.token', name: 'transfer', authorization: [currentSession.permissionLevel],
-                data: { from: sender, to: 'skatecoinwax', quantity: "0.00010000 WAX", memo: pData }
-            }];
-            
-            await currentSession.transact({ actions });
-            showSuccessModal("POST REMOVED", "Post successfully removed from ledger."); 
-            window.attemptFeedAccess(); 
-        } catch (err) { 
-            console.error(err);
-            showErrorModal("Deletion failed. Check CPU."); 
-        }
-    };
-    
-</script>
+    </script>
 </body>
 </html>
     
