@@ -3507,6 +3507,14 @@ if (allActions.length > 0) {
         }
     };
 
+    window.navigateToProfile = (targetWallet) => {
+        // Force the router to the profile tab
+        window.switchCategory('profile');
+        window.scrollTo(0,0);
+        // Trigger the on-chain data fetch
+        window.renderProfile(targetWallet);
+    };
+
     window.renderProfile = async (targetWallet) => {
         const nameEl = document.getElementById('p-name');
         const imgEl = document.getElementById('p-img');
