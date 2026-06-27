@@ -3387,7 +3387,7 @@ if (allActions.length > 0) {
     // 🟢 OPTIMIZED PROFILE & BADGE ENGINE 
     // ==========================================
 
-   const BADGE_MILESTONES = [
+const BADGE_MILESTONES = [
         { id: "flow", title: "FLOW TIER", threshold: 100, icon: "🛹", desc: "First blood. The streets recognize you." },
         { id: "local", title: "LOCAL HERO", threshold: 500, icon: "🔥", desc: "You're keeping the park alive." },
         { id: "am", title: "AMATEUR SPONSOR", threshold: 1000, icon: "👊", desc: "Solid backing. You have a squad now." },
@@ -3494,7 +3494,7 @@ if (allActions.length > 0) {
             window.closeEditModal();
             showSuccessModal("🔥 ID REWRITTEN 🔥", "Identity data synchronized. The UI has updated instantly.");
             
-            // OPTIMISTIC UI UPDATE: Force the DOM to reflect new stats instantly without waiting for blockchain indexers
+            // OPTIMISTIC UI UPDATE
             document.getElementById('p-name').innerText = compressedPayload.n || "ANON SKATER";
             document.getElementById('p-img').src = compressedPayload.p ? (compressedPayload.p.startsWith('http') ? compressedPayload.p : `https://ipfs.io/ipfs/${compressedPayload.p}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu";
             document.getElementById('p-bio').innerText = compressedPayload.b || "No bio established.";
@@ -3551,14 +3551,12 @@ if (allActions.length > 0) {
         document.getElementById('edit-profile-btn').style.display = isOwner ? 'block' : 'none';
 
         try {
-            // FIX: Explicitly sorts descending to ensure newest update is captured first
             const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=250&sort=desc`);
             const json = await res.json();
             
             if (json && json.actions) {
                 const profileUpdate = json.actions.find(a => {
                     const data = a.act.data;
-                    // FIX: Backward compatible format check for old profiles
                     return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && (data.memo.includes('"v":"3"') || data.memo.includes('"sk8":"v1"'));
                 });
                 
@@ -3715,7 +3713,10 @@ if (allActions.length > 0) {
         } catch(e) { console.error("History stack fault", e); }
         
         window.currentSkaterPosts = window.currentSkaterPosts.filter(p => !deletedPosts.includes(p.id));
-    window.renderFeedGrid = (isBlurred, targetWallet) => {
+        window.currentSkaterPosts.sort((a,b) => b.time - a.time);
+        
+        window.renderFeedGrid(isBlurred, wallet);
+    };
         const container = document.getElementById('actual-feed-items');
         const loadBtn = document.getElementById('load-more-feed-btn');
         const activeActor = currentSession ? currentSession.actor.toString() : null;
