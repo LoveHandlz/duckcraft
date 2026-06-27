@@ -2267,13 +2267,15 @@
         }
     });
 
-    window.switchCategory = (schema, fromBack = false) => {
+     window.switchCategory = (schema, fromBack = false) => {
         if (currentSchema === schema) return;
         if (!fromBack && currentSchema !== null) historyStack.push(currentSchema);
-        currentSchema = schema; currentInventoryPage = 1;
+        currentSchema = schema; 
+        currentInventoryPage = 1;
         document.getElementById('load-more-container').style.display = 'none';
 
-        isProgrammaticHashChange = true; window.location.hash = schema;
+        isProgrammaticHashChange = true; 
+        window.location.hash = schema;
         const backBtn = document.getElementById('dapp-back-btn');
         if (backBtn) backBtn.style.display = historyStack.length > 0 ? 'block' : 'none';
 
@@ -2281,23 +2283,69 @@
         if(document.getElementById(`nav-${schema}`)) document.getElementById(`nav-${schema}`).classList.add('active');
         
         const wrappers = ['home-wrapper', 'inventory-wrapper', 'builder-wrapper', 'leaderboard-container', 'clips-wrapper', 'defi-wrapper', 'treasury-wrapper', 'dao-wrapper', 'sk8shop-wrapper', 'incinerator-wrapper', 'lunchbox-wrapper', 'web3-shop-wrapper', 'profile-wrapper', 'private-feed-wrapper'];
-        wrappers.forEach(w => { const el = document.getElementById(w); if(el) el.style.display = 'none'; });
+        wrappers.forEach(w => { 
+            const el = document.getElementById(w); 
+            if(el) el.style.display = 'none'; 
+        });
 
-        if (schema === 'home') { document.getElementById('home-wrapper').style.display = 'block';
-        } else if (schema === 'builder') { document.getElementById('builder-wrapper').style.display = 'block'; resetBuilderStats(); if (currentSession) loadCraftingData(currentSession.actor.toString());
-        } else if (schema === 'leaderboard') { document.getElementById('leaderboard-container').style.display = 'block'; fetchLeaderboard();
-        } else if (schema === 'clips') { document.getElementById('clips-wrapper').style.display = 'block'; window.renderCryptoClips();
-        } else if (schema === 'defi') { document.getElementById('defi-wrapper').style.display = 'block'; syncPrices(); if(!defiWarningShown) { document.getElementById('defi-warning-modal').style.display = 'flex'; defiWarningShown = true; }
-        } else if (schema === 'treasury') { document.getElementById('treasury-wrapper').style.display = 'block'; fetchTreasuryData();
-        } else if (schema === 'dao') { document.getElementById('dao-wrapper').style.display = 'block'; fetchTreasuryData().then(() => { refreshDAODashboard(); });
-        } else if (schema === 'incinerator') { document.getElementById('incinerator-wrapper').style.display = 'block'; window.fetchBurnableInventory();
-        } else if (schema === 'lunchbox') { document.getElementById('lunchbox-wrapper').style.display = 'block'; if (currentSession) fetchLunchbox(currentSession.actor.toString());
-        } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
-        } else if (schema === 'web3shop') { document.getElementById('web3-shop-wrapper').style.display = 'block';
-        } else if (schema === 'profile') { document.getElementById('profile-wrapper').style.display = 'block';
-        } else if (schema === 'private-feed') { document.getElementById('private-feed-wrapper').style.display = 'block';                                     
-        } else if (schema === 'trickbag') { document.getElementById('trickbag-wrapper').style.display = 'block'; if(currentSession) { currentTrickbagPage = 1; trickbagAssets = []; fetchTrickbag(currentSession.actor.toString()); }
-        } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
+        if (schema === 'home') { 
+            document.getElementById('home-wrapper').style.display = 'block';
+        } else if (schema === 'builder') { 
+            document.getElementById('builder-wrapper').style.display = 'block'; 
+            resetBuilderStats(); 
+            if (currentSession) loadCraftingData(currentSession.actor.toString());
+        } else if (schema === 'leaderboard') { 
+            document.getElementById('leaderboard-container').style.display = 'block'; 
+            fetchLeaderboard();
+        } else if (schema === 'clips') { 
+            document.getElementById('clips-wrapper').style.display = 'block';
+            // renderCryptoClips() is called via the hijacked switch
+        } else if (schema === 'defi') { 
+            document.getElementById('defi-wrapper').style.display = 'block'; 
+            syncPrices(); 
+            if(!defiWarningShown) { 
+                document.getElementById('defi-warning-modal').style.display = 'flex'; 
+                defiWarningShown = true; 
+            }
+        } else if (schema === 'treasury') { 
+            document.getElementById('treasury-wrapper').style.display = 'block'; 
+            fetchTreasuryData();
+        } else if (schema === 'dao') { 
+            document.getElementById('dao-wrapper').style.display = 'block'; 
+            fetchTreasuryData().then(() => {
+                refreshDAODashboard();
+            });
+        } else if (schema === 'incinerator') { 
+            document.getElementById('incinerator-wrapper').style.display = 'block'; 
+            window.fetchBurnableInventory();
+        } else if (schema === 'lunchbox') { 
+            document.getElementById('lunchbox-wrapper').style.display = 'block'; 
+            if (currentSession) fetchLunchbox(currentSession.actor.toString());
+        } else if (schema === 'sk8shop') { 
+            document.getElementById('sk8shop-wrapper').style.display = 'block';
+        } else if (schema === 'web3shop') { 
+            document.getElementById('web3-shop-wrapper').style.display = 'block';
+        } else if (schema === 'profile') { 
+            document.getElementById('profile-wrapper').style.display = 'block';
+            
+            // === FIX: Auto-load profile on refresh/navigation ===
+            if (currentSession) {
+                const myWallet = currentSession.actor.toString();
+                setTimeout(() => {
+                    window.renderProfile(myWallet);
+                }, 150);
+            } else {
+                const nameEl = document.getElementById('p-name');
+                const bioEl = document.getElementById('p-bio');
+                if (nameEl) nameEl.innerText = "CONNECT WALLET";
+                if (bioEl) bioEl.innerText = "Connect your WAX wallet to view your profile.";
+            }
+        } else if (schema === 'private-feed') {
+            document.getElementById('private-feed-wrapper').style.display = 'block';
+        } else { 
+            document.getElementById('inventory-wrapper').style.display = 'block'; 
+            if (currentSession) fetchInventory(currentSession.actor.toString()); 
+        }
     };
 
     window.goBack = () => { if (historyStack.length > 0) { const prevSchema = historyStack.pop(); switchCategory(prevSchema, true); } };
