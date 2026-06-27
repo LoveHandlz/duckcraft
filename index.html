@@ -3388,7 +3388,7 @@
         };
 
         // ==================== ROBUST PROFILE LOADER (FIXED) ====================
-        window.renderProfile = async (targetWallet) => {
+              window.renderProfile = async (targetWallet) => {
             const nameEl = document.getElementById('p-name');
             const imgEl = document.getElementById('p-img');
             const bioEl = document.getElementById('p-bio');
@@ -3397,24 +3397,31 @@
             const walletEl = document.getElementById('p-wallet');
 
             if (walletEl) walletEl.innerText = targetWallet;
+            
+            // Set temporary loading state
             if (nameEl) nameEl.innerText = "SYNCING...";
             if (bioEl) bioEl.innerText = "Intercepting ledger data...";
-            
-            let profileData = { name: "ANON SKATER", pic: "bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", bio: "This skater has not written onto the ledger yet." };
+
+            let profileData = { 
+                name: "ANON SKATER", 
+                pic: "bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu", 
+                bio: "This skater has not written onto the ledger yet.",
+                stance: "", deck: "", trucks: "", spot: "", yt: "", free: false
+            };
             let totalWaxReceived = 0;
             const activeActor = currentSession ? currentSession.actor.toString() : "";
             const isOwner = (activeActor === targetWallet);
-            
+
             const editBtn = document.getElementById('edit-profile-btn');
             if (editBtn) editBtn.style.display = isOwner ? 'block' : 'none';
 
             try {
-                // === PAGINATED HISTORY FETCH (This is the main fix) ===
+                // === IMPROVED PAGINATED FETCH (with better fallback) ===
                 let profileUpdate = null;
                 let skip = 0;
                 const limit = 500;
                 let pagesChecked = 0;
-                const maxPages = 6; // checks up to 3000 actions
+                const maxPages = 5; // Max 2500 actions checked
 
                 while (!profileUpdate && pagesChecked < maxPages) {
                     const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=${limit}&skip=${skip}&sort=desc`);
@@ -3423,7 +3430,10 @@
                     if (json && json.actions && json.actions.length > 0) {
                         profileUpdate = json.actions.find(a => {
                             const data = a.act.data;
-                            return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && 
+                            return data && 
+                                   data.from === targetWallet && 
+                                   data.to === 'skatecoinwax' && 
+                                   data.memo && 
                                    (data.memo.includes('"v":"3"') || data.memo.includes('"sk8":"v1"'));
                         });
 
@@ -3436,59 +3446,77 @@
                     }
                 }
 
+                // Parse profile if found
                 if (profileUpdate) {
                     try {
                         const parsed = JSON.parse(profileUpdate.act.data.memo);
                         if (parsed.v === "3") {
                             profileData = {
                                 name: parsed.n || "ANON SKATER",
-                                pic: parsed.p ? (parsed.p.startsWith('http') ? parsed.p : `https://ipfs.io/ipfs/${parsed.p}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+                                pic: parsed.p ? (parsed.p.startsWith('http') ? parsed.p : `https://ipfs.io/ipfs/${parsed.p}`) : profileData.pic,
                                 bio: parsed.b || "No bio established.",
-                                stance: parsed.s || "", deck: parsed.d || "", trucks: parsed.t || "", spot: parsed.l || "", yt: parsed.y || "", free: parsed.f === 1
+                                stance: parsed.s || "",
+                                deck: parsed.d || "",
+                                trucks: parsed.t || "",
+                                spot: parsed.l || "",
+                                yt: parsed.y || "",
+                                free: parsed.f === 1
                             };
                         } else {
+                            // Support old format
                             profileData = {
                                 name: parsed.name || "ANON SKATER",
-                                pic: parsed.pic ? (parsed.pic.startsWith('http') ? parsed.pic : `https://ipfs.io/ipfs/${parsed.pic}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+                                pic: parsed.pic ? (parsed.pic.startsWith('http') ? parsed.pic : `https://ipfs.io/ipfs/${parsed.pic}`) : profileData.pic,
                                 bio: parsed.bio || "No bio established.",
-                                stance: parsed.stance || "", deck: parsed.deck || "", trucks: parsed.trucks || "", spot: parsed.spot || "", yt: parsed.yt || "", free: parsed.free === true
+                                stance: parsed.stance || "",
+                                deck: parsed.deck || "",
+                                trucks: parsed.trucks || "",
+                                spot: parsed.spot || "",
+                                yt: parsed.yt || "",
+                                free: parsed.free === true
                             };
                         }
-                    } catch(e) { console.warn("Payload recovery corrupted"); }
+                    } catch(e) {
+                        console.warn("Profile memo parse failed");
+                    }
                 }
 
-                // Calculate total WAX received for badges/rank
-                const waxRes = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=1000&sort=desc`);
-                const waxJson = await waxRes.json();
-                if (waxJson && waxJson.actions) {
-                    waxJson.actions.forEach(a => {
-                        const data = a.act.data;
-                        if (data && data.to === targetWallet && data.from !== targetWallet && data.quantity) {
-                            const [amtVal, symbol] = data.quantity.split(' ');
-                            if (symbol === 'WAX') totalWaxReceived += parseFloat(amtVal) || 0;
-                        }
-                    });
-                }
+                // Get WAX received for badges/rank (separate call for accuracy)
+                try {
+                    const waxRes = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=1000&sort=desc`);
+                    const waxJson = await waxRes.json();
+                    if (waxJson && waxJson.actions) {
+                        waxJson.actions.forEach(a => {
+                            const data = a.act.data;
+                            if (data && data.to === targetWallet && data.from !== targetWallet && data.quantity) {
+                                const [amtVal, symbol] = data.quantity.split(' ');
+                                if (symbol === 'WAX') totalWaxReceived += parseFloat(amtVal) || 0;
+                            }
+                        });
+                    }
+                } catch(e) {}
 
             } catch(e) {
-                console.error(e);
-                if (bioEl) bioEl.innerText = "Network pipeline error. Retrying sync connection.";
+                console.error("Profile load error:", e);
+                if (bioEl) bioEl.innerText = "Could not load profile data. Please try again.";
             }
 
+            // === ALWAYS UPDATE UI (this prevents stuck "SYNCING...") ===
             if (nameEl) nameEl.innerText = profileData.name;
             if (imgEl) imgEl.src = profileData.pic;
             if (bioEl) bioEl.innerText = profileData.bio;
 
+            // Update gear tags
             let gHtml = "";
             const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
             
-            if(profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
-            if(profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
-            if(profileData.trucks) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${profileData.trucks}</div>`;
-            if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
-            if (gearEl) gearEl.innerHTML = gHtml;
-
+            if (profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
+            if (profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
+            if (profileData.trucks) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${profileData.trucks}</div>`;
+            if (profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
+            
             if (gearEl) {
+                gearEl.innerHTML = gHtml;
                 gearEl.dataset.stance = profileData.stance || "";
                 gearEl.dataset.deck = profileData.deck || "";
                 gearEl.dataset.trucks = profileData.trucks || "";
@@ -3497,6 +3525,7 @@
                 gearEl.dataset.free = profileData.free ? 'true' : 'false';
             }
 
+            // Calculate and show rank
             let rankStr = "GROMMET";
             let rankCol = "var(--accent-cyan)";
             if (totalWaxReceived >= 50000) { rankStr = "LEGEND"; rankCol = "#a855f7"; }
