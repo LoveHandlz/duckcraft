@@ -3387,7 +3387,7 @@ if (allActions.length > 0) {
     // 🟢 OPTIMIZED PROFILE & BADGE ENGINE 
     // ==========================================
 
-    const BADGE_MILESTONES = [
+   const BADGE_MILESTONES = [
         { id: "flow", title: "FLOW TIER", threshold: 100, icon: "🛹", desc: "First blood. The streets recognize you." },
         { id: "local", title: "LOCAL HERO", threshold: 500, icon: "🔥", desc: "You're keeping the park alive." },
         { id: "am", title: "AMATEUR SPONSOR", threshold: 1000, icon: "👊", desc: "Solid backing. You have a squad now." },
@@ -3454,7 +3454,6 @@ if (allActions.length > 0) {
         btn.innerText = "SIGNING PAYLOAD...";
         btn.disabled = true;
 
-        // 1. Structural Link Minification to protect standard 256-byte WAX memo ceiling
         let rawPic = document.getElementById("edit-pic").value.trim();
         if (rawPic.includes("ipfs.io/ipfs/")) {
             rawPic = rawPic.split("ipfs.io/ipfs/")[1];
@@ -3462,7 +3461,6 @@ if (allActions.length > 0) {
             rawPic = rawPic.split("pinata.cloud/ipfs/")[1];
         }
 
-        // 2. Dictionary Compression: maps verbose data into single characters to avoid token drops
         const compressedPayload = {
             v: "3", 
             n: document.getElementById("edit-name").value.trim().substring(0, 20),
@@ -3480,7 +3478,7 @@ if (allActions.length > 0) {
         if (memoData.length > 255) { 
             btn.innerText = originalText;
             btn.disabled = false;
-            return showErrorModal(`Payload validation fault: Memo size is ${memoData.length} bytes (Limit: 255). Please shorten your bio text.`);
+            return showErrorModal(`Payload validation fault: Memo size is ${memoData.length} bytes (Limit: 255). Shorten bio text.`);
         }
         
         const sender = currentSession.actor.toString();
@@ -3494,13 +3492,33 @@ if (allActions.length > 0) {
             
             await currentSession.transact({ actions });
             window.closeEditModal();
-            showSuccessModal("🔥 ID REWRITTEN 🔥", "Identity data synchronized with the WAX ledger. Refreshing viewport profile node.");
+            showSuccessModal("🔥 ID REWRITTEN 🔥", "Identity data synchronized. The UI has updated instantly.");
             
-            // Front-run indexers for snappy Web2 feel before chain syncs completely
-            setTimeout(() => { window.switchCategory('profile'); window.renderProfile(sender); }, 1500);
+            // OPTIMISTIC UI UPDATE: Force the DOM to reflect new stats instantly without waiting for blockchain indexers
+            document.getElementById('p-name').innerText = compressedPayload.n || "ANON SKATER";
+            document.getElementById('p-img').src = compressedPayload.p ? (compressedPayload.p.startsWith('http') ? compressedPayload.p : `https://ipfs.io/ipfs/${compressedPayload.p}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu";
+            document.getElementById('p-bio').innerText = compressedPayload.b || "No bio established.";
+            
+            let gHtml = "";
+            const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
+            if(compressedPayload.s) gHtml += `<div style="${tagStyle}"><span>👟</span> ${compressedPayload.s}</div>`;
+            if(compressedPayload.d) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${compressedPayload.d}</div>`;
+            if(compressedPayload.t) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${compressedPayload.t}</div>`;
+            if(compressedPayload.l) gHtml += `<div style="${tagStyle}"><span>📍</span> ${compressedPayload.l}</div>`;
+            
+            const gearEl = document.getElementById('p-gear');
+            gearEl.innerHTML = gHtml;
+            
+            gearEl.dataset.stance = compressedPayload.s || "";
+            gearEl.dataset.deck = compressedPayload.d || "";
+            gearEl.dataset.trucks = compressedPayload.t || "";
+            gearEl.dataset.spot = compressedPayload.l || "";
+            gearEl.dataset.yt = compressedPayload.y || "";
+            gearEl.dataset.free = compressedPayload.f === 1 ? 'true' : 'false';
+
         } catch (err) { 
             console.error(err);
-            showErrorModal("Broadcast aborted. Check system resources.");
+            showErrorModal("Broadcast aborted. Check system resources or wallet signature.");
         } finally {
             btn.innerText = originalText;
             btn.disabled = false;
@@ -3508,10 +3526,8 @@ if (allActions.length > 0) {
     };
 
     window.navigateToProfile = (targetWallet) => {
-        // Force the router to the profile tab
         window.switchCategory('profile');
         window.scrollTo(0,0);
-        // Trigger the on-chain data fetch
         window.renderProfile(targetWallet);
     };
 
@@ -3535,35 +3551,38 @@ if (allActions.length > 0) {
         document.getElementById('edit-profile-btn').style.display = isOwner ? 'block' : 'none';
 
         try {
-            // FIX: Added explicit strict sort direction 'sort=desc' to capture actual updates first
+            // FIX: Explicitly sorts descending to ensure newest update is captured first
             const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=250&sort=desc`);
             const json = await res.json();
             
             if (json && json.actions) {
-                // Find latest compressed layout update entry
                 const profileUpdate = json.actions.find(a => {
                     const data = a.act.data;
-                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"v":"3"');
+                    // FIX: Backward compatible format check for old profiles
+                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && (data.memo.includes('"v":"3"') || data.memo.includes('"sk8":"v1"'));
                 });
                 
                 if (profileUpdate) {
                     try {
                         const parsed = JSON.parse(profileUpdate.act.data.memo);
-                        profileData = {
-                            name: parsed.n || "ANON SKATER",
-                            pic: parsed.p ? (parsed.p.startsWith('http') ? parsed.p : `https://ipfs.io/ipfs/${parsed.p}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
-                            bio: parsed.b || "No bio established.",
-                            stance: parsed.s || "",
-                            deck: parsed.d || "",
-                            trucks: parsed.t || "",
-                            spot: parsed.l || "",
-                            yt: parsed.y || "",
-                            free: parsed.f === 1
-                        };
+                        if (parsed.v === "3") {
+                            profileData = {
+                                name: parsed.n || "ANON SKATER",
+                                pic: parsed.p ? (parsed.p.startsWith('http') ? parsed.p : `https://ipfs.io/ipfs/${parsed.p}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+                                bio: parsed.b || "No bio established.",
+                                stance: parsed.s || "", deck: parsed.d || "", trucks: parsed.t || "", spot: parsed.l || "", yt: parsed.y || "", free: parsed.f === 1
+                            };
+                        } else {
+                            profileData = {
+                                name: parsed.name || "ANON SKATER",
+                                pic: parsed.pic ? (parsed.pic.startsWith('http') ? parsed.pic : `https://ipfs.io/ipfs/${parsed.pic}`) : "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+                                bio: parsed.bio || "No bio established.",
+                                stance: parsed.stance || "", deck: parsed.deck || "", trucks: parsed.trucks || "", spot: parsed.spot || "", yt: parsed.yt || "", free: parsed.free === true
+                            };
+                        }
                     } catch(e) { console.warn("Payload recovery corrupted"); }
                 }
 
-                // Cumulative value parser
                 json.actions.forEach(a => {
                     const data = a.act.data;
                     if (data && data.to === targetWallet && data.from !== targetWallet && data.quantity) {
@@ -3578,11 +3597,11 @@ if (allActions.length > 0) {
         }
 
         nameEl.innerText = profileData.name;
-        imgEl.src = profileData.pic.startsWith('http') ? profileData.pic : `https://ipfs.io/ipfs/${profileData.pic}`;
+        imgEl.src = profileData.pic;
         bioEl.innerText = profileData.bio;
 
         let gHtml = "";
-        const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Orbitron'; font-weight:900; text-transform:uppercase; margin:4px;";
+        const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
         
         if(profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
         if(profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
@@ -3590,7 +3609,6 @@ if (allActions.length > 0) {
         if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
         gearEl.innerHTML = gHtml;
 
-        // Populate invisible state fields directly for input field hydration
         gearEl.dataset.stance = profileData.stance || "";
         gearEl.dataset.deck = profileData.deck || "";
         gearEl.dataset.trucks = profileData.trucks || "";
@@ -3612,9 +3630,6 @@ if (allActions.length > 0) {
         window.renderSponsorBadges(totalWaxReceived, isOwner);
     };
 
-    // ==========================================
-    // 🟢 PRIVATE TIMELINE MODULE ENGINE
-    // ==========================================
     window.feedRenderLimit = 12;
     window.currentSkaterPosts = [];
     window.activeFeedWallet = "";
@@ -3637,7 +3652,6 @@ if (allActions.length > 0) {
         if (!hasAccess) {
             try {
                 let totalDonated = 0;
-                // FIX: Added descending sorting constraint to history feed calls
                 const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${activeActor}&filter=eosio.token:transfer&limit=500&sort=desc`);
                 const json = await res.json();
                 if(json && json.actions) {
@@ -3677,7 +3691,6 @@ if (allActions.length > 0) {
         let deletedPosts = [];
         
         try {
-            // FIX: Explicit descending sort parameter optimization added
             const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${wallet}&filter=eosio.token:transfer&limit=500&sort=desc`);
             const json = await res.json();
             
@@ -3702,10 +3715,6 @@ if (allActions.length > 0) {
         } catch(e) { console.error("History stack fault", e); }
         
         window.currentSkaterPosts = window.currentSkaterPosts.filter(p => !deletedPosts.includes(p.id));
-        window.currentSkaterPosts.sort((a,b) => b.time - a.time);
-        window.renderFeedGrid(isBlurred, wallet);
-    };
-
     window.renderFeedGrid = (isBlurred, targetWallet) => {
         const container = document.getElementById('actual-feed-items');
         const loadBtn = document.getElementById('load-more-feed-btn');
