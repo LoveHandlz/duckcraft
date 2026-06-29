@@ -2376,17 +2376,22 @@ if (allActions.length > 0) {
     // BEFORE it draws the voting buttons.
     fetchTreasuryData().then(() => {
         refreshDAODashboard();
-    });
-     } else if (schema === 'incinerator') { document.getElementById('incinerator-wrapper').style.display = 'block'; window.fetchBurnableInventory();
-        } else if (schema === 'lunchbox') { document.getElementById('lunchbox-wrapper').style.display = 'block'; if (currentSession) fetchLunchbox(currentSession.actor.toString());
-        } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
-        } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
-        } else if (schema === 'web3shop') { document.getElementById('web3-shop-wrapper').style.display = 'block';
-        } else if (schema === 'profile') { document.getElementById('profile-wrapper').style.display = 'block';
-        } else if (schema === 'private-feed') { document.getElementById('private-feed-wrapper').style.display = 'block';                                   
-        } else if (schema === 'profile') { document.getElementById('profile-wrapper').style.display = 'block';                                   
-        } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
-    };
+   });
+    } else if (schema === 'incinerator') { document.getElementById('incinerator-wrapper').style.display = 'block'; window.fetchBurnableInventory();
+    } else if (schema === 'lunchbox') { document.getElementById('lunchbox-wrapper').style.display = 'block'; if (currentSession) fetchLunchbox(currentSession.actor.toString());
+    } else if (schema === 'sk8shop') { document.getElementById('sk8shop-wrapper').style.display = 'block';
+    } else if (schema === 'web3shop') { document.getElementById('web3-shop-wrapper').style.display = 'block';
+    } else if (schema === 'profile') { 
+        document.getElementById('profile-wrapper').style.display = 'block'; 
+        if (currentSession) {
+            window.renderProfile(currentSession.actor.toString());
+        } else {
+            document.getElementById('p-bio').innerText = "WALLET CONNECTION REQUIRED TO DECRYPT IDENTITY.";
+            document.getElementById('p-name').innerText = "ANON SKATER";
+        }
+    } else if (schema === 'private-feed') { document.getElementById('private-feed-wrapper').style.display = 'block';
+    } else { document.getElementById('inventory-wrapper').style.display = 'block'; if (currentSession) fetchInventory(currentSession.actor.toString()); }
+};
 
     window.goBack = () => { if (historyStack.length > 0) { const prevSchema = historyStack.pop(); switchCategory(prevSchema, true); } };
     window.addEventListener('hashchange', () => { if (isProgrammaticHashChange) { isProgrammaticHashChange = false; return; } const hashSchema = window.location.hash.replace('#', '') || 'home'; if (hashSchema !== currentSchema) switchCategory(hashSchema, true); });
