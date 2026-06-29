@@ -3612,38 +3612,56 @@ if (allActions.length > 0) {
 
         let totalWaxReceived = 0;
 
-        try {
-            // Scrape Hyperion History for this specific wallet
-            const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=500`);
-            const json = await res.json();
-            
-            if (json && json.actions) {
-                // 1. Extract the most recent Identity Update Memo
-                const profileUpdate = json.actions.find(a => {
-                    const data = a.act.data;
-                    return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
-                });
-                
-                if (profileUpdate) {
-                    try {
-                        const parsed = JSON.parse(profileUpdate.act.data.memo);
-                        profileData = { ...profileData, ...parsed };
-                    } catch(e) {
-                        console.warn("Failed to parse profile JSON.");
-                    }
-                }
+     try {
+            let keepFetching = true;
+            let skip = 0;
+            const limit = 500;
+            let profileUpdate = null;
 
-                // 2. Calculate Total WAX Sponsored (Incoming peer-to-peer blessings)
-                json.actions.forEach(a => {
-                    const data = a.act.data;
-                    if (data && data.to === targetWallet && data.from !== targetWallet) {
-                        const [amtVal, symbol] = data.quantity.split(' ');
-                        if (symbol === 'WAX') {
-                            totalWaxReceived += parseFloat(amtVal);
+            while(keepFetching) {
+                const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=${limit}&skip=${skip}`);
+                const json = await res.json();
+                
+                if (json && json.actions && json.actions.length > 0) {
+                    // Tally incoming WAX blessings
+                    json.actions.forEach(a => {
+                        const data = a.act.data;
+                        if (data && data.to === targetWallet && data.from !== targetWallet) {
+                            const [amtVal, symbol] = data.quantity.split(' ');
+                            if (symbol === 'WAX') {
+                                totalWaxReceived += parseFloat(amtVal);
+                            }
                         }
+                    });
+
+                    // Lock onto the most recent identity update if we haven't found it yet
+                    if (!profileUpdate) {
+                        profileUpdate = json.actions.find(a => {
+                            const data = a.act.data;
+                            return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
+                        });
                     }
-                });
+
+                    // Move down the chain or exit if we hit the end
+                    if (json.actions.length < limit) {
+                        keepFetching = false;
+                    } else {
+                        skip += limit;
+                    }
+                } else {
+                    keepFetching = false;
+                }
             }
+            
+            if (profileUpdate) {
+                try {
+                    const parsed = JSON.parse(profileUpdate.act.data.memo);
+                    profileData = { ...profileData, ...parsed };
+                } catch(e) {
+                    console.warn("Failed to parse profile JSON.");
+                }
+            }
+            
         } catch(e) {
             console.error("Profile Sync Error", e);
             bioEl.innerText = "Failed to synchronize with the decentralized ledger.";
