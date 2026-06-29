@@ -3457,7 +3457,7 @@ if (allActions.length > 0) {
         window.toggleModal('edit-profile-modal', false);
     };
 
-    window.saveProfileWeb3 = async () => {
+  window.saveProfileWeb3 = async () => {
         if (!currentSession) return toggleAuthModal();
         
         const btn = document.getElementById("save-web3-btn");
@@ -3475,7 +3475,6 @@ if (allActions.length > 0) {
         const yt = document.getElementById("edit-yt").value.trim();
         const isFree = document.getElementById("edit-free-toggle").checked;
 
-        // Construct exact Solana-clone JSON format
         const profileData = { 
             sk8: "v1", 
             name: name.substring(0, 20), 
@@ -3491,7 +3490,6 @@ if (allActions.length > 0) {
 
         const memoString = JSON.stringify(profileData);
         
-        // WAX Memo size limit safety check
         if (memoString.length > 255) {
             showErrorModal("Profile data too large. Please shorten your bio or image link.");
             btn.innerText = originalText;
@@ -3513,15 +3511,53 @@ if (allActions.length > 0) {
                 }
             }];
 
-            await currentSession.transact({ actions });
+            const res = await currentSession.transact({ actions });
+            const trxId = res.resolvedTransaction ? res.resolvedTransaction.id : (res.transaction_id || null);
             
-            showSuccessModal("IDENTITY SECURED", "Your profile updates have been successfully broadcast to the WAX ledger.");
+            showSuccessModal("IDENTITY SECURED", "Your profile updates have been successfully broadcast to the WAX ledger. Indexing now...");
             window.closeEditModal();
             
-            // Optimistic reload of the profile page after 2 seconds to allow ledger index
-            setTimeout(() => {
-                window.navigateToProfile(sender);
-            }, 2000);
+            // 1. OPTIMISTIC UI: Instant Front-End Update
+            document.getElementById('p-name').innerText = profileData.name || "ANON SKATER";
+            document.getElementById('p-img').src = profileData.pic || "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu";
+            document.getElementById('p-bio').innerText = profileData.bio || "Decentralized skater running on the SK8 Protocol.";
+            
+            let gHtml = "";
+            const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
+            if(profileData.stance) gHtml += `<div style="${tagStyle}"><span>👟</span> ${profileData.stance}</div>`;
+            if(profileData.deck) gHtml += `<div style="${tagStyle}"><span>🛹</span> ${profileData.deck}</div>`;
+            if(profileData.trucks) gHtml += `<div style="${tagStyle}"><span>🔩</span> ${profileData.trucks}</div>`;
+            if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
+            const gearEl = document.getElementById('p-gear');
+            gearEl.innerHTML = gHtml;
+            
+            gearEl.dataset.stance = profileData.stance;
+            gearEl.dataset.deck = profileData.deck;
+            gearEl.dataset.trucks = profileData.trucks;
+            gearEl.dataset.spot = profileData.spot;
+            gearEl.dataset.yt = profileData.yt;
+            gearEl.dataset.free = profileData.free.toString();
+
+            // 2. TRANSACTION POLLING: Silent verification
+            if (trxId) {
+                let indexed = false;
+                let attempts = 0;
+                const maxAttempts = 10; // Give it 30 seconds max to clear
+                while (!indexed && attempts < maxAttempts) {
+                    await new Promise(r => setTimeout(r, 3000));
+                    attempts++;
+                    try {
+                        const check = await fetch(`${HISTORY_RPC}/v2/history/get_transaction?id=${trxId}`);
+                        if (check.ok) {
+                            const checkData = await check.json();
+                            if (checkData && checkData.trx_id) {
+                                indexed = true;
+                                console.log("Hyperion Indexed Profile Update:", trxId);
+                            }
+                        }
+                    } catch(e) {}
+                }
+            }
 
         } catch (error) {
             console.error("Profile Save Error:", error);
@@ -3531,7 +3567,6 @@ if (allActions.length > 0) {
             btn.disabled = false;
         }
     };
-
     // ==========================================
     // 🟢 PHASE 3: PROFILE RENDERING & LEDGER SYNC 🟢
     // ==========================================
