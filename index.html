@@ -3619,7 +3619,7 @@ if (allActions.length > 0) {
             let profileUpdate = null;
 
             while(keepFetching) {
-                const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=${limit}&skip=${skip}`);
+                const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${targetWallet}&filter=eosio.token:transfer&limit=${limit}&skip=${skip}&sort=desc&cb=${Date.now()}`);
                 const json = await res.json();
                 
                 if (json && json.actions && json.actions.length > 0) {
