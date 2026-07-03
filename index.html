@@ -3638,7 +3638,7 @@ if (allActions.length > 0) {
         window.renderProfile(targetWallet);
     };
 
-    window.renderProfile = async (targetWallet) => {
+   window.renderProfile = async (targetWallet) => {
         const nameEl = document.getElementById('p-name');
         const walletEl = document.getElementById('p-wallet');
         const bioEl = document.getElementById('p-bio');
@@ -3668,9 +3668,14 @@ if (allActions.length > 0) {
             stance: "", deck: "", trucks: "", spot: "", yt: "", free: false
         };
 
+        // OVERRIDE 1: Apply Hardcoded Data if wallet matches
+        if (hardcodedProfiles[targetWallet]) {
+            profileData = { ...profileData, ...hardcodedProfiles[targetWallet] };
+        }
+
         let totalWaxReceived = 0;
 
-     try {
+        try {
             let keepFetching = true;
             let skip = 0;
             const limit = 500;
@@ -3692,15 +3697,14 @@ if (allActions.length > 0) {
                         }
                     });
 
-                    // Lock onto the most recent identity update if we haven't found it yet
-                    if (!profileUpdate) {
+                    // OVERRIDE 2: Only search for an on-chain memo update if they are NOT hardcoded
+                    if (!hardcodedProfiles[targetWallet] && !profileUpdate) {
                         profileUpdate = json.actions.find(a => {
                             const data = a.act.data;
                             return data && data.from === targetWallet && data.to === 'skatecoinwax' && data.memo && data.memo.includes('"sk8":"v1"');
                         });
                     }
 
-                    // Move down the chain or exit if we hit the end
                     if (json.actions.length < limit) {
                         keepFetching = false;
                     } else {
@@ -3711,6 +3715,7 @@ if (allActions.length > 0) {
                 }
             }
             
+            // Apply on-chain data if found (for non-hardcoded users)
             if (profileUpdate) {
                 try {
                     const parsed = JSON.parse(profileUpdate.act.data.memo);
@@ -3722,15 +3727,17 @@ if (allActions.length > 0) {
             
         } catch(e) {
             console.error("Profile Sync Error", e);
-            bioEl.innerText = "Failed to synchronize with the decentralized ledger.";
+            if (!hardcodedProfiles[targetWallet]) {
+                bioEl.innerText = "Failed to synchronize with the decentralized ledger.";
+            }
         }
 
-        // Apply Decrypted Data to the UI
+        // Apply Decrypted/Hardcoded Data to the UI
         nameEl.innerText = profileData.name;
         imgEl.src = profileData.pic;
         bioEl.innerText = profileData.bio;
 
-        // Construct Gear Tags with Inline CSS to match your protocol aesthetics
+        // Construct Gear Tags
         let gHtml = "";
         const tagStyle = "display:inline-block; padding:6px 12px; background:rgba(255,234,0,0.05); color:#ccc; border:1px solid rgba(255,234,0,0.3); border-radius:4px; font-size:0.7rem; font-family:'Inter'; text-transform:uppercase; margin:4px;";
         
@@ -3740,7 +3747,7 @@ if (allActions.length > 0) {
         if(profileData.spot) gHtml += `<div style="${tagStyle}"><span>📍</span> ${profileData.spot}</div>`;
         gearEl.innerHTML = gHtml;
 
-        // Cache the data invisibly in the DOM so the Edit Modal can fetch it effortlessly later
+        // Cache the data invisibly in the DOM for Edit Modal
         gearEl.dataset.stance = profileData.stance || "";
         gearEl.dataset.deck = profileData.deck || "";
         gearEl.dataset.trucks = profileData.trucks || "";
@@ -3760,7 +3767,7 @@ if (allActions.length > 0) {
         rankDisplayEl.innerText = rankStr;
         rankDisplayEl.style.color = rankCol;
 
-        // Trigger the Sponsor Badge Engine from Phase 2
+        // Trigger Sponsor Badges
         if (typeof window.renderSponsorBadges === 'function') {
             window.renderSponsorBadges(totalWaxReceived, isOwner);
         }
