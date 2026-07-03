@@ -1577,6 +1577,76 @@
     };
     window.selectedBurnAssets = new Map();
 
+    // === HARDCODED PROYALTY PROFILES ENGINE ===
+    const hardcodedProfiles = {
+        "ufuau.wam": {
+            name: "Greg Valencia",
+            pic: "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeiaw4d4mtj6vygibjojdaebvgy2ukjfjazrvch5ooj7mjtz2yihq3m", 
+            bio: "EBBE Intl.",
+            stance: "Regular",
+            deck: "8.25 Popsicle",
+            trucks: "Indys 144",
+            spot: "Long Beach",
+            yt: "TkiDuln_Q28",
+            free: false
+        },
+        "skatecoinwax.wam": {
+            name: "Lovehandlz",
+            pic: "https://jade-rapid-flea-523.mypinata.cloud/ipfs/bafybeifv2qlcfzknknsdfae2eky655uofsrt2c3semq47g6vwshptuik5e",
+            bio: "sk8dao Admin.",
+            stance: "Goofy",
+            deck: "8.5 Twin-Tip",
+            trucks: "Thunders 149",
+            spot: "LA Courthouse",
+            yt: "3JZ_D3ELwOQ",
+            free: false
+        },
+        "manuals.wam": {
+            name: "MANNY GOD",
+            pic: "https://ipfs.io/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+            bio: "Rain or shine, balancing on two wheels is a lifestyle. Precision wheelie control technician.",
+            stance: "Regular",
+            deck: "8.0 Classic",
+            trucks: "Venture 5.2",
+            spot: "Pier 7",
+            yt: "9bZkp7q19f0",
+            free: false
+        },
+        "vertvic.wam": {
+            name: "VERT VIC",
+            pic: "https://ipfs.io/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+            bio: "Blasting high above the coping. Speed, power, and massive airs keep the crowd hyped.",
+            stance: "Goofy",
+            deck: "8.75 Pool Shape",
+            trucks: "Indys 159",
+            spot: "Burnside",
+            yt: "kXYiU_JCYtU",
+            free: false
+        },
+        "shredder.wam": {
+            name: "SHREDDER X",
+            pic: "https://ipfs.io/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+            bio: "Ecosystem vanguard dropping heavy street parts and hunting for the ultimate handrail yield.",
+            stance: "Regular",
+            deck: "8.38 Custom",
+            trucks: "Ace 44",
+            spot: "Hollywood High",
+            yt: "Wg_jwgmwt-U",
+            free: false
+        },
+        "prosk8.wam": {
+            name: "PRO SK8",
+            pic: "https://ipfs.io/ipfs/bafkreifjmf42ydwes6dyvcgeuuib4vkyesktt5fmd3i4gk7lcq6lmywbeu",
+            bio: "Elite tier protocol representative running non-stop street sessions. Glory on the ledger.",
+            stance: "Goofy",
+            deck: "8.25 Flight",
+            trucks: "Thunders 148",
+            spot: "Love Park",
+            yt: "MFSx4jWmDfY",
+            free: false
+        }
+    };
+
     class MetaParser {
         static getRaw(nft, key) {
             if (nft.data && nft.data[key] !== undefined) return nft.data[key];
