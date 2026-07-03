@@ -3836,10 +3836,26 @@ if (allActions.length > 0) {
         }
     };
 
-   window.fetchSkaterFeed = async (wallet, isBlurred) => {
-        window.currentSkaterPosts = [];
-        let deletedPosts = [];
+window.fetchSkaterFeed = async (wallet, isBlurred) => {
+        // 1. OPTIMISTIC CACHE LOAD: Instantly render saved feed if it exists
+        const cacheKey = `sk8feed_${wallet}`;
+        const cachedFeed = localStorage.getItem(cacheKey);
         
+        if (cachedFeed) {
+            try {
+                window.currentSkaterPosts = JSON.parse(cachedFeed);
+                window.renderFeedGrid(isBlurred, wallet); // Instant render
+            } catch(e) {}
+        } else {
+            window.currentSkaterPosts = [];
+            // Only show the scanning message if there is no cache at all
+            document.getElementById('actual-feed-items').innerHTML = `<div style="text-align:center; padding: 40px; color: #888; font-family: 'Orbitron'; grid-column: 1 / -1;">SCANNING BLOCKCHAIN HISTORY...</div>`;
+        }
+
+        let deletedPosts = [];
+        let freshPosts = [];
+        
+        // 2. BACKGROUND SYNC: Fetch from WAX ledger silently
         try {
             const res = await fetch(`${HISTORY_RPC}/v2/history/get_actions?account=${wallet}&filter=eosio.token:transfer&limit=500`);
             const json = await res.json();
@@ -3851,8 +3867,7 @@ if (allActions.length > 0) {
                         if (data.memo.includes('"sk8post":"v1"')) {
                             try {
                                 const parsed = JSON.parse(data.memo);
-                                // NEW: We are now pulling 'tt' (TikTok) from the payload
-                                window.currentSkaterPosts.push({ id: a.trx_id, text: parsed.text, yt: parsed.yt, ig: parsed.ig, tt: parsed.tt, time: new Date(a.timestamp).getTime() });
+                                freshPosts.push({ id: a.trx_id, text: parsed.text, yt: parsed.yt, ig: parsed.ig, tt: parsed.tt, time: new Date(a.timestamp).getTime() });
                             } catch(e) {}
                         } else if (data.memo.includes('"sk8del":"v1"')) {
                             try {
@@ -3865,12 +3880,17 @@ if (allActions.length > 0) {
             }
         } catch(e) { console.error("Feed fetch failed", e); }
         
-        window.currentSkaterPosts = window.currentSkaterPosts.filter(p => !deletedPosts.includes(p.id));
-        window.currentSkaterPosts.sort((a,b) => b.time - a.time);
+        // Clean and sort the fresh data
+        freshPosts = freshPosts.filter(p => !deletedPosts.includes(p.id));
+        freshPosts.sort((a,b) => b.time - a.time);
         
-        window.renderFeedGrid(isBlurred, wallet);
+        // 3. SEAMLESS UPDATE: Only re-render if the blockchain has new data
+        if (JSON.stringify(freshPosts) !== JSON.stringify(window.currentSkaterPosts)) {
+            window.currentSkaterPosts = freshPosts;
+            localStorage.setItem(cacheKey, JSON.stringify(freshPosts)); // Save to cache
+            window.renderFeedGrid(isBlurred, wallet);
+        }
     };
-
     window.renderFeedGrid = (isBlurred, targetWallet) => {
         const container = document.getElementById('actual-feed-items');
         const loadBtn = document.getElementById('load-more-feed-btn');
@@ -3890,14 +3910,13 @@ if (allActions.length > 0) {
             let dateStr = new Date(p.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
             let mediaHtml = ""; 
             
-            // SMART RENDERER: Evaluates which platform to generate
+            // SMART RENDERER: Evaluates which platform to generate AND Lazy Loads
             if(p.yt) {
-                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#ff0055;">▶ YOUTUBE</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.youtube.com/embed/${p.yt}?showinfo=0" allowfullscreen></iframe></div>`;
+                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#ff0055;">▶ YOUTUBE</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.youtube.com/embed/${p.yt}?showinfo=0" loading="lazy" allowfullscreen></iframe></div>`;
             } else if (p.ig) {
-                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#d946ef;">📷 INSTAGRAM</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.instagram.com/p/${p.ig}/embed" scrolling="no" allowtransparency="true"></iframe></div>`;
+                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:#d946ef;">📷 INSTAGRAM</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.instagram.com/p/${p.ig}/embed" loading="lazy" scrolling="no" allowtransparency="true"></iframe></div>`;
             } else if (p.tt) {
-                // NEW: Dynamically build TikTok iframe
-                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:var(--accent-cyan);">🎵 TIKTOK</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.tiktok.com/embed/v2/${p.tt}" allowfullscreen scrolling="no" allow="encrypted-media;"></iframe></div>`;
+                mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222;"><div class="feed-platform-icon" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 4px; z-index: 10; border: 1px solid #444; font-size: 0.8rem; color:var(--accent-cyan);">🎵 TIKTOK</div><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="https://www.tiktok.com/embed/v2/${p.tt}" loading="lazy" allowfullscreen scrolling="no" allow="encrypted-media;"></iframe></div>`;
             } else {
                 mediaHtml = `<div class="feed-grid-media" style="width: 100%; position: relative; padding-bottom: 100%; background: #000; border-bottom: 1px solid #222; display:flex; align-items:center; justify-content:center;"><span style="font-size:3rem; filter: grayscale(1); opacity: 0.2; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">🛹</span></div>`;
             }
